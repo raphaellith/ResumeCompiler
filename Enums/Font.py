@@ -1,6 +1,7 @@
 from enum import Enum
 
 class Font(Enum):
+    COMPUTER_MODERN = ""
     TIMES_NEW_ROMAN = r"\usepackage{mathptmx}"
     FIRA_SANS = r"\usepackage[sfdefault]{FiraSans}"
     ROBOTO = r"\usepackage[sfdefault]{roboto}"
