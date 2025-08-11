@@ -52,7 +52,7 @@ class ResumeCompiler:
         # Try to compile the markdown file to LaTeX
         try:
             latex_result = "\n".join(resume.to_latex_lines(font))
-        except (Exception, LookupError) as e:
+        except (Exception, IndexError) as e:
             print("MARKDOWN TO LATEX COMPILATION FAILED. ERROR:", e)
             return
 
