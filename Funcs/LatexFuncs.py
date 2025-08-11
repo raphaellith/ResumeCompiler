@@ -30,9 +30,14 @@ def get_latex_command(command: str, arguments: Union[str, list[str], None] = Non
     return result
 
 
-def get_latex_environment(env: str, contents: list[str]) -> list[str]:
+def get_latex_environment(env: str, contents: list[str], indent_contents: bool = True) -> list[str]:
     result = ["\\begin{" + env + "}"]
-    result += indent_lines(contents)
-    result += ["\\end{" + env + "}"]
+
+    if indent_contents:
+        result += indent_lines(contents)
+    else:
+        result += contents
+
+    result.append("\\end{" + env + "}")
 
     return result

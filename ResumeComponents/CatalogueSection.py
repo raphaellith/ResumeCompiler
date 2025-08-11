@@ -36,7 +36,7 @@ class CatalogueSection(ResumeSection):
                 label, text = list_item_split_by_colon
                 latex_line = get_latex_command(command="textbf", arguments=label) + ": " + text
             else:
-                latex_line = list_item_split_by_colon[0]
+                latex_line = list_item
             result.append("\t" + latex_line + r"\\")
 
         result.append(r"}}\end{itemize}")

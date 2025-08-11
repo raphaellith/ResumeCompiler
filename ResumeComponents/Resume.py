@@ -8,6 +8,7 @@ from ResumeComponents.ContactList import ContactList
 from ResumeComponents.ResumeSection import ResumeSection
 from ResumeComponents.ToolsetSection import ToolsetSection
 from Funcs.HtmlFuncs import get_soup_from_markdown, get_children_tags
+from Funcs.LatexFuncs import get_latex_environment
 
 
 class Resume(ResumeComponent):
@@ -70,13 +71,12 @@ class Resume(ResumeComponent):
 
         result.append("")
 
-        result.append(r"\begin{document}")
-
+        document_contents = []
         for component in self.components:
-            result += component.to_latex_lines()
+            document_contents += component.to_latex_lines()
             for _ in range(3):
-                result.append("")
+                document_contents.append("")
 
-        result.append(r"\end{document}")
+        result += get_latex_environment(env="document", contents=document_contents, indent_contents=False)
 
         return result
