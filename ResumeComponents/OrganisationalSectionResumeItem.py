@@ -1,42 +1,46 @@
 from bs4 import Tag
 
-from Funcs.Funcs import take_fixed_num_of_inputs
-from Funcs.LatexFuncs import get_latex_command, replace_hyphens_with_en_dashes, indent_lines
 from ResumeComponents.ResumeItem import ResumeItem
+from Funcs.Funcs import take_fixed_num_of_input_strings, take_fixed_num_of_inputs_with_same_default
+from Funcs.HtmlFuncs import get_children_tags
+from Funcs.LatexFuncs import get_latex_command, format_date_range
 
 
 class OrganisationalSectionResumeItem(ResumeItem):
     def __init__(self, tags: list[Tag]):
-        subheading_tag = tags[0]
-        pre_block_tag = tags[1]
-        description_list_tag = tags[2] if len(tags) > 2 else None
+        """
+        :param tags: A list of HTML tags that belong to this organisation section resume item.
+        """
+        tags = take_fixed_num_of_inputs_with_same_default(tags, 3, None)
 
-        super().__init__(subheading_tag=subheading_tag, description_list_tag=description_list_tag)
+        subheading = tags[0].text if tags[0] else ""
+        pre_block_contents = tags[1].text if tags[1] else ""
+        description_list = [item.text for item in get_children_tags(tags[2])] if tags[2] else []
+
+        super().__init__(subheading=subheading, description_list=description_list)
 
         # Parse preformatted block as exactly three pieces of auxiliary information
         # If more than three are provided, only the first three pieces of information are accepted as input
         # If less than three are provided, we pad them with empty strings
 
         num_of_auxiliary_info = 3
-        pre_block_lines = pre_block_tag.text.split("\n", maxsplit=num_of_auxiliary_info)
+        pre_block_lines = pre_block_contents.split("\n")[:num_of_auxiliary_info]
 
-        self.first_row_right, self.second_row_left, self.second_row_right = take_fixed_num_of_inputs(pre_block_lines, num_of_auxiliary_info)
+        self.first_row_right, self.second_row_left, self.second_row_right = take_fixed_num_of_input_strings(pre_block_lines, num_of_auxiliary_info)
 
-        self.first_row_right = replace_hyphens_with_en_dashes(self.first_row_right)
-        self.second_row_right = replace_hyphens_with_en_dashes(self.second_row_right)
+        self.first_row_right = format_date_range(self.first_row_right)
+        self.second_row_right = format_date_range(self.second_row_right)
 
     def to_latex_lines(self) -> list[str]:
-        result = []
-
         # Resume subheading with auxiliary info
-        result.append(
+        result = [
             get_latex_command(
                 command="resumeItemSubheading",
                 arguments=[self.subheading, self.first_row_right, self.second_row_left, self.second_row_right]
             )
-        )
+        ]
 
-        if len(self.description_list) > 0:
+        if self.description_list:
             result.append("")
             result += self.get_description_list_as_latex_lines()
 

@@ -1,14 +1,17 @@
 import os
-from os.path import isfile, join, splitext, getmtime, basename
+from os.path import join, splitext, getmtime, basename
 from pathlib import Path
 import subprocess
-from subprocess import DEVNULL
 
 from ResumeComponents.Resume import Resume
 
 
 class ResumeCompiler:
     def __init__(self, src_dir_path, dist_dir_path):
+        """
+        :param src_dir_path: The source directory path.
+        :param dist_dir_path: The destination directory path.
+        """
         self.src_dir = src_dir_path
         self.dist_dir = dist_dir_path
 
@@ -18,6 +21,9 @@ class ResumeCompiler:
         self.last_modification_timestamps: dict[str, int] = dict()
 
     def get_paths_to_markdown_files_in_src_dir(self):
+        """
+        :return: A list of paths to markdown files in the source directory.
+        """
         result = []
 
         for directory_item in os.listdir(self.src_dir):
@@ -31,59 +37,42 @@ class ResumeCompiler:
         return result
 
     def compile(self, src_file_path):
+        """
+        :param src_file_path: The path to the source markdown file to be compiled.
+        :return:
+        """
         src_file_name = splitext(basename(src_file_path))[0]
 
+        # Read the markdown file
+        with open(src_file_path, "r", encoding="utf-8") as markdown_file:
+            resume = Resume(markdown_file.read())
 
+        # Try to compile the markdown file to LaTeX
         try:
-            # Read markdown file
-            with open(src_file_path, "r", encoding="utf-8") as markdown_file:
-                resume = Resume(markdown_file.read())
-
-            # Compile md to tex
             latex_result = "\n".join(resume.to_latex_lines())
-        except IndexError as e:
+        except (Exception, LookupError) as e:
             print("MARKDOWN TO LATEX COMPILATION FAILED. ERROR:", e)
             return
 
-        # Create and write to destination file located in a subdirectory of the same name
+        # Create and write to a destination file located in a subdirectory of the same name
         dest_file_path = Path(self.dist_dir, src_file_name, src_file_name + ".tex")
+        create_and_write_file(dest_file_path, latex_result)
 
-        # Create parent directories if they don't exist
-        dest_file_path.parent.mkdir(parents=True, exist_ok=True)
+        # Compile latex to pdf
+        compile_latex_file_to_pdf(dest_file_path)
 
-        # Write content to the file
-        dest_file_path.write_text(latex_result)
-
-        # Change our working directory to where the destination tex file was created, then compile it to pdf
-        current_working_directory = dest_file_path.parent.as_posix()
-
-        process = subprocess.Popen(
-            ['pdflatex', dest_file_path.name],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            stdin=subprocess.DEVNULL,
-            text=True,
-            cwd=current_working_directory
-        )
-
-        # Capture and print the output
-        stdout, stderr = process.communicate()
-
-        # Print the output for debugging
-        if stdout:
-            print(stdout)
-        if stderr:
-            print(stderr)
-
-        # subprocess.call(["pdflatex", "-interaction=batchmode", dest_file_path.name], )
-
-        # print(f"MARKDOWN TO LATEX TO PDF COMPILATION COMPLETE: Compiled {src_file_path} into {dest_file_path}")
 
     def run(self):
+        """
+        :return: Compiles all markdown files in the source directory and saves the outputs in the destination directory.
+        """
         for src_file_path in self.get_paths_to_markdown_files_in_src_dir():
             self.compile(src_file_path)
 
     def run_with_live_reload(self):
+        """
+        :return: Runs a loop so that whenever a markdown file in the source directory is created or saved, it is compiled with the outputs saved in the destination directory.
+        """
         while True:
             for src_file_path in self.get_paths_to_markdown_files_in_src_dir():
                 last_mod_timestamp_recorded = self.last_modification_timestamps.get(src_file_path, -1)
@@ -94,6 +83,48 @@ class ResumeCompiler:
 
                 self.last_modification_timestamps[src_file_path] = last_mod_timestamp_of_file
                 self.compile(src_file_path)
+
+
+def create_and_write_file(file_path: Path, contents: str):
+    """
+    :param file_path: A file path.
+    :param contents: Contents to be written onto the file.
+    :return: Creates the file (along with all intermediate directories) and writes the specified contents onto the file.
+    """
+    # Create parent directories if they don't exist
+    file_path.parent.mkdir(parents=True, exist_ok=True)
+
+    # Write content to the file
+    file_path.write_text(contents)
+
+
+def compile_latex_file_to_pdf(latex_file_path: Path, print_stdout_and_stderr: bool = True):
+    """
+    :param latex_file_path: The path to the LaTeX file.
+    :param print_stdout_and_stderr: Whether to print the stdout and stderr messages to the console.
+    :return: Compiles the specified LaTeX file to PDF, optionally printing stdout and stderr messages to the console.
+    """
+    # Change our working directory to where the destination tex file was created, then compile it to pdf
+    parent_directory_of_latex_file = latex_file_path.parent.as_posix()
+
+    process = subprocess.Popen(
+        ['pdflatex', latex_file_path.name],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        stdin=subprocess.DEVNULL,
+        text=True,
+        cwd=parent_directory_of_latex_file
+    )
+
+    if print_stdout_and_stderr:
+        # Capture and print the output
+        stdout, stderr = process.communicate()
+
+        # Print the output for debugging
+        if stdout:
+            print(stdout)
+        if stderr:
+            print(stderr)
 
 
 if __name__ == '__main__':

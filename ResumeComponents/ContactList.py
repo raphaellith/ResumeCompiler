@@ -6,6 +6,9 @@ from Funcs.LatexFuncs import get_latex_environment, get_latex_command
 
 class ContactList(ResumeComponent):
     def __init__(self, ul_tag: Tag):
+        """
+        :param ul_tag: The unordered list tag that represents this contact list.
+        """
         super().__init__()
 
         # First value of tuple: displayed text

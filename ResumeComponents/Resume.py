@@ -13,6 +13,9 @@ from Funcs.LatexFuncs import get_latex_environment
 
 class Resume(ResumeComponent):
     def __init__(self, markdown_contents: str):
+        """
+        :param markdown_contents: The markdown content to be compiled.
+        """
         super().__init__()
 
         soup = get_soup_from_markdown(markdown_contents)
@@ -46,18 +49,7 @@ class Resume(ResumeComponent):
                 self.components.append(ContactList(tag))
 
         for tags_in_section in tags_by_section:
-            self.components.append(self.get_resume_section_from_tags(tags_in_section))
-
-    def get_resume_section_from_tags(self, tags: list[Tag]) -> ResumeSection:
-        # Identify the section type
-        heading = tags[0].text
-
-        if len(heading) > 0 and heading[0] == "!":
-            return ToolsetSection(tags)
-        elif any(map(lambda t: t.name == "h3", tags)):
-            return OrganisationalSection(tags)
-        else:
-            return CatalogueSection(tags)
+            self.components.append(get_resume_section_from_tags(tags_in_section))
 
     def to_latex_lines(self) -> list[str]:
         result: list[str] = []
@@ -80,3 +72,19 @@ class Resume(ResumeComponent):
         result += get_latex_environment(env="document", contents=document_contents, indent_contents=False)
 
         return result
+
+
+def get_resume_section_from_tags(tags: list[Tag]) -> ResumeSection:
+    """
+    :param tags: A list of HTML tags that belong to a resume section.
+    :return: The parsed resume section to which the inputted tags belong.
+    """
+    # Identify the section type
+    heading = tags[0].text
+
+    if len(heading) > 0 and heading[0] == "!":
+        return ToolsetSection(tags)
+    elif any(map(lambda t: t.name == "h3", tags)):
+        return OrganisationalSection(tags)
+    else:
+        return CatalogueSection(tags)
