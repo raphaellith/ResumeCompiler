@@ -4,6 +4,7 @@ from pathlib import Path
 import subprocess
 
 from ResumeComponents.Resume import Resume
+from Enums.Font import Font
 
 
 class ResumeCompiler:
@@ -36,9 +37,10 @@ class ResumeCompiler:
 
         return result
 
-    def compile(self, src_file_path):
+    def compile(self, src_file_path, font: Font = Font.TIMES_NEW_ROMAN):
         """
         :param src_file_path: The path to the source markdown file to be compiled.
+        :param font: The font to use for the compiled resume.
         :return:
         """
         src_file_name = splitext(basename(src_file_path))[0]
@@ -49,7 +51,7 @@ class ResumeCompiler:
 
         # Try to compile the markdown file to LaTeX
         try:
-            latex_result = "\n".join(resume.to_latex_lines())
+            latex_result = "\n".join(resume.to_latex_lines(font))
         except (Exception, LookupError) as e:
             print("MARKDOWN TO LATEX COMPILATION FAILED. ERROR:", e)
             return
@@ -62,14 +64,14 @@ class ResumeCompiler:
         compile_latex_file_to_pdf(dest_file_path)
 
 
-    def run(self):
+    def run(self, font: Font = Font.TIMES_NEW_ROMAN):
         """
         :return: Compiles all markdown files in the source directory and saves the outputs in the destination directory.
         """
         for src_file_path in self.get_paths_to_markdown_files_in_src_dir():
-            self.compile(src_file_path)
+            self.compile(src_file_path, font)
 
-    def run_with_live_reload(self):
+    def run_with_live_reload(self, font: Font = Font.TIMES_NEW_ROMAN):
         """
         :return: Runs a loop so that whenever a markdown file in the source directory is created or saved, it is compiled with the outputs saved in the destination directory.
         """
@@ -82,7 +84,7 @@ class ResumeCompiler:
                     continue
 
                 self.last_modification_timestamps[src_file_path] = last_mod_timestamp_of_file
-                self.compile(src_file_path)
+                self.compile(src_file_path, font)
 
 
 def create_and_write_file(file_path: Path, contents: str):
@@ -125,9 +127,3 @@ def compile_latex_file_to_pdf(latex_file_path: Path, print_stdout_and_stderr: bo
             print(stdout)
         if stderr:
             print(stderr)
-
-
-if __name__ == '__main__':
-    compiler = ResumeCompiler("src", "dist")
-    compiler.run_with_live_reload()
-

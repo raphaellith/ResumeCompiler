@@ -177,11 +177,42 @@ Some characters have special meaning in LaTeX and should be escaped using backsl
 When necessary, it is possible to inject LaTeX code into Markdown source code (especially in preformatted code blocks). Note, however, that precautions should be taken and escape sequences should be used.
 
 
+## Compilation
+
+To compile a markdown file in the source directory into a LaTeX file in the destination directory, create a Python file and import class ```ResumeCompiler```.
+
+```aiignore
+from ResumeCompiler import ResumeCompiler
+```
+
+Create a ```ResumeCompiler``` instance with the source and destination directory paths as arguments. To execute the compilation process, run any one of the methods on the ```ResumeCompiler``` object:
+- ```ResumeCompiler.compile(src_file_path, font)``` compiles the file specified by the inputted path.
+- ```ResumeCompiler.run(font)``` compiles all Markdown files in the source directory and saves the results in the destination directory, with each LaTeX file in a different subdirectory.
+- ```ResumeCompiler.run_with_live_reload(font)``` runs a loop to continuously detect when a Markdown file in the source directory is created or saved. Whenever this happens, that file is compiled with outputs saved in the destination directory.
+
+```aiignore
+from ResumeCompiler import ResumeCompiler
+
+compiler = ResumeCompiler("src", "dist")
+compiler.run_with_live_reload()
+```
+
+Each of these methods includes an optional ```font``` argument that determines the typeface used to create the PDF document. The argument defaults to Times New Roman (```Font.TIMES_NEW_ROMAN```), but this can be changed by importing the enum class ```Font```.
+
+```
+from ResumeCompiler import ResumeCompiler
+from Enums.Font import Font
+
+compiler = ResumeCompiler("src", "dist")
+compiler.run_with_live_reload(font=Font.TIMES_NEW_ROMAN)
+```
+
+
+
 ## Future improvements
 
 Future improvements with regard to more robust parsing and compilation:
 
-- More font choices apart from Times New Roman
 - More user-friendly error handling
 - More mature handling of escape characters and LaTeX injection
 - UML visualisation of classes

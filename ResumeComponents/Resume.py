@@ -9,6 +9,7 @@ from ResumeComponents.ResumeSection import ResumeSection
 from ResumeComponents.ToolsetSection import ToolsetSection
 from Funcs.HtmlFuncs import get_soup_from_markdown, get_children_tags
 from Funcs.LatexFuncs import get_latex_environment
+from Enums.Font import Font
 
 
 class Resume(ResumeComponent):
@@ -51,15 +52,22 @@ class Resume(ResumeComponent):
         for tags_in_section in tags_by_section:
             self.components.append(get_resume_section_from_tags(tags_in_section))
 
-    def to_latex_lines(self) -> list[str]:
+    def to_latex_lines(self, font: Font = Font.TIMES_NEW_ROMAN) -> list[str]:
         result: list[str] = []
 
         with open("resources/preamble.tex", "r") as preamble_file:
             while True:
                 line = preamble_file.readline()
+
                 if not line:
                     break
-                result.append(line.removesuffix('\n'))
+
+                line = line.removesuffix('\n')
+
+                if line == "% FONT CHOICE GOES HERE":
+                    line = font.value
+
+                result.append(line)
 
         result.append("")
 
