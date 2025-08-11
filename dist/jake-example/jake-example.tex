@@ -1,0 +1,195 @@
+\documentclass[letterpaper, 11pt]{article}
+
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+
+\input{glyphtounicode}
+
+\usepackage[default]{sourcesanspro}
+% \usepackage{mathptmx}
+% \usepackage[sfdefault]{FiraSans}
+% \usepackage[sfdefault]{roboto}
+% \usepackage[sfdefault]{noto-sans}
+% \usepackage[default]{sourcesanspro}
+% \usepackage{CormorantGaramond}
+% \usepackage{charter}
+% \usepackage{fontawesome}
+
+
+\pagestyle{fancy}
+\fancyhf{} % clear all header and footer fields
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Adjust margins
+\addtolength{\oddsidemargin}{-0.5in}
+\addtolength{\evensidemargin}{-0.5in}
+\addtolength{\textwidth}{1in}
+\addtolength{\topmargin}{-.5in}
+\addtolength{\textheight}{1.0in}
+
+\urlstyle{same}
+
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+% Sections formatting
+\titleformat{\section}{
+  \vspace{-4pt}\scshape\raggedright\large
+}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
+
+% Ensure that generate pdf is machine readable/ATS parsable
+\pdfgentounicode=1
+
+%-------------------------
+% Custom commands
+\newcommand{\resumeDescriptionListItem}[1]{
+  \item\small{
+    {#1 \vspace{-2pt}}
+  }
+}
+
+\newcommand{\resumeItemSubheading}[4]{
+  \vspace{-2pt}\item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & #2 \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeSubSubheading}[2]{
+    \item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \textit{\small#1} & \textit{\small #2} \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeItemSubheadingWithToolset}[2]{
+    \item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \small#1 & #2 \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeSubItem}[1]{\resumeDescriptionListItem{#1}\vspace{-4pt}}
+
+\renewcommand\labelitemii{$\vcenter{\hbox{\tiny$\bullet$}}$}
+
+\newcommand{\resumeSubheadingListStart}{\begin{itemize}[leftmargin=0.15in, label={}]}
+\newcommand{\resumeSubheadingListEnd}{\end{itemize}}
+\newcommand{\resumeDescriptionListStart}{\begin{itemize}}
+\newcommand{\resumeDescriptionListEnd}{\end{itemize}\vspace{-5pt}}
+
+\setlength\topsep{0pt}
+\setlength\parskip{0pt}
+
+\begin{document}
+\begin{center}
+	\textbf{\Huge Jake Ryan}
+\end{center}
+
+
+
+\begin{center}
+	\small
+	123-456-7890
+	$|$
+	jake@su.edu
+	$|$
+	\href{https://linkedin.com/in/jake}{\underline{linkedin.com/in/jake}}
+	$|$
+	\href{https://github.com/jake}{\underline{github.com/jake}}
+\end{center}
+
+
+
+\section{Education}
+\resumeSubheadingListStart
+	\resumeItemSubheading{Southwestern University}{Georgetown, TX}{Bachelor of Arts in Computer Science, Minor in Business}{Aug 2018 -- May 2021}
+
+	\resumeItemSubheading{Blinn College}{Bryan, TX}{Associate’s in Liberal Arts}{Aug 2014 -- May 2018}
+
+\resumeSubheadingListEnd
+
+
+
+\section{Experience}
+\resumeSubheadingListStart
+	\resumeItemSubheading{Undergraduate Research Assistant}{June 2020 -- Present}{Texas A\&M University}{College Station, TX}
+	
+	\resumeDescriptionListStart
+		\resumeDescriptionListItem{Developed a REST API using FastAPI and PostgreSQL to store data from learning management systems}
+		\resumeDescriptionListItem{Developed a full-stack web application using Flask, React, PostgreSQL and Docker to analyze GitHub data}
+		\resumeDescriptionListItem{Explored ways to visualize GitHub collaboration in a classroom setting}
+	\resumeDescriptionListEnd
+
+	\resumeItemSubheading{Information Technology Support Specialist}{Sep. 2018 -- Present}{Southwestern University}{Georgetown, TX}
+	
+	\resumeDescriptionListStart
+		\resumeDescriptionListItem{Communicate with managers to set up campus computers used on campus }
+		\resumeDescriptionListItem{Assess and troubleshoot computer problems brought by students, faculty and staff}
+		\resumeDescriptionListItem{Maintain upkeep of computers, classroom equipment, and 200 printers across campus}
+	\resumeDescriptionListEnd
+
+	\resumeItemSubheading{Artificial Intelligence Research Assistant}{May 2019 -- July 2019}{Southwestern University}{Georgetown, TX}
+	
+	\resumeDescriptionListStart
+		\resumeDescriptionListItem{Explored methods to generate video game dungeons based off of The Legend of Zelda}
+		\resumeDescriptionListItem{Developed a game in Java to test the generated dungeons}
+		\resumeDescriptionListItem{Contributed 50K+ lines of code to an established codebase via Git}
+		\resumeDescriptionListItem{Conducted a human subject study to determine which video game dungeon generation technique is enjoyable}
+		\resumeDescriptionListItem{Wrote an 8-page paper and gave multiple presentations on-campus}
+		\resumeDescriptionListItem{Presented virtually to the World Conference on Computational Intelligence}
+	\resumeDescriptionListEnd
+
+\resumeSubheadingListEnd
+
+
+
+\section{Projects}
+\resumeSubheadingListStart
+	\resumeItemSubheadingWithToolset{\textbf{Gitlytics} $|$ \emph{Python, Flask, React, PostgreSQL, Docker}}{June 2020 -- Present}
+	
+	\resumeDescriptionListStart
+		\resumeDescriptionListItem{Developed a full-stack web application using with Flask serving a REST API with React as the frontend}
+		\resumeDescriptionListItem{Implemented GitHub OAuth to get data from user’s repositories}
+		\resumeDescriptionListItem{Visualized GitHub data to show collaboration}
+		\resumeDescriptionListItem{Used Celery and Redis for asynchronous tasks}
+	\resumeDescriptionListEnd
+
+	\resumeItemSubheadingWithToolset{\textbf{Simple Paintball} $|$ \emph{Spigot API, Java, Maven, TravisCI, Git}}{May 2018 -- May 2020}
+	
+	\resumeDescriptionListStart
+		\resumeDescriptionListItem{Developed a Minecraft server plugin to entertain kids during free time for a previous job }
+		\resumeDescriptionListItem{Published plugin to websites gaining 2K+ downloads and an average 4.5/5-star review }
+		\resumeDescriptionListItem{Implemented continuous delivery using TravisCI to build the plugin upon new a release }
+		\resumeDescriptionListItem{Collaborated with Minecraft server administrators to suggest features and get feedback about the plugin}
+	\resumeDescriptionListEnd
+
+\resumeSubheadingListEnd
+
+
+
+\section{Technical Skills}
+
+\begin{itemize}[leftmargin=0.15in, label={}]\small{\item{
+	\textbf{Languages}: Java, Python, C/C++, SQL (Postgres), JavaScript, HTML/CSS, R\\
+	\textbf{Frameworks}: React, Node.js, Flask, JUnit, WordPress, Material-UI, FastAPI\\
+	\textbf{Developer Tools}: Git, Docker, TravisCI, Google Cloud Platform, VS Code, Visual Studio, PyCharm, IntelliJ, Eclipse\\
+	\textbf{Libraries}: pandas, NumPy, Matplotlib\\
+}}\end{itemize}
+
+
+
+\end{document}
