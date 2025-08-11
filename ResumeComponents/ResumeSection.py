@@ -1,6 +1,6 @@
 from bs4 import Tag
 
-from LatexFuncs import get_latex_command, indent_lines
+from Funcs.LatexFuncs import get_latex_command, indent_lines
 from ResumeComponents.ResumeComponent import ResumeComponent
 from ResumeComponents.ResumeItem import ResumeItem
 

@@ -1,7 +1,7 @@
 from ResumeComponents.ResumeComponent import ResumeComponent
 from bs4.element import Tag
 
-from LatexFuncs import get_latex_environment, get_latex_command
+from Funcs.LatexFuncs import get_latex_environment, get_latex_command
 
 
 class Title(ResumeComponent):

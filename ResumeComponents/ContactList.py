@@ -1,8 +1,8 @@
 from bs4.element import Tag
 
 from ResumeComponents.ResumeComponent import ResumeComponent
-from Funcs import get_children_tags
-from LatexFuncs import get_latex_environment, get_latex_command
+from Funcs.HtmlFuncs import get_children_tags
+from Funcs.LatexFuncs import get_latex_environment, get_latex_command
 
 class ContactList(ResumeComponent):
     def __init__(self, ul_tag: Tag):

@@ -3,7 +3,7 @@ from bs4 import Tag
 from ResumeComponents.ToolsetSectionResumeItem import ToolsetSectionResumeItem
 from ResumeComponents.ResumeItem import ResumeItem
 from ResumeComponents.ResumeSection import ResumeSection, get_toolset_or_organisational_section_as_latex_lines
-from Funcs import classify_tags_in_organisational_or_toolset_section_by_resume_item
+from Funcs.HtmlFuncs import classify_tags_in_organisational_or_toolset_section_by_resume_item
 
 
 class ToolsetSection(ResumeSection):

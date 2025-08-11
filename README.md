@@ -155,6 +155,5 @@ It is possible to inject LaTeX code into markdown source code (especially in pre
 - More font choices apart from Times New Roman
 - More robust parsing and compilation
 - More user-friendly error handling
-- Better organisation of auxiliary functions
 - UML visualisation of classes
 - More mature handling of LaTeX injection

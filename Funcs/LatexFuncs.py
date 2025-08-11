@@ -5,6 +5,10 @@ def indent_lines(lines: list[str]) -> list[str]:
     return ['\t' + line for line in lines]
 
 
+def replace_hyphens_with_en_dashes(string: str) -> str:
+    return re.sub(r"\s[–\-]+\s", r" -- ", string)
+
+
 def get_latex_command(command: str, arguments: Union[str, list[str], None] = None,
                       square_bracket_options: Union[str, list[str], None] = None) -> str:
     result = "\\" + command
@@ -32,7 +36,3 @@ def get_latex_environment(env: str, contents: list[str]) -> list[str]:
     result += ["\\end{" + env + "}"]
 
     return result
-
-
-def replace_hyphens_with_en_dashes(string: str) -> str:
-    return re.sub(r"\s[–\-]+\s", r" -- ", string)

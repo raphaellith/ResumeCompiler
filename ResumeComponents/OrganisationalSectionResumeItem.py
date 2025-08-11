@@ -1,7 +1,7 @@
 from bs4 import Tag
 
-from Funcs import take_fixed_num_of_inputs
-from LatexFuncs import get_latex_command, replace_hyphens_with_en_dashes, indent_lines
+from Funcs.Funcs import take_fixed_num_of_inputs
+from Funcs.LatexFuncs import get_latex_command, replace_hyphens_with_en_dashes, indent_lines
 from ResumeComponents.ResumeItem import ResumeItem
 
 

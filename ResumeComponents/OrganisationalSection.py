@@ -3,8 +3,8 @@ from bs4 import Tag
 from ResumeComponents.ResumeItem import ResumeItem
 from ResumeComponents.OrganisationalSectionResumeItem import OrganisationalSectionResumeItem
 from ResumeComponents.ResumeSection import ResumeSection, get_toolset_or_organisational_section_as_latex_lines
-from Funcs import classify_tags_in_organisational_or_toolset_section_by_resume_item
-from LatexFuncs import indent_lines, get_latex_command
+from Funcs.HtmlFuncs import classify_tags_in_organisational_or_toolset_section_by_resume_item
+from Funcs.LatexFuncs import indent_lines, get_latex_command
 
 
 class OrganisationalSection(ResumeSection):

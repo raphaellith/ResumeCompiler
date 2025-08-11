@@ -2,8 +2,8 @@ from bs4.element import Tag
 from typing import Optional
 
 from ResumeComponents.ResumeComponent import ResumeComponent
-from Funcs import get_children_tags
-from LatexFuncs import indent_lines, get_latex_command
+from Funcs.HtmlFuncs import get_children_tags
+from Funcs.LatexFuncs import indent_lines, get_latex_command
 
 
 class ResumeItem(ResumeComponent):

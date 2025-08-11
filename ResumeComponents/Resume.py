@@ -1,4 +1,5 @@
-from Funcs import *
+from bs4.element import Tag
+
 from ResumeComponents.CatalogueSection import CatalogueSection
 from ResumeComponents.ResumeComponent import ResumeComponent
 from ResumeComponents.OrganisationalSection import OrganisationalSection
@@ -6,6 +7,7 @@ from ResumeComponents.Title import Title
 from ResumeComponents.ContactList import ContactList
 from ResumeComponents.ResumeSection import ResumeSection
 from ResumeComponents.ToolsetSection import ToolsetSection
+from Funcs.HtmlFuncs import get_soup_from_markdown, get_children_tags
 
 
 class Resume(ResumeComponent):
