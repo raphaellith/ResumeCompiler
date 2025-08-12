@@ -151,6 +151,22 @@ Complete the catalogue section by adding an unordered list. Each item in the uno
 Any text that is not part of a title, contact list, heading, subheading or resume item (i.e. that when translated to HTML does not belong to a tag) will be ignored and treated as a comment.
 
 
+### Hide resume items
+
+To hide a resume item in an organisational or toolset section, prefix its subheading with a caret (```^```).
+
+For example, including the following resume item in a toolset section will have no effect on the final compiled PDF document.
+
+```aiignore
+### ^Gitlytics
+    Python, Flask, React, PostgreSQL, Docker
+    June 2020 - Present
+
+- Description list item #1
+- Description list item #2
+```
+
+
 ### Escape characters
 
 Some characters have special meaning in LaTeX and should be escaped using backslashes (```\```) when writing Markdown source code.

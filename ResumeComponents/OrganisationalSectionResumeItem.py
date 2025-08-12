@@ -31,7 +31,7 @@ class OrganisationalSectionResumeItem(ResumeItem):
         self.first_row_right = format_date_range(self.first_row_right)
         self.second_row_right = format_date_range(self.second_row_right)
 
-    def to_latex_lines(self) -> list[str]:
+    def to_latex_lines_assuming_not_hidden(self) -> list[str]:
         # Resume subheading with auxiliary info
         result = [
             get_latex_command(
