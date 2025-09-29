@@ -4,6 +4,16 @@ A compiler that compiles Markdown files into a resume PDF file, formatted in LaT
 
 Resumes outputted by this compiler will follow the structure given by the ["Jake's Resume" template](https://www.overleaf.com/latex/templates/jakes-resume/syzfjbzwjncs).
 
+
+## Installation
+
+The compiler is available as a [Python package on PyPI](https://pypi.org/project/resumecompiler/). To install the compiler through ```pip```, simply run the following terminal command.
+
+```aiignore
+pip install resumecompiler
+```
+
+
 ## Terminology
 
 This section introduces several terms (in bold) used throughout this project and its documentation. The ["Jake's Resume" template](https://www.overleaf.com/latex/templates/jakes-resume/syzfjbzwjncs) will be used as an example.
@@ -195,10 +205,10 @@ When necessary, it is possible to inject LaTeX code into Markdown source code (e
 
 ## Compilation
 
-To compile a markdown file in the source directory into a LaTeX file in the destination directory, create a Python file and import class ```ResumeCompiler```.
+To compile a markdown file in the source directory into a LaTeX file in the destination directory, install the ```resumecompiler``` package via ```pip``` (see the "Installation" section above) and import the class ```ResumeCompiler``` in a Python file.
 
 ```aiignore
-from ResumeCompiler import ResumeCompiler
+from resumecompiler import ResumeCompiler
 ```
 
 Create a ```ResumeCompiler``` instance with the source and destination directory paths as arguments. To execute the compilation process, run any one of the methods on the ```ResumeCompiler``` object:
@@ -207,19 +217,30 @@ Create a ```ResumeCompiler``` instance with the source and destination directory
 - ```ResumeCompiler.run_with_live_reload(font)``` runs a loop to continuously detect when a Markdown file in the source directory is created or saved. Whenever this happens, that file is compiled with outputs saved in the destination directory.
 
 ```aiignore
-from ResumeCompiler import ResumeCompiler
+from resumecompiler import ResumeCompiler
 
 compiler = ResumeCompiler("src", "dist")
 compiler.run_with_live_reload()
 ```
 
-Each of these methods includes an optional ```font``` argument that determines the typeface used to create the PDF document. The argument defaults to Times New Roman (```Font.TIMES_NEW_ROMAN```), but this can be changed by importing the enum class ```Font```.
+Each of these methods includes an optional ```font``` parameter that determines the typeface used to create the PDF document. This parameter takes an instance of the enum class ```Font```, which can be any of the following.
+
+- ```Font.COMPUTER_MODERN```
+- ```Font.TIMES_NEW_ROMAN```
+- ```Font.FIRA_SANS```
+- ```Font.ROBOTO```
+- ```Font.NOTO_SANS```
+- ```Font.SOURCE_SANS_PRO```
+- ```Font.CORMORANT_GARAMOND```
+- ```Font.CHARTER```
+
+The argument defaults to Times New Roman (```Font.TIMES_NEW_ROMAN```). See an example code snippet below.
 
 ```
-from ResumeCompiler import ResumeCompiler
-from Enums.Font import Font
+from resumecompiler.Enums.Font import Font
+from resumecompiler import ResumeCompiler
 
-compiler = ResumeCompiler("src", "dist")
+compiler = ResumeCompiler("example-src", "example-dist")
 compiler.run_with_live_reload(font=Font.TIMES_NEW_ROMAN)
 ```
 

@@ -1,9 +1,9 @@
 from bs4 import Tag
 
-from ResumeComponents.ResumeItem import ResumeItem
-from Funcs.Funcs import take_fixed_num_of_input_strings, take_fixed_num_of_inputs_with_same_default
-from Funcs.HtmlFuncs import get_children_tags
-from Funcs.LatexFuncs import get_latex_command, format_date_range
+from resumecompiler.ResumeComponents.ResumeItem import ResumeItem
+from resumecompiler.Funcs.Funcs import take_fixed_num_of_input_strings, take_fixed_num_of_inputs_with_same_default
+from resumecompiler.Funcs.HtmlFuncs import get_children_tags
+from resumecompiler.Funcs.LatexFuncs import get_latex_command, format_date_range
 
 
 class ToolsetSectionResumeItem(ResumeItem):

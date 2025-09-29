@@ -1,8 +1,8 @@
 from bs4.element import Tag
 
-from Funcs.LatexFuncs import get_latex_command, indent_lines
-from ResumeComponents.ResumeComponent import ResumeComponent
-from ResumeComponents.ResumeItem import ResumeItem
+from resumecompiler.Funcs.LatexFuncs import get_latex_command, indent_lines
+from resumecompiler.ResumeComponents.ResumeComponent import ResumeComponent
+from resumecompiler.ResumeComponents.ResumeItem import ResumeItem
 
 
 class ResumeSection(ResumeComponent):

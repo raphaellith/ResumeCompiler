@@ -1,7 +1,7 @@
 from abc import abstractmethod
 
-from ResumeComponents.ResumeComponent import ResumeComponent
-from Funcs.LatexFuncs import indent_lines, get_latex_command
+from resumecompiler.ResumeComponents.ResumeComponent import ResumeComponent
+from resumecompiler.Funcs.LatexFuncs import indent_lines, get_latex_command
 
 
 class ResumeItem(ResumeComponent):

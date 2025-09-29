@@ -1,15 +1,17 @@
 from bs4.element import Tag
 
-from ResumeComponents.CatalogueSection import CatalogueSection
-from ResumeComponents.ResumeComponent import ResumeComponent
-from ResumeComponents.OrganisationalSection import OrganisationalSection
-from ResumeComponents.Title import Title
-from ResumeComponents.ContactList import ContactList
-from ResumeComponents.ResumeSection import ResumeSection
-from ResumeComponents.ToolsetSection import ToolsetSection
-from Funcs.HtmlFuncs import get_soup_from_markdown, get_children_tags
-from Funcs.LatexFuncs import get_latex_environment
-from Enums.Font import Font
+from pathlib import Path
+
+from resumecompiler.ResumeComponents.CatalogueSection import CatalogueSection
+from resumecompiler.ResumeComponents.ResumeComponent import ResumeComponent
+from resumecompiler.ResumeComponents.OrganisationalSection import OrganisationalSection
+from resumecompiler.ResumeComponents.Title import Title
+from resumecompiler.ResumeComponents.ContactList import ContactList
+from resumecompiler.ResumeComponents.ResumeSection import ResumeSection
+from resumecompiler.ResumeComponents.ToolsetSection import ToolsetSection
+from resumecompiler.Funcs.HtmlFuncs import get_soup_from_markdown, get_children_tags
+from resumecompiler.Funcs.LatexFuncs import get_latex_environment
+from resumecompiler.Enums.Font import Font
 
 
 class Resume(ResumeComponent):
@@ -55,7 +57,7 @@ class Resume(ResumeComponent):
     def to_latex_lines(self, font: Font = Font.TIMES_NEW_ROMAN) -> list[str]:
         result: list[str] = []
 
-        with open("resources/preamble.tex", "r") as preamble_file:
+        with open(Path(__file__).parent.joinpath("preamble.tex"), "r") as preamble_file:
             while True:
                 line = preamble_file.readline()
 

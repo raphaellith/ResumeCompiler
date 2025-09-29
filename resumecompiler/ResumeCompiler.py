@@ -3,8 +3,8 @@ from os.path import join, splitext, getmtime, basename
 from pathlib import Path
 import subprocess
 
-from ResumeComponents.Resume import Resume
-from Enums.Font import Font
+from .ResumeComponents.Resume import Resume
+from .Enums.Font import Font
 
 
 class ResumeCompiler:
