@@ -56,16 +56,6 @@ class Resume(ResumeComponent):
         for tags_in_section in tags_by_section:
             self.components.append(get_resume_section_from_tags(tags_in_section))
 
-    def dump_toolset_and_organisational_section_data_as_json(self, file_path: str):
-        file_path = Path(file_path)
-
-        json_like_dict = dict()
-        for component in self.components:
-            if isinstance(component, ToolsetSection) or isinstance(component, OrganisationalSection):
-                json_like_dict[component.heading] = component.to_json_like_dict()
-        create_and_write_file(file_path, json.dumps(json_like_dict, indent=4))
-
-
     def to_latex_lines(self, font: Font = Font.TIMES_NEW_ROMAN) -> list[str]:
         result: list[str] = []
 
