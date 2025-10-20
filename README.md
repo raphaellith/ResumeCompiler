@@ -245,6 +245,14 @@ compiler.run_with_live_reload(font=Font.TIMES_NEW_ROMAN)
 ```
 
 
+### Accessing the Resume object
+
+The compiler works by reading the contents of the input Markdown file and then creating a corresponding ```Resume``` object. To access this internal ```Resume``` object, use the function ```get_resume_object_from_markdown```. The function takes the path to the Markdown source file as input.
+
+```aiignore
+resume = get_resume_object_from_markdown('example-src/example.md')
+```
+
 
 ## Future improvements
 

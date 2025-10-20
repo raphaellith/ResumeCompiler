@@ -5,6 +5,7 @@ import subprocess
 
 from .ResumeComponents.Resume import Resume
 from .Enums.Font import Font
+from .Funcs.Funcs import create_and_write_file
 
 
 class ResumeCompiler:
@@ -45,9 +46,7 @@ class ResumeCompiler:
         """
         src_file_name = splitext(basename(src_file_path))[0]
 
-        # Read the markdown file
-        with open(src_file_path, "r", encoding="utf-8") as markdown_file:
-            resume = Resume(markdown_file.read())
+        resume = get_resume_object_from_markdown(src_file_path)
 
         # Try to compile the markdown file to LaTeX
         try:
@@ -87,17 +86,14 @@ class ResumeCompiler:
                 self.compile(src_file_path, font)
 
 
-def create_and_write_file(file_path: Path, contents: str):
-    """
-    :param file_path: A file path.
-    :param contents: Contents to be written onto the file.
-    :return: Creates the file (along with all intermediate directories) and writes the specified contents onto the file.
-    """
-    # Create parent directories if they don't exist
-    file_path.parent.mkdir(parents=True, exist_ok=True)
 
-    # Write content to the file
-    file_path.write_text(contents)
+def get_resume_object_from_markdown(src_file_path) -> Resume:
+    """
+    :param src_file_path: The path to the source markdown file from which the Resume object is to be read.
+    :return: A Resume object.
+    """
+    with open(src_file_path, "r", encoding="utf-8") as markdown_file:
+        return Resume(markdown_file.read())
 
 
 def compile_latex_file_to_pdf(latex_file_path: Path, print_stdout_and_stderr: bool = True):

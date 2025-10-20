@@ -1,3 +1,5 @@
+from typing import Any
+
 from bs4 import Tag
 
 from resumecompiler.ResumeComponents.ResumeItem import ResumeItem
@@ -42,3 +44,11 @@ class ToolsetSectionResumeItem(ResumeItem):
             result += self.get_description_list_as_latex_lines()
 
         return result
+
+    def to_json_like_dict(self) -> dict[str, Any]:
+        return {
+            "subheading": self.subheading,
+            "tools": self.tools,
+            "time": self.time,
+            "description_list": self.description_list,
+        }

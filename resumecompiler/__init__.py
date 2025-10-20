@@ -1,1 +1,1 @@
-from .ResumeCompiler import ResumeCompiler
+from .ResumeCompiler import ResumeCompiler, get_resume_object_from_markdown
