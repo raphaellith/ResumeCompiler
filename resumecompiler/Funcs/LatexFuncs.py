@@ -22,8 +22,8 @@ def format_date_range(string: str) -> str:
     return re.sub(r"[0-9\s][–\-]+[0-9\s]", r" -- ", string)
 
 
-def get_latex_command(command: str, arguments: Union[str, list[str], None] = None,
-                      square_bracket_options: Union[str, list[str], None] = None) -> str:
+def get_latex_command(command: str, arguments: Union[list[str], None] = None,
+                      square_bracket_options: Union[list[str], None] = None) -> str:
     """
     :param command: The name of a LaTeX command.
     :param arguments: The arguments passed to the LaTeX command. Each argument will be surrounded by curly braces.
@@ -34,16 +34,10 @@ def get_latex_command(command: str, arguments: Union[str, list[str], None] = Non
 
     if square_bracket_options:
         result += "["
-        if isinstance(square_bracket_options, str):
-            result += square_bracket_options
-        else:
-            result += ", ".join(square_bracket_options)
+        result += ", ".join(square_bracket_options)
         result += "]"
 
     if arguments:
-        if isinstance(arguments, str):
-            arguments = [arguments]
-
         result += "".join(map(lambda arg: "{" + arg + "}", arguments))
 
     return result
