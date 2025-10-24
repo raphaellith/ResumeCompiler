@@ -11,11 +11,12 @@ class ToolsetSection(ResumeSection):
         """
         :param tags: The list of tags that belong to this toolset section.
         """
-        heading = tags[0].text.removeprefix("!")
+        h2_tag: Tag = tags.pop(0)
+        heading: str = h2_tag.text.removeprefix("!")
 
         super().__init__(heading=heading)
 
-        tags_by_resume_item = classify_tags_in_organisational_or_toolset_section_by_resume_item(tags[1:])
+        tags_by_resume_item: list[list[Tag]] = classify_tags_in_organisational_or_toolset_section_by_resume_item(tags)
 
         # Initialise resume items
         self.resume_items: list[ToolsetSectionResumeItem] = [
@@ -24,10 +25,3 @@ class ToolsetSection(ResumeSection):
 
     def to_latex_lines(self) -> list[str]:
         return get_toolset_or_organisational_section_as_latex_lines(heading=self.heading, resume_items=self.resume_items)
-
-    def to_json_like_dict(self) -> dict[str, Any]:
-        return {
-            "heading": self.heading,
-            "type": "toolset",
-            "resume_items": [resume_item.to_json_like_dict() for resume_item in self.resume_items],
-        }

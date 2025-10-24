@@ -10,20 +10,20 @@ class CatalogueSection(ResumeSection):
         """
         :param tags: A list of HTML tags that belong to this catalogue section.
         """
-        heading = tags[0].text
+        h2_tag = tags.pop(0)
+        heading: str = h2_tag.text
         super().__init__(heading=heading)
 
         # Initialise the list under this catalogue section
         self.catalogue_list = []
-
-        i = 1
-        while i < len(tags):
-            if tags[i].name == "ul":
-                self.catalogue_list += [list_item.text for list_item in get_children_tags(tags[i]) if list_item.name == "li"]
-            i += 1
+        for tag in tags:
+            if tag.name == "ul":
+                for children_tag in get_children_tags(tag):
+                    if children_tag.name == "li":
+                        self.catalogue_list.append(children_tag.text)
 
     def to_latex_lines(self) -> list[str]:
-        result = [get_latex_command("section", self.heading)]
+        result = [get_latex_command("section", [self.heading])]
 
         if not self.catalogue_list:
             return result
