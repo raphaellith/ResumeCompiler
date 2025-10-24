@@ -47,12 +47,3 @@ class OrganisationalSectionResumeItem(ResumeItem):
             result += self.get_description_list_as_latex_lines()
 
         return result
-
-    def to_json_like_dict(self) -> dict[str, Any]:
-        return {
-            "subheading": self.subheading,
-            "first_row_right": self.first_row_right,
-            "second_row_left": self.second_row_left,
-            "second_row_right": self.second_row_right,
-            "description_list": self.description_list,
-        }
