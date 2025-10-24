@@ -21,7 +21,7 @@ class ResumeItem(ResumeComponent):
         result = [get_latex_command("resumeDescriptionListStart")]
 
         result += indent_lines(
-            [get_latex_command("resumeDescriptionListItem", desc_list_item) for desc_list_item in self.description_list]
+            [get_latex_command("resumeDescriptionListItem", [desc_list_item]) for desc_list_item in self.description_list]
         )
 
         result.append(get_latex_command("resumeDescriptionListEnd"))

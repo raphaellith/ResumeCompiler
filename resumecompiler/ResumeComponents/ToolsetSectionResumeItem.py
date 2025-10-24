@@ -32,8 +32,8 @@ class ToolsetSectionResumeItem(ResumeItem):
             get_latex_command(
                 command="resumeItemSubheadingWithToolset",
                 arguments=[
-                    get_latex_command(command="textbf", arguments=self.subheading) + " $|$ " + get_latex_command(
-                        command="emph", arguments=self.tools),
+                    get_latex_command(command="textbf", arguments=[self.subheading]) + " $|$ " + get_latex_command(
+                        command="emph", arguments=[self.tools]),
                     format_date_range(self.time)
                 ]
             )

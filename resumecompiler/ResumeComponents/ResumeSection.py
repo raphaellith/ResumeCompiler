@@ -19,7 +19,7 @@ def get_toolset_or_organisational_section_as_latex_lines(heading: str, resume_it
     :return: The LaTeX representation of the resume section.
     """
     result = [
-        get_latex_command("section", heading),
+        get_latex_command("section", [heading]),
         get_latex_command("resumeSubheadingListStart")
     ]
 
