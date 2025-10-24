@@ -1,9 +1,8 @@
+from bs4 import BeautifulSoup
 from bs4.element import Tag
 
 from pathlib import Path
-import json
 
-from resumecompiler.Funcs.Funcs import create_and_write_file
 from resumecompiler.ResumeComponents.CatalogueSection import CatalogueSection
 from resumecompiler.ResumeComponents.ResumeComponent import ResumeComponent
 from resumecompiler.ResumeComponents.OrganisationalSection import OrganisationalSection
@@ -16,20 +15,23 @@ from resumecompiler.Funcs.LatexFuncs import get_latex_environment
 from resumecompiler.Enums.Font import Font
 
 
+PREAMBLE_TEX_FILE_NAME: str = "preamble.tex"  # Should be located in the same directory as this file
+
+
 class Resume(ResumeComponent):
     def __init__(self, markdown_contents: str):
         """
-        :param markdown_contents: The markdown content to be compiled.
+        :param markdown_contents: The Markdown content to be compiled.
         """
         super().__init__()
 
-        soup = get_soup_from_markdown(markdown_contents)
-        tags = get_children_tags(soup)
+        soup: BeautifulSoup = get_soup_from_markdown(markdown_contents)
+        tags: list[Tag] = get_children_tags(soup)
 
-        num_of_tags = len(tags)
+        num_of_tags: int = len(tags)
 
-        # Classify tags by section
-        i = 0
+        # Categorise tags by section
+        i: int = 0
         tags_prior_to_first_section: list[Tag] = []
         tags_by_section: list[list[Tag]] = []
 
@@ -59,13 +61,9 @@ class Resume(ResumeComponent):
     def to_latex_lines(self, font: Font = Font.TIMES_NEW_ROMAN) -> list[str]:
         result: list[str] = []
 
-        with open(Path(__file__).parent.joinpath("preamble.tex"), "r") as preamble_file:
-            while True:
-                line = preamble_file.readline()
-
-                if not line:
-                    break
-
+        # Preamble
+        with open(Path(__file__).parent.joinpath(PREAMBLE_TEX_FILE_NAME), "r") as preamble_file:
+            for line in preamble_file:
                 line = line.removesuffix('\n')
 
                 if line == "% FONT CHOICE GOES HERE":
@@ -75,7 +73,8 @@ class Resume(ResumeComponent):
 
         result.append("")
 
-        document_contents = []
+        # Main body
+        document_contents: list[str] = []
         for component in self.components:
             document_contents += component.to_latex_lines()
             for _ in range(3):
@@ -94,7 +93,7 @@ def get_resume_section_from_tags(tags: list[Tag]) -> ResumeSection:
     # Identify the section type
     heading = tags[0].text
 
-    if len(heading) > 0 and heading[0] == "!":
+    if len(heading) and heading[0] == "!":
         return ToolsetSection(tags)
     elif any(map(lambda t: t.name == "h3", tags)):
         return OrganisationalSection(tags)
