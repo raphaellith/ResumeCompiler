@@ -34,10 +34,9 @@ class CatalogueSection(ResumeSection):
         # Detect and parse labels in each list item
         # [Label]: [thing], [thing], ...
         for list_item in self.catalogue_list:
-            list_item_split_by_colon = list_item.split(":", maxsplit=1)
-            if len(list_item_split_by_colon) == 2:  # If there is a colon
-                label, text = list_item_split_by_colon
-                latex_line = get_latex_command(command="textbf", arguments=label) + ":" + text
+            if ":" in list_item:
+                label, text = list_item.split(":", maxsplit=1)
+                latex_line = get_latex_command(command="textbf", arguments=[label]) + ":" + text
             else:
                 latex_line = list_item
             result.append("\t\item" + latex_line + r"\\")
