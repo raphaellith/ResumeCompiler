@@ -29,7 +29,7 @@ class CatalogueSection(ResumeSection):
             return result
 
         result.append("")
-        result.append("\\begin{itemize}[leftmargin=0.15in, label={}]\small{\item{")
+        result.append(r"\begin{itemize}[leftmargin=0.15in, label={}, itemsep=-2pt]\small")
 
         # Detect and parse labels in each list item
         # [Label]: [thing], [thing], ...
@@ -40,8 +40,8 @@ class CatalogueSection(ResumeSection):
                 latex_line = get_latex_command(command="textbf", arguments=label) + ":" + text
             else:
                 latex_line = list_item
-            result.append("\t" + latex_line + r"\\")
+            result.append("\t\item" + latex_line + r"\\")
 
-        result.append(r"}}\end{itemize}")
+        result.append(r"\end{itemize}")
 
         return result
