@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, Optional
 import re
 
 def indent_lines(lines: list[str]) -> list[str]:
@@ -22,8 +22,8 @@ def format_date_range(string: str) -> str:
     return re.sub(r"[0-9\s][–\-]+[0-9\s]", r" -- ", string)
 
 
-def get_latex_command(command: str, arguments: Union[list[str], None] = None,
-                      square_bracket_options: Union[list[str], None] = None) -> str:
+def get_latex_command(command: str, arguments: Optional[list[str]] = None,
+                      square_bracket_options: Optional[list[str]] = None) -> str:
     """
     :param command: The name of a LaTeX command.
     :param arguments: The arguments passed to the LaTeX command. Each argument will be surrounded by curly braces.

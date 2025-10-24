@@ -11,14 +11,14 @@ class ContactList(ResumeComponent):
         """
         super().__init__()
 
-        # First value of tuple: displayed text
+        # First value of tuple: Displayed text
         # Second value of tuple: Linked site (possibly empty if the contact list item is not a hyperlink)
         self.contacts: list[tuple[str, str]] = []
 
         for li_tag in get_children_tags(ul_tag):
-            first_hyperlink = li_tag.find("a", href=True)  # Returns None if no hyperlink found
-            if first_hyperlink:
-                self.contacts.append((first_hyperlink.text, first_hyperlink.get("href")))
+            hyperlink = li_tag.find("a", href=True)  # Returns first <a> tag only; returns None if no hyperlink found
+            if hyperlink:
+                self.contacts.append((hyperlink.text, hyperlink.get("href")))
             else:
                 self.contacts.append((li_tag.text, ""))
 
@@ -32,7 +32,7 @@ class ContactList(ResumeComponent):
                 centered_lines.append(
                     get_latex_command(
                         command="href",
-                        arguments=[link, get_latex_command(command="underline", arguments=displayed_text)]
+                        arguments=[link, get_latex_command(command="underline", arguments=[displayed_text])]
                     )
                 )
             else:
