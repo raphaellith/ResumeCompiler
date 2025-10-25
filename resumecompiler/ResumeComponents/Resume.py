@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 from bs4.element import Tag
 
 from pathlib import Path
+import re
 
 from resumecompiler.ResumeComponents.CatalogueSection import CatalogueSection
 from resumecompiler.ResumeComponents.ResumeComponent import ResumeComponent
@@ -27,6 +28,8 @@ class Resume(ResumeComponent):
 
         soup: BeautifulSoup = get_soup_from_markdown(markdown_contents)
         tags: list[Tag] = get_children_tags(soup)
+
+        tags = process_hidden_elements(tags)
 
         num_of_tags: int = len(tags)
 
@@ -83,6 +86,41 @@ class Resume(ResumeComponent):
         result += get_latex_environment(env="document", contents=document_contents, indent_contents=False)
 
         return result
+
+
+def process_hidden_elements(tags: list[Tag]) -> list[Tag]:
+    """
+    :param tags: A list of tags obtained from the BeautifulSoup object as parsed from the input Markdown file.
+    :return: A processed version of that list where hidden sections, items and descriptions have been removed.
+    """
+    result: list[Tag] = []
+
+    # This dictionary maps heading types ("h1", "h2", etc.) to a boolean.
+    # The boolean indicates, as we iterate through the following FOR loop,
+    # whether we are currently in the scope of a hidden heading of the specified type.
+    # The "scope" of a heading starts with that heading,
+    # and ends with the element immediately before the next heading with the same type.
+    currently_in_the_scope_of_hidden_heading: dict[str, bool] = dict()
+
+    for i, tag in enumerate(tags):
+        if re.fullmatch(r"h[1-9]", tag.name):
+            currently_in_the_scope_of_hidden_heading[tag.name] = tag.text.startswith("^")
+
+        if any(currently_in_the_scope_of_hidden_heading.values()):
+            continue  # If this tag should be hidden, don't include it in result
+
+        # For unordered lists, we check for any hidden list items
+        if tag.name == "ul":
+            for li_tag in tag.find_all("li"):
+                if li_tag.text.startswith("^"):
+                    li_tag.extract()
+
+            if tag.find("li"):  # Some list items still remain
+                result.append(tag)
+        else:
+            result.append(tag)
+
+    return result
 
 
 def get_resume_section_from_tags(tags: list[Tag]) -> ResumeSection:
