@@ -109,7 +109,7 @@ def process_hidden_elements(tags: list[Tag]) -> list[Tag]:
             in_scope_of_hidden_h3_heading = tag.text.startswith("^")
 
         if in_scope_of_hidden_h2_heading or in_scope_of_hidden_h3_heading:
-            continue  # If this tag should be hidden, don't include it in result
+            continue  # If this tag should be hidden, don't include it in the result
 
         # For unordered lists, we check for any hidden list items
         if tag.name == "ul":
