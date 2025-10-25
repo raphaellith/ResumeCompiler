@@ -23,4 +23,4 @@ setup(
 
 # python setup.py sdist bdist_wheel
 # pip install dist/_.whl
-# twine upload dist/*
+# twine upload dist/* --config-file ./.pypirc
