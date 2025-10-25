@@ -95,18 +95,20 @@ def process_hidden_elements(tags: list[Tag]) -> list[Tag]:
     """
     result: list[Tag] = []
 
-    # This dictionary maps heading types ("h1", "h2", etc.) to a boolean.
-    # The boolean indicates, as we iterate through the following FOR loop,
-    # whether we are currently in the scope of a hidden heading of the specified type.
+    # These booleans indicate, as we iterate through the following FOR loop,
+    # whether we are currently in the scope of a hidden h2 or h3 heading.
     # The "scope" of a heading starts with that heading,
-    # and ends with the element immediately before the next heading with the same type.
-    currently_in_the_scope_of_hidden_heading: dict[str, bool] = dict()
+    # and ends with the element immediately before the next heading of the same type.
+    in_scope_of_hidden_h2_heading: bool = False
+    in_scope_of_hidden_h3_heading: bool = False
 
     for i, tag in enumerate(tags):
-        if re.fullmatch(r"h[1-9]", tag.name):
-            currently_in_the_scope_of_hidden_heading[tag.name] = tag.text.startswith("^")
+        if tag.name == "h2":
+            in_scope_of_hidden_h2_heading = tag.text.startswith("^")
+        elif tag.name == "h3":
+            in_scope_of_hidden_h3_heading = tag.text.startswith("^")
 
-        if any(currently_in_the_scope_of_hidden_heading.values()):
+        if in_scope_of_hidden_h2_heading or in_scope_of_hidden_h3_heading:
             continue  # If this tag should be hidden, don't include it in result
 
         # For unordered lists, we check for any hidden list items
