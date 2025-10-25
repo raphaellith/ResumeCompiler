@@ -1,5 +1,3 @@
-from typing import Any
-
 from bs4 import Tag
 
 from resumecompiler.ResumeComponents.ResumeItem import ResumeItem
@@ -26,7 +24,7 @@ class ToolsetSectionResumeItem(ResumeItem):
 
         self.tools, self.time = take_fixed_num_of_input_strings(pre_block_lines, num_of_auxiliary_info)
 
-    def to_latex_lines_assuming_not_hidden(self) -> list[str]:
+    def to_latex_lines(self) -> list[str]:
         # Resume subheading with toolset and time
         result = [
             get_latex_command(

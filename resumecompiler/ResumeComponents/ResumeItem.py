@@ -1,5 +1,3 @@
-from abc import abstractmethod
-
 from resumecompiler.ResumeComponents.ResumeComponent import ResumeComponent
 from resumecompiler.Funcs.LatexFuncs import indent_lines, get_latex_command
 
@@ -27,13 +25,3 @@ class ResumeItem(ResumeComponent):
         result.append(get_latex_command("resumeDescriptionListEnd"))
 
         return result
-
-    def to_latex_lines(self) -> list[str]:
-        if self.subheading.startswith("^"):  # Hidden resume item
-            return [""]
-
-        return self.to_latex_lines_assuming_not_hidden()
-
-    @abstractmethod
-    def to_latex_lines_assuming_not_hidden(self) -> list[str]:
-        pass

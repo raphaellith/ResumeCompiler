@@ -47,7 +47,7 @@ class Resume(ResumeComponent):
             i += 1
 
         # Parse components
-        self.components: list[ResumeComponent] = []
+        self.components: list[ResumeComponent] = []  # Contains Title, ContactList and ResumeSection objects
 
         for tag in tags_prior_to_first_section:
             if tag.name == "h1":  # Title
