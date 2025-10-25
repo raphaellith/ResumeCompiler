@@ -16,23 +16,30 @@ pip install resumecompiler
 
 ## Terminology
 
-This section introduces several terms (in bold) used throughout this project and its documentation. The ["Jake's Resume" template](https://www.overleaf.com/latex/templates/jakes-resume/syzfjbzwjncs) will be used as an example.
+This section introduces several terms (in bold) used throughout this project and its documentation. The ["Jake's Resume" template](https://www.overleaf.com/latex/templates/jakes-resume/syzfjbzwjncs) is used as an example.
 
-- **Title.** The candidate's first and last name, as displayed at the top of the resume, e.g. ```Jake Ryan```.
-- **Contact information.** A list of the candidate's contact details, e.g. ```123-456-7890 | jake@su.edu | ... | github.com/jake```.
-- **Section.** In the resume, all achievements, experiences and projects (resume items) are classified into several categories. Each of these categories constitutes a section of the resultant document, such as ```Education```, ```Experience```, ```Projects``` or ```Technical Skills```. As explained below, a section can be any one of the following:
-  - a toolset section,
-  - an organisational section, or
-  - a catalogue section.
-- **Heading.** The text that marks the start of each section.
-- **Resume item.** An achievement, experiences or project as listed in a toolset or organisational section. (A catalogue section cannot contain any resume items.) A resume item contains:
-  - A subheading that describes the achievement, e.g. ```Undergraduate Research Assistant```.
-  - A description list that offers brief details thereof, e.g. ```• Developed a REST API using...```.
-  - Other auxiliary information detailing the relevant time, organisation and location, if needed.
-- **Subheading.** The text that marks the start of each resume item.
-- **Description list.** Each resume item ends with an optional list of sentences providing details to the achievement, experience or project. This is called the description list.
-- **Toolset section.** In some sections, resume items are formatted as follows, with the subheading and auxiliary information packed into one row. These resume items usually include information such as tools and skills relevant to the achievement, experience or project. These sections are called toolset sections.
+A resume begins with a **title** stating the candidate's first and last name, e.g. ```Jake Ryan```.
 
+Below the title is a **contact list**, which provides the candidate's contact details, e.g.
+```
+123-456-7890 | jake@su.edu | ... | github.com/jake
+```
+
+In a resume, all achievements, projects and skills are categorised into separate **sections**. Each section is marked with a **heading**, such as ```Education```, ```Experience```, ```Projects``` or ```Technical Skills```.
+
+There are 3 types of sections:
+
+  - **A toolset section**
+  - **An organisational section**
+  - **A catalogue section**
+
+A toolset section contains a list of **resume items**, each of which includes:
+- a **subheading** describing the achievement (e.g. ```Gitlytics```),
+- a **toolset** listing the tools involved (e.g. ```Python, Flask, ...```)
+- the time and duration thereof, and
+- a **description list**, which is a collection of sentences detailing the achievement (e.g. ```Developed a full-stack web application...```).
+
+A resume item in a toolset section is formatted like this:
 ```aiignore
 Gitlytics | Python, Flask, React...     June 2020 – Present
 
@@ -40,7 +47,12 @@ Gitlytics | Python, Flask, React...     June 2020 – Present
 • Description list item #2
 ```
 
-- **Organisational section.** In some sections, resume items are formatted like so, with the subheading and auxiliary information placed in a 2x2 grid. These sections are called organisational sections.
+An organisational section also has a list of resume items. Each resume item in an organisational section contains:
+- a subheading describing the achievement (e.g. ```Undergraduate Research Assistant```),
+- the time, organisation and location associated therewith, and
+- a description list (e.g. ```Developed a REST API using...```).
+
+A resume item in an organisational section is formatted like this:
 
 ```aiignore
 Undergraduate Research Assistant     June 2020 – Present
@@ -50,25 +62,30 @@ Texas A&M University                 College Station, TX
 • Description list item #2
 ```
 
-- **Catalogue section.** A type of section that contains a simple unordered list, e.g. ```Technical skills```. Each item in the unordered list may optionally begin with a label (e.g. ```Languages```).
+A catalogue section does not contain any resume items. Instead, it displays a simple unordered list, formatted like this:
+
+```aiignore
+• Languages: Java, Python, C/C++, SQL (Postgres), JavaScript, HTML/CSS, R
+• Frameworks: React, Node.js, Flask, JUnit, WordPress, Material-UI, FastAPI
+• Developer Tools: Git, Docker, TravisCI, Google Cloud Platform, VS Code, Visual Studio, PyCharm, IntelliJ, Eclipse
+• Libraries: pandas, NumPy, Matplotlib
+```
+
+In the above example, the text before each colon (```Languages```, ```Frameworks```, etc.) are called labels and are formatted in bold.
+
 
 
 ## Syntax
 
-### Add a title
+### Create a title and contact list
 
-A title can be added using an H1 line.
+Use an H1 line to create a title.
 
 ```aiignore
 # Jake Ryan
 ```
 
-The title must precede the first section.
-
-
-### Add a contact list
-
-A contact list can be added using an unordered list. The list may contain hyperlinks. If a contact list item contains both a hyperlink(s) and plain text, only the first hyperlink will be displayed.
+Use an unordered list to create a contact list. Contacts may include hyperlinks.
 
 ```aiignore
 # Jake Ryan
@@ -77,18 +94,18 @@ A contact list can be added using an unordered list. The list may contain hyperl
 - [resume-compiler.com](resume-compiler.com)
 ```
 
-A contact list must precede the first section.
+Both the title and contact list must precede the first section.
 
 
-### Add an organisational section
+### Create an organisational section
 
-Create a new section by adding an H2 heading.
+Use an H2 heading to create a new section.
 
 ```aiignore
 ## Education
 ```
 
-For each resume item, create an H3 subheading. This is followed by an indented preformatted code block containing three lines of auxiliary information. These will appear from left to right and from top to bottom in the compiled document.
+Add an H3 subheading for each resume item. Use an indented preformatted code block to add 3 lines of auxiliary information.
 
 ```aiignore
 ### Undergraduate Research Assistant 
@@ -97,7 +114,9 @@ For each resume item, create an H3 subheading. This is followed by an indented p
     College Station, TX
 ```
 
-Add a description list by adding an unordered list afterwards.
+The subheading and auxiliary information will appear from left to right and from top to bottom in the compiled document.
+
+Then, use an unordered list to create a description list.
 
 ```aiignore
 ### Undergraduate Research Assistant 
@@ -110,15 +129,15 @@ Add a description list by adding an unordered list afterwards.
 ```
 
 
-### Add a toolset section
+### Create a toolset section
 
-Create a new section by adding an H2 heading. To indicate that this is a toolset section, prefix the heading with an exclamation mark.
+Use an H2 heading to create a new section. To indicate that this is a toolset section, prefix the heading with an exclamation mark.
 
 ```aiignore
 ## !Projects
 ```
 
-For each resume item, create an H3 subheading. This is followed by an indented preformatted code block containing two lines of auxiliary information. These will appear from left to right in the compiled document.
+Add an H3 subheading for each resume item. Use an indented preformatted code block to add 2 lines of auxiliary information.
 
 ```aiignore
 ### Gitlytics
@@ -126,7 +145,9 @@ For each resume item, create an H3 subheading. This is followed by an indented p
     June 2020 - Present
 ```
 
-Add a description list by adding an unordered list afterwards.
+The subheading and auxiliary information will appear from left to right in the compiled document.
+
+Then, use an unordered list to create a description list.
 
 ```aiignore
 ### Gitlytics
@@ -138,7 +159,7 @@ Add a description list by adding an unordered list afterwards.
 ```
 
 
-### Add a catalogue section
+### Create a catalogue section
 
 Create a new section by adding an H2 heading. A catalogue section contains no resume items, so do not add any H3 subheadings here.
 
@@ -146,7 +167,7 @@ Create a new section by adding an H2 heading. A catalogue section contains no re
 ## Technical Skills
 ```
 
-Complete the catalogue section by adding an unordered list. Each item in the unordered list may optionally begin with a label (e.g. Languages), like so:
+Create an unordered list. Each item in the unordered list may optionally begin with a label followed by a colon.
 
 ```aiignore
 ## Technical Skills
@@ -155,17 +176,23 @@ Complete the catalogue section by adding an unordered list. Each item in the uno
 - Another label: Something else, ...
 ```
 
+Labels are formatted in bold in the compiled document.
 
-### Add comments
 
-Any text that is not part of a title, contact list, heading, subheading or resume item (i.e. that when translated to HTML does not belong to a tag) will be ignored and treated as a comment.
+### Comments
+
+Any plain text that is not part of a title, contact list, heading, subheading or resume item (i.e. that when translated to HTML does not belong to a tag) will be ignored. This is analogous to comments in most programming languages.
 
 
 ### Hide resume items
 
-To hide a resume item in an organisational or toolset section, prefix its subheading with a caret (```^```).
+You can hide resume sections, resume items, description list items, or catalogue section items. A hidden element will not appear in the compiled document.
 
-For example, including the following resume item in a toolset section will have no effect on the final compiled PDF document.
+To hide a resume section or resume item, prefix its heading or subheading with a caret (```^```).
+
+```aiignore
+## ^Education
+```
 
 ```aiignore
 ### ^Gitlytics
@@ -176,12 +203,23 @@ For example, including the following resume item in a toolset section will have 
 - Description list item #2
 ```
 
+When you do this, the entire resume section or item (not just the heading or subheading) will disappear from the compiled document.
 
-### Escape characters
+Similarly, to hide a description list item or catalogue section item, simply prefix that item with a caret.
 
-Some characters have special meaning in LaTeX and should be escaped using backslashes (```\```) when writing Markdown source code.
+```aiignore
+- ^Description list item #1
+```
+
+```aiignore
+- ^Languages: Java, Python, ...
+```
 
 
+
+### On escape characters and LaTeX injections.
+
+Some characters have special meaning in LaTeX and should be escaped using backslashes (```\```) when writing Markdown source code. See table below.
 
 | Character |                Escape sequence in Markdown                 |
 |:---------:|:----------------------------------------------------------:|
@@ -196,22 +234,12 @@ Some characters have special meaning in LaTeX and should be escaped using backsl
 |  ```^```  |                   ```\textasciicircum```                   |
 |  ```\```  |                    ```\textbackslash```                    |
 
-
-
-### LaTeX injections
-
 When necessary, it is possible to inject LaTeX code into Markdown source code (especially in preformatted code blocks). Note, however, that precautions should be taken and escape sequences should be used.
 
 
 ## Compilation
 
-To compile a markdown file in the source directory into a LaTeX file in the destination directory, install the ```resumecompiler``` package via ```pip``` (see the "Installation" section above) and import the class ```ResumeCompiler``` in a Python file.
-
-```aiignore
-from resumecompiler import ResumeCompiler
-```
-
-Create a ```ResumeCompiler``` instance with the source and destination directory paths as arguments. To execute the compilation process, run any one of the methods on the ```ResumeCompiler``` object:
+To compile a markdown file in the source directory into a LaTeX file in the destination directory, import the class ```ResumeCompiler```  and create a ```ResumeCompiler``` instance with the source and destination directory paths as arguments. Then, run any one of the methods on the ```ResumeCompiler``` object:
 - ```ResumeCompiler.compile(src_file_path, font)``` compiles the file specified by the inputted path.
 - ```ResumeCompiler.run(font)``` compiles all Markdown files in the source directory and saves the results in the destination directory, with each LaTeX file in a different subdirectory.
 - ```ResumeCompiler.run_with_live_reload(font)``` runs a loop to continuously detect when a Markdown file in the source directory is created or saved. Whenever this happens, that file is compiled with outputs saved in the destination directory.
