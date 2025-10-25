@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='resumecompiler',
-    version='0.9',
+    version='0.10',
     packages=find_packages(),
     include_package_data=True,
     package_data={'': ['preamble.tex']},
