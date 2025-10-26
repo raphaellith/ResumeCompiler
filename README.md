@@ -20,7 +20,9 @@ This section introduces several terms (in bold) used throughout this project and
 
 A resume begins with a **title** stating the candidate's first and last name, e.g. ```Jake Ryan```.
 
-Below the title is a **contact list**, which provides the candidate's contact details, e.g.
+There may also be a **subtitle**, a brief line describing the candidate.
+
+Below that is a **contact list**, which provides the candidate's contact details, e.g.
 ```
 123-456-7890 | jake@su.edu | ... | github.com/jake
 ```
@@ -77,12 +79,18 @@ In the above example, the text before each colon (```Languages```, ```Frameworks
 
 ## Syntax
 
-### Create a title and contact list
+### Create a title, subtitle and contact list
 
 Use an H1 line to create a title.
 
 ```aiignore
 # Jake Ryan
+```
+
+Use a preformatted block to create a subtitle.
+
+```aiignore
+    A brief subtitle
 ```
 
 Use an unordered list to create a contact list. Contacts may include hyperlinks.
@@ -94,7 +102,7 @@ Use an unordered list to create a contact list. Contacts may include hyperlinks.
 - [resume-compiler.com](resume-compiler.com)
 ```
 
-Both the title and contact list must precede the first section.
+The title, subtitle and contact list must precede the first section.
 
 
 ### Create an organisational section
