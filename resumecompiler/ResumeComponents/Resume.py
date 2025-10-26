@@ -100,14 +100,15 @@ def process_hidden_elements(tags: list[Tag]) -> list[Tag]:
 
     # These booleans indicate, as we iterate through the following FOR loop,
     # whether we are currently in the scope of a hidden h2 or h3 heading.
-    # The "scope" of a heading starts with that heading,
-    # and ends with the element immediately before the next heading of the same type.
+    # An h2 heading's scope starts with that heading and ends with the element immediately before the next h2 heading.
+    # An h3 heading's scope starts with that heading and ends with the element immediately before the next h2 or h3 heading.
     in_scope_of_hidden_h2_heading: bool = False
     in_scope_of_hidden_h3_heading: bool = False
 
     for i, tag in enumerate(tags):
         if tag.name == "h2":
             in_scope_of_hidden_h2_heading = tag.text.startswith("^")
+            in_scope_of_hidden_h3_heading = False
         elif tag.name == "h3":
             in_scope_of_hidden_h3_heading = tag.text.startswith("^")
 
