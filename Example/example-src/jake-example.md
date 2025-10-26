@@ -2,6 +2,7 @@ An example file based on the Jake Resume Template.
 
 
 # Jake Ryan
+    A brief subtitle, if needed
 - 123-456-7890
 - jake@su.edu
 - [linkedin.com/in/jake](https://linkedin.com/in/jake)

@@ -7,6 +7,7 @@ import re
 from resumecompiler.ResumeComponents.CatalogueSection import CatalogueSection
 from resumecompiler.ResumeComponents.ResumeComponent import ResumeComponent
 from resumecompiler.ResumeComponents.OrganisationalSection import OrganisationalSection
+from resumecompiler.ResumeComponents.Subtitle import Subtitle
 from resumecompiler.ResumeComponents.Title import Title
 from resumecompiler.ResumeComponents.ContactList import ContactList
 from resumecompiler.ResumeComponents.ResumeSection import ResumeSection
@@ -50,11 +51,13 @@ class Resume(ResumeComponent):
             i += 1
 
         # Parse components
-        self.components: list[ResumeComponent] = []  # Contains Title, ContactList and ResumeSection objects
+        self.components: list[ResumeComponent] = []  # Contains Title, Subtitle, ContactList and ResumeSection objects
 
         for tag in tags_prior_to_first_section:
             if tag.name == "h1":  # Title
                 self.components.append(Title(tag))
+            elif tag.name == "pre":
+                self.components.append(Subtitle(tag))
             elif tag.name == "ul":  # Contact list
                 self.components.append(ContactList(tag))
 
