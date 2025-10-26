@@ -18,7 +18,7 @@ class Title(ResumeComponent):
             contents=[
                 get_latex_command(
                     command="textbf",
-                    arguments=[get_latex_command(command="Huge") + " " + self.text]
+                    arguments=[get_latex_command(command="huge") + " " + self.text]
                 )
             ]
         )

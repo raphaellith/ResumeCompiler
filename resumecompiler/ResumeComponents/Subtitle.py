@@ -1,7 +1,7 @@
 from bs4.element import Tag
 
 from resumecompiler.ResumeComponents.ResumeComponent import ResumeComponent
-from resumecompiler.Funcs.LatexFuncs import get_latex_environment
+from resumecompiler.Funcs.LatexFuncs import get_latex_environment, get_latex_command
 
 
 class Subtitle(ResumeComponent):
@@ -15,5 +15,10 @@ class Subtitle(ResumeComponent):
     def to_latex_lines(self) -> list[str]:
         return get_latex_environment(
             env="center",
-            contents=[self.text]
+            contents=[
+                get_latex_command(
+                    command="textbf",
+                    arguments=[self.text]
+                )
+            ]
         )
