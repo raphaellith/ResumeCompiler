@@ -4,17 +4,17 @@ from bs4.element import Tag
 from pathlib import Path
 import re
 
-from resumecompiler.ResumeComponents.CatalogueSection import CatalogueSection
-from resumecompiler.ResumeComponents.ResumeComponent import ResumeComponent
-from resumecompiler.ResumeComponents.OrganisationalSection import OrganisationalSection
-from resumecompiler.ResumeComponents.Subtitle import Subtitle
-from resumecompiler.ResumeComponents.Title import Title
-from resumecompiler.ResumeComponents.ContactList import ContactList
-from resumecompiler.ResumeComponents.ResumeSection import ResumeSection
-from resumecompiler.ResumeComponents.ToolsetSection import ToolsetSection
-from resumecompiler.Funcs.HtmlFuncs import get_soup_from_markdown, get_children_tags
-from resumecompiler.Funcs.LatexFuncs import get_latex_environment
-from resumecompiler.Enums.Font import Font
+from resumecompiler.resume_components.CatalogueSection import CatalogueSection
+from resumecompiler.resume_components.ResumeComponent import ResumeComponent
+from resumecompiler.resume_components.OrganisationalSection import OrganisationalSection
+from resumecompiler.resume_components.Subtitle import Subtitle
+from resumecompiler.resume_components.Title import Title
+from resumecompiler.resume_components.ContactList import ContactList
+from resumecompiler.resume_components.ResumeSection import ResumeSection
+from resumecompiler.resume_components.ToolsetSection import ToolsetSection
+from resumecompiler.functions.HtmlFuncs import get_soup_from_markdown, get_children_tags
+from resumecompiler.functions.LatexFuncs import get_latex_environment
+from resumecompiler.enums.Font import Font
 
 
 PREAMBLE_TEX_FILE_NAME: str = "preamble.tex"  # Should be located in the same directory as this file

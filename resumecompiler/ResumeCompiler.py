@@ -3,9 +3,9 @@ from os.path import join, splitext, getmtime, basename
 from pathlib import Path
 import subprocess
 
-from .ResumeComponents.Resume import Resume
-from .Enums.Font import Font
-from .Funcs.Funcs import create_and_write_file
+from .resume_components.Resume import Resume
+from .enums.Font import Font
+from .functions.Funcs import create_and_write_file
 
 
 class ResumeCompiler:
