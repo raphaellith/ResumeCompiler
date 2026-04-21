@@ -13,7 +13,7 @@ from resumecompiler.resume_components.contact_list import ContactList
 from resumecompiler.resume_components.resume_section import ResumeSection
 from resumecompiler.resume_components.toolset_section import ToolsetSection
 from resumecompiler.utils.beautiful_soup_utils import get_soup_from_markdown, get_children_tags
-from resumecompiler.utils.latex_funcs import get_latex_environment
+from resumecompiler.utils.latex_utils import get_latex_environment
 from resumecompiler.enums.font import Font
 
 

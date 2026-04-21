@@ -2,7 +2,7 @@ from bs4.element import Tag
 
 from resumecompiler.resume_components.resume_component import ResumeComponent
 from resumecompiler.utils.beautiful_soup_utils import get_children_tags
-from resumecompiler.utils.latex_funcs import get_latex_environment, get_latex_command
+from resumecompiler.utils.latex_utils import get_latex_environment, get_latex_command
 
 class ContactList(ResumeComponent):
     def __init__(self, ul_tag: Tag):
