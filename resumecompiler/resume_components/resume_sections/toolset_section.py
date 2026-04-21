@@ -1,6 +1,6 @@
 from bs4 import Tag
 
-from resumecompiler.resume_components.toolset_section_resume_item import ToolsetSectionResumeItem
+from resumecompiler.resume_components.resume_items.toolset_section_resume_item import ToolsetSectionResumeItem
 from resumecompiler.resume_components.resume_sections.resume_section import ResumeSection, get_toolset_or_organisational_section_as_latex_lines, classify_tags_in_organisational_or_toolset_section_by_resume_item
 
 

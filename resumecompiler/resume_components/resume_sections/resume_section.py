@@ -2,7 +2,7 @@ from bs4.element import Tag
 
 from resumecompiler.utils.latex_utils import get_latex_command, indent_lines
 from resumecompiler.resume_components.resume_component import ResumeComponent
-from resumecompiler.resume_components.resume_item import ResumeItem
+from resumecompiler.resume_components.resume_items.resume_item import ResumeItem
 
 
 class ResumeSection(ResumeComponent):
