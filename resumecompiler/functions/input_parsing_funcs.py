@@ -1,4 +1,3 @@
-from pathlib import Path
 from typing import Any
 
 def take_fixed_num_of_inputs_with_defaults(inputs: list, defaults: list) -> list:
@@ -39,17 +38,3 @@ def take_fixed_num_of_input_strings(inputs: list[str], n: int) -> list[str]:
     """
 
     return take_fixed_num_of_inputs_with_same_default(inputs, n, "")
-
-
-def create_and_write_file(file_path: Path, contents: str):
-    """
-    Creates the file (along with all intermediate directories) and writes the specified contents onto the file.
-    :param file_path: A file path.
-    :param contents: Contents to be written onto the file.
-    :return:
-    """
-    # Create parent directories if they don't exist
-    file_path.parent.mkdir(parents=True, exist_ok=True)
-
-    # Write content to the file
-    file_path.write_text(contents)
