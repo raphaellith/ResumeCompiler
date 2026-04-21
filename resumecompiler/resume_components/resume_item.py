@@ -1,4 +1,4 @@
-from resumecompiler.resume_components.ResumeComponent import ResumeComponent
+from resumecompiler.resume_components.resume_component import ResumeComponent
 from resumecompiler.functions.latex_funcs import indent_lines, get_latex_command
 
 

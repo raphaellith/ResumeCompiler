@@ -3,7 +3,7 @@ from os.path import join, splitext, getmtime, basename
 from pathlib import Path
 import subprocess
 
-from .resume_components.Resume import Resume
+from .resume_components.resume import Resume
 from .enums.font import Font
 from .functions.funcs import create_and_write_file
 

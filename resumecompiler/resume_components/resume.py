@@ -4,14 +4,14 @@ from bs4.element import Tag
 from pathlib import Path
 import re
 
-from resumecompiler.resume_components.CatalogueSection import CatalogueSection
-from resumecompiler.resume_components.ResumeComponent import ResumeComponent
-from resumecompiler.resume_components.OrganisationalSection import OrganisationalSection
-from resumecompiler.resume_components.Subtitle import Subtitle
-from resumecompiler.resume_components.Title import Title
-from resumecompiler.resume_components.ContactList import ContactList
-from resumecompiler.resume_components.ResumeSection import ResumeSection
-from resumecompiler.resume_components.ToolsetSection import ToolsetSection
+from resumecompiler.resume_components.catalogue_section import CatalogueSection
+from resumecompiler.resume_components.resume_component import ResumeComponent
+from resumecompiler.resume_components.organisational_section import OrganisationalSection
+from resumecompiler.resume_components.subtitle import Subtitle
+from resumecompiler.resume_components.title import Title
+from resumecompiler.resume_components.contact_list import ContactList
+from resumecompiler.resume_components.resume_section import ResumeSection
+from resumecompiler.resume_components.toolset_section import ToolsetSection
 from resumecompiler.functions.html_funcs import get_soup_from_markdown, get_children_tags
 from resumecompiler.functions.latex_funcs import get_latex_environment
 from resumecompiler.enums.font import Font
