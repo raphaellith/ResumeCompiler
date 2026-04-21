@@ -1,7 +1,7 @@
 from bs4.element import Tag
 
 from resumecompiler.resume_components.resume_component import ResumeComponent
-from resumecompiler.functions.html_funcs import get_children_tags
+from resumecompiler.functions.beautiful_soup_funcs import get_children_tags
 from resumecompiler.functions.latex_funcs import get_latex_environment, get_latex_command
 
 class ContactList(ResumeComponent):
