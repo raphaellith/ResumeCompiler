@@ -14,7 +14,7 @@ from resumecompiler.resume_components.ResumeSection import ResumeSection
 from resumecompiler.resume_components.ToolsetSection import ToolsetSection
 from resumecompiler.functions.HtmlFuncs import get_soup_from_markdown, get_children_tags
 from resumecompiler.functions.LatexFuncs import get_latex_environment
-from resumecompiler.enums.Font import Font
+from resumecompiler.enums.font import Font
 
 
 PREAMBLE_TEX_FILE_NAME: str = "preamble.tex"  # Should be located in the same directory as this file

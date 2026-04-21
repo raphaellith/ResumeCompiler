@@ -4,7 +4,7 @@ from pathlib import Path
 import subprocess
 
 from .resume_components.Resume import Resume
-from .enums.Font import Font
+from .enums.font import Font
 from .functions.Funcs import create_and_write_file
 
 
