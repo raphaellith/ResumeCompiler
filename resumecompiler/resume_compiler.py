@@ -5,7 +5,7 @@ import subprocess
 
 from .resume_components.resume import Resume
 from .enums.font import Font
-from .functions.funcs import create_and_write_file
+from .functions.input_parsing_funcs import create_and_write_file
 
 
 class ResumeCompiler:
