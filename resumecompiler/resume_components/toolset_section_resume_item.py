@@ -1,7 +1,7 @@
 from bs4 import Tag
 
 from resumecompiler.resume_components.resume_item import ResumeItem
-from resumecompiler.utils.input_parsing_funcs import take_fixed_num_of_input_strings, take_fixed_num_of_inputs_with_same_default
+from resumecompiler.utils.input_parsing_utils import take_fixed_num_of_input_strings, take_fixed_num_of_inputs_with_same_default
 from resumecompiler.utils.beautiful_soup_utils import get_children_tags
 from resumecompiler.utils.latex_funcs import get_latex_command, format_date_range
 
