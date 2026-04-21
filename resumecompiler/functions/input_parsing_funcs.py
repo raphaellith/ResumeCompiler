@@ -1,16 +1,6 @@
 from pathlib import Path
 from typing import Any
 
-
-def strip_strings(strings: list[str]) -> list[str]:
-    """
-    :param strings: A list of strings.
-    :return: A list of strings that have been stripped. Strings that contain only whitespaces are removed.
-    """
-
-    return list(filter(lambda s: s, map(str.strip, strings)))
-
-
 def take_fixed_num_of_inputs_with_defaults(inputs: list, defaults: list) -> list:
     """
     :param inputs: A list of inputs.
