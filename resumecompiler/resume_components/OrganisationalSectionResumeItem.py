@@ -1,9 +1,9 @@
 from bs4 import Tag
 
 from resumecompiler.resume_components.ResumeItem import ResumeItem
-from resumecompiler.functions.Funcs import take_fixed_num_of_input_strings, take_fixed_num_of_inputs_with_same_default
-from resumecompiler.functions.HtmlFuncs import get_children_tags
-from resumecompiler.functions.LatexFuncs import get_latex_command, format_date_range
+from resumecompiler.functions.funcs import take_fixed_num_of_input_strings, take_fixed_num_of_inputs_with_same_default
+from resumecompiler.functions.html_funcs import get_children_tags
+from resumecompiler.functions.latex_funcs import get_latex_command, format_date_range
 
 
 class OrganisationalSectionResumeItem(ResumeItem):

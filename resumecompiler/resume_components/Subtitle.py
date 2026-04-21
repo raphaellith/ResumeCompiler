@@ -1,7 +1,7 @@
 from bs4.element import Tag
 
 from resumecompiler.resume_components.ResumeComponent import ResumeComponent
-from resumecompiler.functions.LatexFuncs import get_latex_environment, get_latex_command
+from resumecompiler.functions.latex_funcs import get_latex_environment, get_latex_command
 
 
 class Subtitle(ResumeComponent):

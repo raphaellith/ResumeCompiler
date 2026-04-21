@@ -1,5 +1,5 @@
 from resumecompiler.resume_components.ResumeComponent import ResumeComponent
-from resumecompiler.functions.LatexFuncs import indent_lines, get_latex_command
+from resumecompiler.functions.latex_funcs import indent_lines, get_latex_command
 
 
 class ResumeItem(ResumeComponent):

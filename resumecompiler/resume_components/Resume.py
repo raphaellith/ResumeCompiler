@@ -12,8 +12,8 @@ from resumecompiler.resume_components.Title import Title
 from resumecompiler.resume_components.ContactList import ContactList
 from resumecompiler.resume_components.ResumeSection import ResumeSection
 from resumecompiler.resume_components.ToolsetSection import ToolsetSection
-from resumecompiler.functions.HtmlFuncs import get_soup_from_markdown, get_children_tags
-from resumecompiler.functions.LatexFuncs import get_latex_environment
+from resumecompiler.functions.html_funcs import get_soup_from_markdown, get_children_tags
+from resumecompiler.functions.latex_funcs import get_latex_environment
 from resumecompiler.enums.font import Font
 
 
