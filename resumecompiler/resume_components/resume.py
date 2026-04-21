@@ -16,7 +16,7 @@ from resumecompiler.utils.latex_utils import get_latex_environment
 from resumecompiler.enums.font import Font
 
 
-PREAMBLE_TEX_FILE_NAME: str = "preamble.tex"  # Should be located in the same directory as this file
+PREAMBLE_TEX_FILE_NAME: str = "../resources/preamble.tex"  # Should be located in the same directory as this file
 
 
 class Resume(ResumeComponent):
