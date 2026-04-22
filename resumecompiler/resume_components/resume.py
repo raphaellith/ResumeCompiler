@@ -8,7 +8,7 @@ from resumecompiler.resume_components.resume_component import ResumeComponent
 from resumecompiler.resume_components.resume_sections.organisational_section import OrganisationalSection
 from resumecompiler.resume_components.subtitle import Subtitle
 from resumecompiler.resume_components.title import Title
-from resumecompiler.resume_components.contact_list import ContactList
+from resumecompiler.resume_components.contact_lists import ContactList
 from resumecompiler.resume_components.resume_sections.resume_section import ResumeSection
 from resumecompiler.resume_components.resume_sections.toolset_section import ToolsetSection
 from resumecompiler.utils.beautiful_soup_utils import get_soup_from_markdown, get_children_tags
