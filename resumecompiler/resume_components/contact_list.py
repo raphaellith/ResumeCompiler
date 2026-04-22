@@ -1,8 +1,9 @@
 from bs4.element import Tag
 
+from resumecompiler.resume_components.contact_list_item import ContactListItem
 from resumecompiler.resume_components.resume_component import ResumeComponent
-from resumecompiler.utils.beautiful_soup_utils import get_children_tags
-from resumecompiler.utils.latex_utils import get_latex_environment, get_latex_command
+from resumecompiler.utils.latex_utils import get_latex_environment
+
 
 class ContactList(ResumeComponent):
     def __init__(self, ul_tag: Tag):
@@ -11,34 +12,16 @@ class ContactList(ResumeComponent):
         """
         super().__init__()
 
-        # First value of tuple: Displayed text
-        # Second value of tuple: Linked site (possibly empty if the contact list item is not a hyperlink)
-        self.contacts: list[tuple[str, str]] = []
-
-        for li_tag in get_children_tags(ul_tag):
-            hyperlink = li_tag.find("a", href=True)  # Returns first <a> tag only; returns None if no hyperlink found
-            if hyperlink:
-                self.contacts.append((hyperlink.text, hyperlink.get("href")))
-            else:
-                self.contacts.append((li_tag.text, ""))
+        self.contacts: list[ContactListItem] = [ContactListItem(li_tag) for li_tag in ul_tag.find_all("li")]
 
     def to_latex_lines(self) -> list[str]:
         centered_lines: list[str] = [r"\small"]
 
-        num_of_contacts = len(self.contacts)
-        for i in range(num_of_contacts):
-            displayed_text, link = self.contacts[i]
-            if link:  # Link is non-empty
-                centered_lines.append(
-                    get_latex_command(
-                        command="href",
-                        arguments=[link, get_latex_command(command="underline", arguments=[displayed_text])]
-                    )
-                )
-            else:
-                centered_lines.append(displayed_text)
+        num_of_contact_list_items = len(self.contacts)
+        for i, contact_list_item in enumerate(self.contacts):
+            centered_lines += contact_list_item.to_latex_lines()
 
-            if i != num_of_contacts - 1:
+            if i != num_of_contact_list_items - 1:
                 centered_lines.append(r"$|$")
 
         return get_latex_environment(env="center", contents=centered_lines)
