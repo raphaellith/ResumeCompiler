@@ -3,17 +3,17 @@ from bs4.element import Tag
 
 from pathlib import Path
 
-from resumecompiler.resume_components.resume_sections.catalogue_section import CatalogueSection
-from resumecompiler.resume_components.resume_component import ResumeComponent
-from resumecompiler.resume_components.resume_sections.organisational_section import OrganisationalSection
-from resumecompiler.resume_components.subtitle import Subtitle
-from resumecompiler.resume_components.title import Title
-from resumecompiler.resume_components.contact_lists import ContactList
-from resumecompiler.resume_components.resume_sections.resume_section import ResumeSection
-from resumecompiler.resume_components.resume_sections.toolset_section import ToolsetSection
-from resumecompiler.utils.beautiful_soup_utils import get_soup_from_markdown, get_children_tags
-from resumecompiler.utils.latex_utils import get_latex_environment
-from resumecompiler.enums.font import Font
+from backend.model.resume_components.resume_sections.catalogue_section import CatalogueSection
+from backend.model.resume_components.resume_component import ResumeComponent
+from backend.model.resume_components.resume_sections.organisational_section import OrganisationalSection
+from backend.model.resume_components.subtitle import Subtitle
+from backend.model.resume_components.title import Title
+from backend.model.resume_components.contact_lists import ContactList
+from backend.model.resume_components.resume_sections.resume_section import ResumeSection
+from backend.model.resume_components.resume_sections.toolset_section import ToolsetSection
+from backend.model.utils.beautiful_soup_utils import get_soup_from_markdown, get_children_tags
+from backend.model.utils.latex_utils import get_latex_environment
+from backend.model.enums.font import Font
 
 
 PREAMBLE_TEX_FILE_NAME: str = "../resources/preamble.tex"  # Should be located in the same directory as this file

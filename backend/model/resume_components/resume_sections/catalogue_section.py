@@ -1,8 +1,8 @@
 from bs4 import Tag
 
-from resumecompiler.resume_components.resume_sections.resume_section import ResumeSection
-from resumecompiler.utils.beautiful_soup_utils import get_children_tags
-from resumecompiler.utils.latex_utils import get_latex_command
+from backend.model.resume_components.resume_sections.resume_section import ResumeSection
+from backend.model.utils.beautiful_soup_utils import get_children_tags
+from backend.model.utils.latex_utils import get_latex_command
 
 
 class CatalogueSection(ResumeSection):

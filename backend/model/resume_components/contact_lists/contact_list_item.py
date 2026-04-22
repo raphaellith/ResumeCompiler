@@ -1,5 +1,5 @@
-from resumecompiler.resume_components.resume_component import ResumeComponent
-from resumecompiler.utils.latex_utils import get_latex_command
+from backend.model.resume_components.resume_component import ResumeComponent
+from backend.model.utils.latex_utils import get_latex_command
 
 
 class ContactListItem(ResumeComponent):

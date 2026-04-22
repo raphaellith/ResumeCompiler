@@ -1,8 +1,8 @@
 from bs4.element import Tag
 
-from resumecompiler.resume_components.contact_lists.contact_list_item import ContactListItem
-from resumecompiler.resume_components.resume_component import ResumeComponent
-from resumecompiler.utils.latex_utils import get_latex_environment
+from backend.model.resume_components.contact_lists.contact_list_item import ContactListItem
+from backend.model.resume_components.resume_component import ResumeComponent
+from backend.model.utils.latex_utils import get_latex_environment
 
 
 class ContactList(ResumeComponent):
