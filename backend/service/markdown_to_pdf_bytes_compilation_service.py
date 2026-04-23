@@ -74,7 +74,3 @@ def _run_pdflatex(latex_file_name: str, working_directory: Path) -> tuple[str, s
         raise RuntimeError("Could not find 'pdflatex'. Install a LaTeX distribution on the backend host.") from error
 
     return process.stdout, process.stderr, process.returncode
-
-
-if __name__ == '__main__':
-    print(_get_pdf_bytes_from_latex_code(r"\documentclass{article}\begin{document}Hi\end{document}"))
