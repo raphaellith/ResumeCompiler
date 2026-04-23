@@ -8,7 +8,7 @@ from backend.model.resume_components.resume_component import ResumeComponent
 from backend.model.resume_components.resume_sections.organisational_section import OrganisationalSection
 from backend.model.resume_components.subtitle import Subtitle
 from backend.model.resume_components.title import Title
-from backend.model.resume_components.contact_lists import ContactList
+from backend.model.resume_components.contact_lists.contact_list import ContactList
 from backend.model.resume_components.resume_sections.resume_section import ResumeSection
 from backend.model.resume_components.resume_sections.toolset_section import ToolsetSection
 from backend.model.utils.beautiful_soup_utils import get_soup_from_markdown, get_children_tags
