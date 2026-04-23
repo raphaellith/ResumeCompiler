@@ -1,2 +1,4 @@
 markdown~=3.9
 beautifulsoup4~=4.14.0
+fastapi
+pydantic
