@@ -1,7 +1,30 @@
-# Tauri + React + Typescript
+# Resume Compiler Frontend
 
-This template should help get you started developing with Tauri, React and Typescript in Vite.
+A Tauri + React UI for editing Markdown resumes and previewing mock-compiled PDFs.
 
-## Recommended IDE Setup
+## Features
 
-- [VS Code](https://code.visualstudio.com/) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+- Split editor and PDF preview panes with drag-and-drop Markdown upload.
+- Recompile and export actions for PDF output.
+- Auto-save of changes back to the original Markdown file on window close.
+
+## Quick Start
+
+```bash
+npm install
+npm run dev
+```
+
+## Tauri Desktop
+
+```bash
+npm run tauri dev
+```
+
+## Mock PDF Script
+
+Generate a PDF from a Markdown file without running the UI:
+
+```bash
+npm run mock:pdf -- path/to/resume.md output.pdf
+```

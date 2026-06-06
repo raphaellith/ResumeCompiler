@@ -1,49 +1,88 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import { invoke } from "@tauri-apps/api/core";
+import { useCallback } from "react";
 import "./App.css";
 
-function App() {
-  const [greetMsg, setGreetMsg] = useState("");
-  const [name, setName] = useState("");
+import { MarkdownEditorPane } from "./components/MarkdownEditorPane";
+import { PdfPreviewPane } from "./components/PdfPreviewPane";
+import { Toolbar } from "./components/Toolbar";
+import { COMPILE_ENDPOINT } from "./config/api";
+import { useMarkdownDocument } from "./hooks/useMarkdownDocument";
+import { usePdfCompilation } from "./hooks/usePdfCompilation";
+import { useSaveMarkdownOnClose } from "./hooks/useSaveMarkdownOnClose";
+import { stripExtension } from "./utils/path";
 
-  async function greet() {
-    // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    setGreetMsg(await invoke("greet", { name }));
-  }
+function App() {
+  const {
+    markdown,
+    filePath,
+    fileDisplayName,
+    hasFile,
+    updateMarkdown,
+    loadFile,
+  } = useMarkdownDocument();
+
+  const { pdfUrl, pdfBlob, isCompiling, lastCompiledAt, compileError, compilePdf } =
+    usePdfCompilation(COMPILE_ENDPOINT);
+
+  useSaveMarkdownOnClose({
+    filePath,
+    markdown,
+  });
+
+  const handleSelectFile = useCallback(
+    async (file: File) => {
+      await loadFile(file);
+    },
+    [loadFile]
+  );
+
+  const handleCompile = useCallback(() => {
+    if (!hasFile) {
+      return;
+    }
+    void compilePdf(markdown);
+  }, [compilePdf, hasFile, markdown]);
+
+  const handleExport = useCallback(() => {
+    if (!pdfBlob) {
+      return;
+    }
+    const exportUrl = URL.createObjectURL(pdfBlob);
+    const link = document.createElement("a");
+    const baseName = stripExtension(fileDisplayName);
+    link.href = exportUrl;
+    link.download = `${baseName || "resume"}.pdf`;
+    link.click();
+    URL.revokeObjectURL(exportUrl);
+  }, [fileDisplayName, pdfBlob]);
+
+  const compiledLabel = lastCompiledAt
+    ? `Compiled at ${lastCompiledAt.toLocaleTimeString()}`
+    : "Not compiled yet";
 
   return (
-    <main className="container">
-      <h1>Welcome to Tauri + React</h1>
+    <main className="app">
+      <Toolbar
+        hasFile={hasFile}
+        isCompiling={isCompiling}
+        canExport={Boolean(pdfBlob)}
+        onSelectFile={handleSelectFile}
+        onCompile={handleCompile}
+        onExport={handleExport}
+      />
 
-      <div className="row">
-        <a href="https://vite.dev" target="_blank">
-          <img src="/vite.svg" className="logo vite" alt="Vite logo" />
-        </a>
-        <a href="https://tauri.app" target="_blank">
-          <img src="/tauri.svg" className="logo tauri" alt="Tauri logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <p>Click on the Tauri, Vite, and React logos to learn more.</p>
-
-      <form
-        className="row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          greet();
-        }}
-      >
-        <input
-          id="greet-input"
-          onChange={(e) => setName(e.currentTarget.value)}
-          placeholder="Enter a name..."
+      <section className="panes">
+        <MarkdownEditorPane
+          hasFile={hasFile}
+          markdown={markdown}
+          onMarkdownChange={updateMarkdown}
         />
-        <button type="submit">Greet</button>
-      </form>
-      <p>{greetMsg}</p>
+
+        <PdfPreviewPane
+          pdfUrl={pdfUrl}
+          compileError={compileError}
+          compiledLabel={compiledLabel}
+        />
+      </section>
     </main>
   );
 }
