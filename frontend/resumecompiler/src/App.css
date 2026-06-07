@@ -1,17 +1,17 @@
 :root {
-  --color-off-white: #f9fafb;
-  --color-text: #111827;
-  --color-primary: #2563eb;
-  --color-error: #dc2626;
+  --color-dominant: #408a67;
+  --color-secondary: #f9fafb;
+  --color-accent: #384b22;
+  --color-error: #eae289;
 
-  --color-bg: color-mix(in srgb, var(--color-off-white) 95%, black);
-  --color-surface-alt: color-mix(in srgb, var(--color-off-white) 98%, black);
-  --color-border: color-mix(in srgb, var(--color-off-white) 90%, black);
+  --color-bg: color-mix(in srgb, var(--color-dominant) 70%, black);
+  --color-border: color-mix(in srgb, var(--color-dominant) 90%, black);
 
-  --color-text-muted: color-mix(in srgb, var(--color-text) 60%, white);
+  --color-text-muted: color-mix(in srgb, var(--color-secondary) 60%, black);
+  --color-error-text: color-mix(in srgb, var(--color-error) 40%, black);
 
   font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
-  color: var(--color-text);
+  color: var(--color-secondary);
   background-color: var(--color-bg);
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -37,7 +37,7 @@ body {
   align-items: center;
   padding: 12px 18px;
   border-bottom: 1px solid var(--color-border);
-  background: var(--color-off-white);
+  background: var(--color-bg);
   gap: 12px;
 }
 
@@ -50,17 +50,11 @@ body {
 .action {
   border-radius: 8px;
   border: 1px solid var(--color-border);
-  background: var(--color-off-white);
-  color: var(--color-text);
+  background: var(--color-dominant);
+  color: var(--color-secondary);
   padding: 8px 14px;
   font-weight: 600;
   cursor: pointer;
-}
-
-.action.primary {
-  background: var(--color-primary);
-  border-color: var(--color-primary);
-  color: var(--color-off-white);
 }
 
 .action:disabled {
@@ -81,7 +75,7 @@ body {
   flex-direction: column;
   border-radius: 12px;
   border: 1px solid var(--color-border);
-  background: var(--color-off-white);
+  background: var(--color-dominant);
   overflow: hidden;
 }
 
@@ -89,7 +83,7 @@ body {
   padding: 10px 12px;
   font-weight: 600;
   border-bottom: 1px solid var(--color-border);
-  background: var(--color-surface-alt);
+  background: var(--color-bg);
 }
 
 .pane-body {
@@ -104,7 +98,8 @@ body {
   padding: 14px;
   font-family: "SFMono-Regular", "Menlo", "Consolas", monospace;
   font-size: 0.9rem;
-  color: var(--color-text);
+  background-color: var(--color-secondary);
+  color: var(--color-dominant);
   resize: none;
 }
 
@@ -116,7 +111,7 @@ body {
   width: 100%;
   height: 100%;
   border: none;
-  background: var(--color-off-white);
+  background: var(--color-dominant);
 }
 
 .empty-preview {
@@ -125,7 +120,8 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: var(--color-text-muted);
+  background-color: var(--color-secondary);
+  color: var(--color-dominant);
   text-align: center;
   padding: 20px;
 }
@@ -139,7 +135,7 @@ body {
   padding: 6px 12px;
   border-radius: 8px;
   background: var(--color-error);
-  color: var(--color-off-white);
+  color: var(--color-error-text);
   font-size: 0.75rem;
 }
 
