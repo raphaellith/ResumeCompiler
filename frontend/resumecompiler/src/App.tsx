@@ -2,6 +2,8 @@ import { useCallback, useRef } from "react";
 import "./App.css";
 
 import { isTauri } from "@tauri-apps/api/core";
+import { save } from "@tauri-apps/plugin-dialog";
+import { writeFile } from "@tauri-apps/plugin-fs";
 import { MarkdownEditorPane } from "./components/MarkdownEditorPane";
 import { PdfPreviewPane } from "./components/PdfPreviewPane";
 import { Toolbar } from "./components/Toolbar";
@@ -60,13 +62,27 @@ function App() {
     if (!pdfBlob) {
       return;
     }
-    const exportUrl = URL.createObjectURL(pdfBlob);
-    const link = document.createElement("a");
-    const baseName = stripExtension(fileDisplayName);
-    link.href = exportUrl;
-    link.download = `${baseName || "resume"}.pdf`;
-    link.click();
-    URL.revokeObjectURL(exportUrl);
+    const baseName = stripExtension(fileDisplayName) || "resume";
+    const fileName = `${baseName}.pdf`;
+
+    if (isTauri()) {
+      void (async () => {
+        const filePath = await save({
+          defaultPath: fileName,
+          filters: [{ name: "PDF", extensions: ["pdf"] }],
+        });
+        if (!filePath) return;
+        const arrayBuffer = await pdfBlob.arrayBuffer();
+        await writeFile(filePath, new Uint8Array(arrayBuffer));
+      })();
+    } else {
+      const exportUrl = URL.createObjectURL(pdfBlob);
+      const link = document.createElement("a");
+      link.href = exportUrl;
+      link.download = fileName;
+      link.click();
+      URL.revokeObjectURL(exportUrl);
+    }
   }, [fileDisplayName, pdfBlob]);
 
   const compiledLabel = lastCompiledAt

@@ -2,7 +2,7 @@ const DEFAULT_API_BASE_URL = "http://localhost:8000";
 
 export const API_BASE_URL = (
   import.meta.env.VITE_RESUME_COMPILER_API_BASE_URL ?? DEFAULT_API_BASE_URL
-).replace(/\/\/+$/, "");
+).replace(/\/+$/, "");
 
 export const COMPILE_ENDPOINT = `${API_BASE_URL}/compile/`;
 
