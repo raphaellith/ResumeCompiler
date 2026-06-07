@@ -9,6 +9,7 @@
   --color-border: color-mix(in srgb, var(--color-off-white) 90%, black);
 
   --color-text-muted: color-mix(in srgb, var(--color-text) 60%, white);
+
   font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
   color: var(--color-text);
   background-color: var(--color-bg);
