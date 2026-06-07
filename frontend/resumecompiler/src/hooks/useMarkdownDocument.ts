@@ -60,6 +60,13 @@ export function useMarkdownDocument(): UseMarkdownDocumentResult {
       return;
     }
 
+    // Browser File API only provides a bare filename (relative path).
+    // Tauri's fs plugin rejects relative paths as "forbidden path" —
+    // only attempt auto-save when we have an absolute path.
+    if (!/^[/\\]|[A-Za-z]:[/\\]/.test(currentPath)) {
+      return;
+    }
+
     const saveTimeout = setTimeout(async () => {
       try {
         await writeTextFile(currentPath, markdown);

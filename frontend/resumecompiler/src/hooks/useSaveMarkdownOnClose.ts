@@ -24,6 +24,11 @@ export function useSaveMarkdownOnClose({
       return;
     }
 
+    // Skip save for relative paths (browser File API only provides a bare filename).
+    if (!/^[/\\]|[A-Za-z]:[/\\]/.test(filePath)) {
+      return;
+    }
+
     try {
       await writeTextFile(filePath, markdown);
     } catch (error) {
