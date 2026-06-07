@@ -10,8 +10,6 @@
   --color-border-strong: color-mix(in srgb, var(--color-off-white) 82%, black);
 
   --color-text-muted: color-mix(in srgb, var(--color-text) 60%, white);
-  --color-text-disabled: color-mix(in srgb, var(--color-text) 40%, white);
-
   font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
   color: var(--color-text);
   background-color: var(--color-bg);
@@ -111,8 +109,6 @@ body {
 }
 
 .editor:disabled {
-  background: var(--color-surface-alt);
-  color: var(--color-text-disabled);
   cursor: not-allowed;
 }
 
