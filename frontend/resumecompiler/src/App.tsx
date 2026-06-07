@@ -106,6 +106,7 @@ function App() {
 
       <section className="panes">
         <MarkdownEditorPane
+          fileName={fileDisplayName}
           hasFile={hasFile}
           markdown={markdown}
           onMarkdownChange={updateMarkdown}

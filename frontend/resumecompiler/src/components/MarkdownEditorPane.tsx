@@ -8,12 +8,14 @@ const MAX_FONT_SIZE = 24;
 const FONT_SIZE_STEP = 2;
 
 export type MarkdownEditorPaneProps = {
+  fileName: string;
   hasFile: boolean;
   markdown: string;
   onMarkdownChange: (next: string) => void;
 };
 
 export function MarkdownEditorPane({
+  fileName,
   hasFile,
   markdown,
   onMarkdownChange,
@@ -61,7 +63,7 @@ export function MarkdownEditorPane({
   );
 
   return (
-    <Pane title="Editor">
+    <Pane title="Editor" titleEnd={hasFile ? fileName : undefined}>
       <Editor
         language="markdown"
         value={markdown}
