@@ -2,12 +2,13 @@
   --color-off-white: #f9fafb;
   --color-text: #111827;
   --color-primary: #2563eb;
-  --color-error-bg: #dc2626;
+  --color-error: #dc2626;
 
   --color-bg: color-mix(in srgb, var(--color-off-white) 95%, black);
   --color-surface-alt: color-mix(in srgb, var(--color-off-white) 98%, black);
   --color-border: color-mix(in srgb, var(--color-off-white) 90%, black);
   --color-border-strong: color-mix(in srgb, var(--color-off-white) 82%, black);
+
   --color-text-muted: color-mix(in srgb, var(--color-text) 60%, white);
   --color-text-disabled: color-mix(in srgb, var(--color-text) 40%, white);
 
@@ -141,7 +142,7 @@ body {
   bottom: 44px;
   padding: 6px 12px;
   border-radius: 8px;
-  background: var(--color-error-bg);
+  background: var(--color-error);
   color: var(--color-off-white);
   font-size: 0.75rem;
 }
