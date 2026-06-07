@@ -1,8 +1,12 @@
-import { useRef, useCallback } from "react";
+import { useState, useRef, useCallback } from "react";
 import { Pane } from "./Pane.tsx";
 
 const TAB_SIZE = 4;
 const TAB = " ".repeat(TAB_SIZE);
+const DEFAULT_FONT_SIZE = 12;
+const MIN_FONT_SIZE = 8;
+const MAX_FONT_SIZE = 24;
+const FONT_SIZE_STEP = 2;
 
 export type MarkdownEditorPaneProps = {
   hasFile: boolean;
@@ -16,10 +20,32 @@ export function MarkdownEditorPane({
   onMarkdownChange,
 }: MarkdownEditorPaneProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [fontSize, setFontSize] = useState(DEFAULT_FONT_SIZE);
 
   const handleKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-      if (event.key !== "Tab") return;
+      const isMod = event.metaKey || event.ctrlKey;
+
+      if (event.key !== "Tab") {
+        if (isMod) {
+          if (event.key === "=" || event.key === "+") {
+            event.preventDefault();
+            setFontSize((prev) => Math.min(prev + FONT_SIZE_STEP, MAX_FONT_SIZE));
+            return;
+          }
+          if (event.key === "-") {
+            event.preventDefault();
+            setFontSize((prev) => Math.max(prev - FONT_SIZE_STEP, MIN_FONT_SIZE));
+            return;
+          }
+          if (event.key === "0") {
+            event.preventDefault();
+            setFontSize(DEFAULT_FONT_SIZE);
+            return;
+          }
+        }
+        return;
+      }
       event.preventDefault();
 
       const { selectionStart, selectionEnd } = event.currentTarget;
@@ -102,6 +128,7 @@ export function MarkdownEditorPane({
         onKeyDown={handleKeyDown}
         disabled={!hasFile}
         spellCheck={false}
+        style={{ fontSize: `${fontSize}px` }}
       />
     </Pane>
   );
