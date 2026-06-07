@@ -88,22 +88,10 @@ body {
   position: relative;
 }
 
-.editor {
+.pane-body > div,
+.pane-body .monaco-editor {
   width: 100%;
   height: 100%;
-  border: none;
-  padding: 14px;
-  font-family: "JetBrains Mono", "SFMono-Regular", "Menlo", "Consolas", monospace;
-  font-weight: 500;
-  font-size: 0.9rem;
-  background-color: var(--color-secondary);
-  color: var(--color-dominant);
-  resize: none;
-  tab-size: 4;
-}
-
-.editor:disabled {
-  cursor: not-allowed;
 }
 
 .preview-frame {
