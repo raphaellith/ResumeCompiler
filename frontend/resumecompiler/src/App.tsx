@@ -24,7 +24,7 @@ function App() {
     openFilePicker,
   } = useMarkdownDocument();
 
-  const { pdfUrl, pdfBlob, isCompiling, lastCompiledAt, compileError, compilePdf } =
+  const { pdfUrl, pdfBlob, isCompiling, compileError, compilePdf } =
     usePdfCompilation(COMPILE_ENDPOINT);
 
   useSaveMarkdownOnClose({
@@ -85,10 +85,6 @@ function App() {
     }
   }, [fileDisplayName, pdfBlob]);
 
-  const compiledLabel = lastCompiledAt
-    ? `Compiled at ${lastCompiledAt.toLocaleTimeString()}`
-    : "Not compiled yet";
-
   return (
     <main className="app">
       <Toolbar
@@ -118,7 +114,6 @@ function App() {
         <PdfPreviewPane
           pdfUrl={pdfUrl}
           compileError={compileError}
-          compiledLabel={compiledLabel}
         />
       </section>
     </main>

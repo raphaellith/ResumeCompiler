@@ -1,10 +1,9 @@
 export type PdfPreviewPaneProps = {
   pdfUrl: string | null;
   compileError: string | null;
-  compiledLabel: string;
 };
 
-export function PdfPreviewPane({ pdfUrl, compileError, compiledLabel }: PdfPreviewPaneProps) {
+export function PdfPreviewPane({ pdfUrl, compileError }: PdfPreviewPaneProps) {
   return (
     <div className="pane">
       <div className="pane-header">PDF Preview</div>
@@ -19,7 +18,6 @@ export function PdfPreviewPane({ pdfUrl, compileError, compiledLabel }: PdfPrevi
         )}
 
         {compileError && <div className="compile-error">Failed to compile: {compileError}</div>}
-        <div className="preview-footer">{compiledLabel}</div>
       </div>
     </div>
   );

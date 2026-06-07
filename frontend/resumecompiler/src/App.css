@@ -8,7 +8,6 @@
   --color-primary: #2563eb;
   --color-text-muted: #6b7280;
   --color-text-disabled: #9ca3af;
-  --color-footer-bg: rgba(17, 24, 39, 0.8);
   --color-error-bg: rgba(220, 38, 38, 0.9);
 
   font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
@@ -133,16 +132,6 @@ body {
   padding: 20px;
 }
 
-.preview-footer {
-  position: absolute;
-  right: 12px;
-  bottom: 10px;
-  background: var(--color-footer-bg);
-  color: var(--color-off-white);
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-size: 0.75rem;
-}
 
 .compile-error {
   position: absolute;
