@@ -36,19 +36,22 @@ function App() {
 
   const handleOpenFile = useCallback(async () => {
     const result = await openFilePicker();
-    if (!result && !isTauri()) {
+    if (result) {
+      compilePdf(result.markdown);
+    } else if (!isTauri()) {
       fileInputRef.current?.click();
     }
-  }, [openFilePicker]);
+  }, [openFilePicker, compilePdf]);
 
   const handleFileInputChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
       if (!file) return;
-      void loadFile(file);
+      const result = await loadFile(file);
+      compilePdf(result.markdown);
       e.target.value = "";
     },
-    [loadFile]
+    [loadFile, compilePdf]
   );
 
   const handleCompile = useCallback(() => {
