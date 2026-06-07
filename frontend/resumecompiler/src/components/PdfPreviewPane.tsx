@@ -1,3 +1,5 @@
+import { CompilationErrorMessage } from "./CompilationErrorMessage";
+
 export type PdfPreviewPaneProps = {
   pdfUrl: string | null;
   compileError: string | null;
@@ -17,7 +19,7 @@ export function PdfPreviewPane({ pdfUrl, compileError }: PdfPreviewPaneProps) {
           <iframe title="Compiled resume preview" className="preview-frame" src={pdfUrl} />
         )}
 
-        {compileError && <div className="compile-error">Failed to compile: {compileError}</div>}
+        <CompilationErrorMessage message={compileError} />
       </div>
     </div>
   );
