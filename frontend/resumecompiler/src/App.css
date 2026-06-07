@@ -1,7 +1,6 @@
 :root {
   --color-dominant: #408a67;
   --color-secondary: #f9fafb;
-  --color-accent: #384b22;
   --color-error: #eae289;
 
   --color-bg: color-mix(in srgb, var(--color-dominant) 70%, black);
