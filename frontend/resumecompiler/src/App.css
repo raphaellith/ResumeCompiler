@@ -99,6 +99,7 @@ body {
   background-color: var(--color-secondary);
   color: var(--color-dominant);
   resize: none;
+  tab-size: 4;
 }
 
 .editor:disabled {
