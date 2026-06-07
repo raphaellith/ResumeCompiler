@@ -12,7 +12,7 @@ export type UseSaveMarkdownOnCloseParams = {
  * handles the primary persistence).
  *
  * - On browser refresh/tab close: saves via `beforeunload`.
- * - In Tauri: intercepts close request, saves, then closes.
+ * - In Tauri: intercepts close request, saves, then lets the close proceed.
  */
 export function useSaveMarkdownOnClose({
   filePath,
@@ -45,13 +45,9 @@ export function useSaveMarkdownOnClose({
         const windowApi = await import("@tauri-apps/api/window");
         const currentWindow = windowApi.getCurrentWindow();
 
-        unlisten = await currentWindow.onCloseRequested(
-          async (event: { preventDefault: () => void }) => {
-            event.preventDefault();
-            await saveToSourceFile();
-            await currentWindow.close();
-          }
-        );
+        unlisten = await currentWindow.onCloseRequested(async () => {
+          await saveToSourceFile();
+        });
       } catch (error) {
         console.warn("Window close handler unavailable.", error);
       }
