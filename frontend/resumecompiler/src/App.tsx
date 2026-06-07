@@ -1,6 +1,7 @@
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
 import "./App.css";
 
+import { isTauri } from "@tauri-apps/api/core";
 import { MarkdownEditorPane } from "./components/MarkdownEditorPane";
 import { PdfPreviewPane } from "./components/PdfPreviewPane";
 import { Toolbar } from "./components/Toolbar";
@@ -18,6 +19,7 @@ function App() {
     hasFile,
     updateMarkdown,
     loadFile,
+    openFilePicker,
   } = useMarkdownDocument();
 
   const { pdfUrl, pdfBlob, isCompiling, lastCompiledAt, compileError, compilePdf } =
@@ -28,9 +30,21 @@ function App() {
     markdown,
   });
 
-  const handleSelectFile = useCallback(
-    async (file: File) => {
-      await loadFile(file);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleOpenFile = useCallback(async () => {
+    const result = await openFilePicker();
+    if (!result && !isTauri()) {
+      fileInputRef.current?.click();
+    }
+  }, [openFilePicker]);
+
+  const handleFileInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      void loadFile(file);
+      e.target.value = "";
     },
     [loadFile]
   );
@@ -65,9 +79,17 @@ function App() {
         hasFile={hasFile}
         isCompiling={isCompiling}
         canExport={Boolean(pdfBlob)}
-        onSelectFile={handleSelectFile}
+        onOpenFile={handleOpenFile}
         onCompile={handleCompile}
         onExport={handleExport}
+      />
+
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".md,text/markdown"
+        onChange={handleFileInputChange}
+        style={{ display: "none" }}
       />
 
       <section className="panes">

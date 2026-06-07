@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { writeTextFile } from "@tauri-apps/plugin-fs";
+import { readTextFile, writeTextFile } from "@tauri-apps/plugin-fs";
+import { open } from "@tauri-apps/plugin-dialog";
 
 function getFileDisplayName(filePath: string | null): string {
   if (!filePath) {
@@ -29,6 +30,8 @@ export type UseMarkdownDocumentResult = {
    * Returns the loaded content/path so callers can trigger downstream effects (e.g. compilation).
    */
   loadFile: (file: File) => Promise<LoadedMarkdownFile>;
+
+  openFilePicker: () => Promise<LoadedMarkdownFile | null>;
 };
 
 export function useMarkdownDocument(): UseMarkdownDocumentResult {
@@ -52,6 +55,24 @@ export function useMarkdownDocument(): UseMarkdownDocumentResult {
     setFilePath(path);
 
     return { markdown: text, filePath: path };
+  }, []);
+
+  const openFilePicker = useCallback(async (): Promise<LoadedMarkdownFile | null> => {
+    try {
+      const selected = await open({
+        multiple: false,
+        filters: [{ name: "Markdown", extensions: ["md"] }],
+      });
+      if (!selected) {
+        return null;
+      }
+      const text = await readTextFile(selected);
+      setMarkdown(text);
+      setFilePath(selected);
+      return { markdown: text, filePath: selected };
+    } catch {
+      return null;
+    }
   }, []);
 
   useEffect(() => {
@@ -85,5 +106,6 @@ export function useMarkdownDocument(): UseMarkdownDocumentResult {
     hasFile,
     updateMarkdown,
     loadFile,
+    openFilePicker,
   };
 }
