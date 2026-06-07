@@ -66,6 +66,10 @@ export function MarkdownEditorPane({
           automaticLayout: true,
           renderWhitespace: "selection",
           padding: { top: 14, bottom: 14 },
+          readOnlyMessage: {
+            value: "Select a file to edit.",
+            isTrusted: true
+          }
         }}
       />
     </Pane>
