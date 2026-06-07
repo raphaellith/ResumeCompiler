@@ -7,7 +7,6 @@
   --color-bg: color-mix(in srgb, var(--color-off-white) 95%, black);
   --color-surface-alt: color-mix(in srgb, var(--color-off-white) 98%, black);
   --color-border: color-mix(in srgb, var(--color-off-white) 90%, black);
-  --color-border-strong: color-mix(in srgb, var(--color-off-white) 82%, black);
 
   --color-text-muted: color-mix(in srgb, var(--color-text) 60%, white);
   font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
@@ -49,7 +48,7 @@ body {
 
 .action {
   border-radius: 8px;
-  border: 1px solid var(--color-border-strong);
+  border: 1px solid var(--color-border);
   background: var(--color-off-white);
   color: var(--color-text);
   padding: 8px 14px;
