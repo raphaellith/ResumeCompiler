@@ -22,6 +22,21 @@ export function MarkdownEditorPane({
 
   const handleMount: OnMount = useCallback(
     (editor, monaco) => {
+      const bg = getComputedStyle(document.documentElement)
+        .getPropertyValue('--color-secondary')
+        .trim();
+
+      monaco.editor.defineTheme('resume-compiler', {
+        base: 'vs',
+        inherit: true,
+        rules: [],
+        colors: {
+          'editor.background': bg,
+        },
+      });
+
+      monaco.editor.setTheme('resume-compiler');
+
       editor.addCommand(
         monaco.KeyMod.CtrlCmd | monaco.KeyCode.Equal,
         () => setFontSize((prev) => Math.min(prev + FONT_SIZE_STEP, MAX_FONT_SIZE)),
