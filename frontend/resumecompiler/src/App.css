@@ -50,6 +50,7 @@ body {
   background: var(--color-accent);
   color: var(--color-accent-dark);
   padding: 8px 14px;
+  font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
 }
