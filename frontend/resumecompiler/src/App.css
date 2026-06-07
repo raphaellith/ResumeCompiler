@@ -1,7 +1,20 @@
 :root {
+  --color-text: #111827;
+  --color-bg: #f3f4f6;
+  --color-surface: #ffffff;
+  --color-surface-alt: #f9fafb;
+  --color-border: #e5e7eb;
+  --color-border-strong: #d1d5db;
+  --color-primary: #2563eb;
+  --color-on-primary: #ffffff;
+  --color-text-muted: #6b7280;
+  --color-text-disabled: #9ca3af;
+  --color-footer-bg: rgba(17, 24, 39, 0.8);
+  --color-error-bg: rgba(220, 38, 38, 0.9);
+
   font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
-  color: #111827;
-  background-color: #f3f4f6;
+  color: var(--color-text);
+  background-color: var(--color-bg);
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
 }
@@ -25,8 +38,8 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 12px 18px;
-  border-bottom: 1px solid #e5e7eb;
-  background: #ffffff;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
   gap: 12px;
 }
 
@@ -38,18 +51,18 @@ body {
 
 .action {
   border-radius: 8px;
-  border: 1px solid #d1d5db;
-  background: #ffffff;
-  color: #111827;
+  border: 1px solid var(--color-border-strong);
+  background: var(--color-surface);
+  color: var(--color-text);
   padding: 8px 14px;
   font-weight: 600;
   cursor: pointer;
 }
 
 .action.primary {
-  background: #2563eb;
-  border-color: #2563eb;
-  color: #ffffff;
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-on-primary);
 }
 
 .action:disabled {
@@ -69,16 +82,16 @@ body {
   display: flex;
   flex-direction: column;
   border-radius: 12px;
-  border: 1px solid #e5e7eb;
-  background: #ffffff;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
   overflow: hidden;
 }
 
 .pane-header {
   padding: 10px 12px;
   font-weight: 600;
-  border-bottom: 1px solid #e5e7eb;
-  background: #f9fafb;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface-alt);
 }
 
 .pane-body {
@@ -93,13 +106,13 @@ body {
   padding: 14px;
   font-family: "SFMono-Regular", "Menlo", "Consolas", monospace;
   font-size: 0.9rem;
-  color: #111827;
+  color: var(--color-text);
   resize: none;
 }
 
 .editor:disabled {
-  background: #f9fafb;
-  color: #9ca3af;
+  background: var(--color-surface-alt);
+  color: var(--color-text-disabled);
   cursor: not-allowed;
 }
 
@@ -107,7 +120,7 @@ body {
   width: 100%;
   height: 100%;
   border: none;
-  background: #ffffff;
+  background: var(--color-surface);
 }
 
 .empty-preview {
@@ -116,7 +129,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: #6b7280;
+  color: var(--color-text-muted);
   text-align: center;
   padding: 20px;
 }
@@ -125,8 +138,8 @@ body {
   position: absolute;
   right: 12px;
   bottom: 10px;
-  background: rgba(17, 24, 39, 0.8);
-  color: #ffffff;
+  background: var(--color-footer-bg);
+  color: var(--color-on-primary);
   padding: 4px 10px;
   border-radius: 999px;
   font-size: 0.75rem;
@@ -139,8 +152,8 @@ body {
   bottom: 44px;
   padding: 6px 12px;
   border-radius: 8px;
-  background: rgba(220, 38, 38, 0.9);
-  color: #ffffff;
+  background: var(--color-error-bg);
+  color: var(--color-on-primary);
   font-size: 0.75rem;
 }
 
@@ -152,42 +165,42 @@ body {
 
 @media (prefers-color-scheme: dark) {
   :root {
-    color: #f9fafb;
-    background-color: #0f172a;
+    --color-text: #f9fafb;
+    --color-bg: #0f172a;
+    --color-surface: #0b1220;
+    --color-surface-alt: #111827;
+    --color-border: #1f2937;
+    --color-text-disabled: #4b5563;
+    --color-text-muted: #94a3b8;
   }
 
   .toolbar,
   .pane {
-    background: #0b1220;
-    border-color: #1f2937;
+    background: var(--color-surface);
+    border-color: var(--color-border);
   }
 
   .pane-header {
-    background: #111827;
-    border-color: #1f2937;
+    background: var(--color-surface-alt);
+    border-color: var(--color-border);
   }
 
   .editor {
-    color: #f9fafb;
+    color: var(--color-text);
   }
 
   .editor:disabled {
-    background: #111827;
-    color: #4b5563;
+    background: var(--color-surface-alt);
+    color: var(--color-text-disabled);
   }
 
   .action {
-    background: #0b1220;
-    border-color: #1f2937;
-    color: #f9fafb;
-  }
-
-  .action.primary {
-    background: #2563eb;
-    border-color: #2563eb;
+    background: var(--color-surface);
+    border-color: var(--color-border);
+    color: var(--color-text);
   }
 
   .empty-preview {
-    color: #94a3b8;
+    color: var(--color-text-muted);
   }
 }
