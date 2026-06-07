@@ -10,8 +10,8 @@ export function PdfPreviewPane({ pdfUrl, compileError }: PdfPreviewPaneProps) {
       <div className="pane-body">
         {!pdfUrl ? (
           <div className="empty-preview">
-            <h2>Preview is empty</h2>
-            <p>Select a Markdown file and click Compile to see the PDF.</p>
+            <h3>No preview available</h3>
+            <p>Select a Markdown file for compilation.</p>
           </div>
         ) : (
           <iframe title="Compiled resume preview" className="preview-frame" src={pdfUrl} />
