@@ -7,12 +7,22 @@ export type ResizableHandleProps = {
 export function ResizableHandle({ onDrag }: ResizableHandleProps) {
   const dragging = useRef(false);
   const startX = useRef(0);
+  const overlayRef = useRef<HTMLDivElement | null>(null);
 
   const handleMouseDown = useCallback(
     (e: React.MouseEvent) => {
       e.preventDefault();
       dragging.current = true;
       startX.current = e.clientX;
+
+      let overlay = overlayRef.current;
+      if (!overlay) {
+        overlay = document.createElement("div");
+        overlay.style.cssText =
+          "position:fixed;inset:0;z-index:9999;cursor:col-resize;";
+        document.body.appendChild(overlay);
+        overlayRef.current = overlay;
+      }
 
       const handleMouseMove = (ev: MouseEvent) => {
         if (!dragging.current) return;
@@ -23,14 +33,16 @@ export function ResizableHandle({ onDrag }: ResizableHandleProps) {
 
       const handleMouseUp = () => {
         dragging.current = false;
-        document.removeEventListener("mousemove", handleMouseMove);
-        document.removeEventListener("mouseup", handleMouseUp);
+        overlay.removeEventListener("mousemove", handleMouseMove);
+        overlay.removeEventListener("mouseup", handleMouseUp);
+        overlay.remove();
+        overlayRef.current = null;
         document.body.style.cursor = "";
         document.body.style.userSelect = "";
       };
 
-      document.addEventListener("mousemove", handleMouseMove);
-      document.addEventListener("mouseup", handleMouseUp);
+      overlay.addEventListener("mousemove", handleMouseMove);
+      overlay.addEventListener("mouseup", handleMouseUp);
       document.body.style.cursor = "col-resize";
       document.body.style.userSelect = "none";
     },
