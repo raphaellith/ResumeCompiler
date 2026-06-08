@@ -1,4 +1,4 @@
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import "./App.css";
 
 import { isTauri } from "@tauri-apps/api/core";
@@ -6,12 +6,17 @@ import { save } from "@tauri-apps/plugin-dialog";
 import { writeFile } from "@tauri-apps/plugin-fs";
 import { MarkdownEditorPane } from "./components/MarkdownEditorPane";
 import { PdfPreviewPane } from "./components/PdfPreviewPane";
+import { ResizableHandle } from "./components/ResizableHandle";
 import { Toolbar } from "./components/Toolbar";
 import { COMPILE_ENDPOINT } from "./config/api";
 import { useMarkdownDocument } from "./hooks/useMarkdownDocument";
 import { usePdfCompilation } from "./hooks/usePdfCompilation";
 import { useSaveMarkdownOnClose } from "./hooks/useSaveMarkdownOnClose";
 import { stripExtension } from "./utils/path";
+
+const HANDLE_WIDTH = 12;
+const PANE_PADDING = 12;
+const MIN_PANE_WIDTH = 200;
 
 function App() {
   const {
@@ -24,7 +29,7 @@ function App() {
     openFilePicker,
   } = useMarkdownDocument();
 
-  const { pdfUrl, pdfBlob, isCompiling, lastCompiledAt, compileError, compilePdf } =
+  const { pdfUrl, pdfBlob, isCompiling, compileError, compilePdf } =
     usePdfCompilation(COMPILE_ENDPOINT);
 
   useSaveMarkdownOnClose({
@@ -32,23 +37,50 @@ function App() {
     markdown,
   });
 
+  const [leftPaneWidth, setLeftPaneWidth] = useState<number | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!containerRef.current || leftPaneWidth !== null) return;
+    const contentWidth =
+      containerRef.current.getBoundingClientRect().width - 2 * PANE_PADDING;
+    setLeftPaneWidth((contentWidth - HANDLE_WIDTH) / 2);
+  });
+
+  const handleDrag = useCallback((deltaX: number) => {
+    if (!containerRef.current) return;
+    const contentWidth =
+      containerRef.current.getBoundingClientRect().width - 2 * PANE_PADDING;
+    const available = contentWidth - HANDLE_WIDTH;
+    setLeftPaneWidth((prev) => {
+      const current = prev ?? available / 2;
+      return Math.min(
+        Math.max(current + deltaX, MIN_PANE_WIDTH),
+        available - MIN_PANE_WIDTH,
+      );
+    });
+  }, []);
+
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleOpenFile = useCallback(async () => {
     const result = await openFilePicker();
-    if (!result && !isTauri()) {
+    if (result) {
+      compilePdf(result.markdown);
+    } else if (!isTauri()) {
       fileInputRef.current?.click();
     }
-  }, [openFilePicker]);
+  }, [openFilePicker, compilePdf]);
 
   const handleFileInputChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
       if (!file) return;
-      void loadFile(file);
+      const result = await loadFile(file);
+      compilePdf(result.markdown);
       e.target.value = "";
     },
-    [loadFile]
+    [loadFile, compilePdf]
   );
 
   const handleCompile = useCallback(() => {
@@ -85,10 +117,6 @@ function App() {
     }
   }, [fileDisplayName, pdfBlob]);
 
-  const compiledLabel = lastCompiledAt
-    ? `Compiled at ${lastCompiledAt.toLocaleTimeString()}`
-    : "Not compiled yet";
-
   return (
     <main className="app">
       <Toolbar
@@ -108,18 +136,27 @@ function App() {
         style={{ display: "none" }}
       />
 
-      <section className="panes">
-        <MarkdownEditorPane
-          hasFile={hasFile}
-          markdown={markdown}
-          onMarkdownChange={updateMarkdown}
-        />
+      <section className="panes" ref={containerRef}>
+        <div
+          className="pane-wrapper"
+          style={leftPaneWidth != null ? { flex: `0 0 ${leftPaneWidth}px` } : { flex: 1 }}
+        >
+          <MarkdownEditorPane
+            fileName={fileDisplayName}
+            hasFile={hasFile}
+            markdown={markdown}
+            onMarkdownChange={updateMarkdown}
+          />
+        </div>
 
-        <PdfPreviewPane
-          pdfUrl={pdfUrl}
-          compileError={compileError}
-          compiledLabel={compiledLabel}
-        />
+        <ResizableHandle onDrag={handleDrag} />
+
+        <div className="pane-wrapper" style={{ flex: 1 }}>
+          <PdfPreviewPane
+            pdfUrl={pdfUrl}
+            compileError={compileError}
+          />
+        </div>
       </section>
     </main>
   );
