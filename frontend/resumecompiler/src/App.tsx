@@ -8,7 +8,7 @@ import { MarkdownEditorPane } from "./components/MarkdownEditorPane";
 import { PdfPreviewPane } from "./components/PdfPreviewPane";
 import { ResizableHandle } from "./components/ResizableHandle";
 import { Toolbar } from "./components/Toolbar";
-import { COMPILE_ENDPOINT } from "./config/api";
+import { COMPILED_PDF_ENDPOINT } from "./config/api";
 import { useMarkdownDocument } from "./hooks/useMarkdownDocument";
 import { usePdfCompilation } from "./hooks/usePdfCompilation";
 import { useSaveMarkdownOnClose } from "./hooks/useSaveMarkdownOnClose";
@@ -30,7 +30,7 @@ function App() {
   } = useMarkdownDocument();
 
   const { pdfUrl, pdfBlob, isCompiling, compileError, compilePdf } =
-    usePdfCompilation(COMPILE_ENDPOINT);
+    usePdfCompilation(COMPILED_PDF_ENDPOINT);
 
   useSaveMarkdownOnClose({
     filePath,

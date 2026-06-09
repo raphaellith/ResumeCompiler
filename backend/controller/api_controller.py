@@ -16,7 +16,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.post("/compile/", response_class=Response)
+@app.post("/pdf/", response_class=Response)
 def compile_markdown_to_pdf(payload: MarkdownInput):
     markdown = payload.markdown
     pdf_bytes = get_pdf_bytes_from_markdown(markdown)
