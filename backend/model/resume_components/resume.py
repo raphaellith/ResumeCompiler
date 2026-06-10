@@ -1,3 +1,5 @@
+from typing import Union
+
 from bs4 import BeautifulSoup
 from bs4.element import Tag
 
@@ -50,7 +52,7 @@ class Resume(ResumeComponent):
             i += 1
 
         # Parse components
-        self.components: list[ResumeComponent] = []  # Contains Title, Subtitle, ContactList and ResumeSection objects
+        self.components: list[Union[Title, Subtitle, ContactList, ResumeSection]] = []
 
         for tag in tags_prior_to_first_section:
             if tag.name == "h1":  # Title
