@@ -1,3 +1,5 @@
+from xml.etree import ElementTree
+
 from bs4 import Tag
 
 from backend.model.resume_components.resume_sections.resume_section import ResumeSection
@@ -44,3 +46,12 @@ class CatalogueSection(ResumeSection):
         result.append(r"\end{itemize}")
 
         return result
+
+    def to_xml_element(self) -> ElementTree.Element:
+        catalogue_section_element = ElementTree.Element("catalogue_section")
+
+        for list_item in self.catalogue_list:
+            list_item_element = ElementTree.SubElement(catalogue_section_element, "list_item")
+            list_item_element.text = list_item
+
+        return catalogue_section_element

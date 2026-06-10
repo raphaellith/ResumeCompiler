@@ -1,7 +1,9 @@
+from xml.etree import ElementTree
+
 from bs4 import Tag
 
 from backend.model.resume_components.resume_items.organisational_section_resume_item import OrganisationalSectionResumeItem
-from backend.model.resume_components.resume_sections.resume_section import ResumeSection, get_toolset_or_organisational_section_as_latex_lines, classify_tags_in_organisational_or_toolset_section_by_resume_item
+from backend.model.resume_components.resume_sections.resume_section import ResumeSection, get_toolset_or_organisational_section_as_latex_lines, get_toolset_or_organisational_section_as_xml_element, classify_tags_in_organisational_or_toolset_section_by_resume_item
 
 
 class OrganisationalSection(ResumeSection):
@@ -23,3 +25,6 @@ class OrganisationalSection(ResumeSection):
 
     def to_latex_lines(self) -> list[str]:
         return get_toolset_or_organisational_section_as_latex_lines(heading=self.heading, resume_items=self.resume_items)
+
+    def to_xml_element(self) -> ElementTree.Element:
+        return get_toolset_or_organisational_section_as_xml_element(self)

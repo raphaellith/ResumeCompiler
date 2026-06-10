@@ -1,3 +1,5 @@
+from xml.etree import ElementTree
+
 from backend.model.resume_components.resume_component import ResumeComponent
 from backend.model.utils.latex_utils import indent_lines, get_latex_command
 
@@ -25,3 +27,12 @@ class ResumeItem(ResumeComponent):
         result.append(get_latex_command("resumeDescriptionListEnd"))
 
         return result
+
+    def get_description_list_as_xml_element(self) -> ElementTree.Element:
+        description_list_element = ElementTree.Element("description-list")
+
+        for description in self.description_list:
+            description_element = ElementTree.SubElement(description_list_element, "description")
+            description_element.text = description
+
+        return description_list_element

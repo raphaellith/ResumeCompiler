@@ -1,3 +1,4 @@
+from xml.etree import ElementTree
 from abc import ABC, abstractmethod
 
 class ResumeComponent(ABC):
@@ -13,3 +14,14 @@ class ResumeComponent(ABC):
         :return: The LaTeX code representation of this resume component.
         """
         pass
+
+    # TODO: Implement this abstract method in all concrete subclasses of ResumeComponent
+    @abstractmethod
+    def to_xml_element(self) -> ElementTree.Element:
+        """
+        :return: The XML representation of this resume component.
+        """
+        pass
+
+    def to_xml_string(self) -> str:
+        return ElementTree.tostring(self.to_xml_element(), encoding="unicode")

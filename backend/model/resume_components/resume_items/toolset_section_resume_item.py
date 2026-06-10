@@ -1,3 +1,5 @@
+from xml.etree import ElementTree
+
 from bs4 import Tag
 
 from backend.model.resume_components.resume_items.resume_item import ResumeItem
@@ -43,3 +45,18 @@ class ToolsetSectionResumeItem(ResumeItem):
 
         return result
 
+    def to_xml_element(self) -> ElementTree.Element:
+        toolset_section_resume_item_element = ElementTree.Element("toolset-section-resume-item")
+
+        subheading_element = ElementTree.SubElement(toolset_section_resume_item_element, "subheading")
+        subheading_element.text = self.subheading
+
+        tools_element = ElementTree.SubElement(toolset_section_resume_item_element, "tools")
+        tools_element.text = self.tools
+
+        time_element = ElementTree.SubElement(toolset_section_resume_item_element, "time")
+        time_element.text = self.time
+
+        toolset_section_resume_item_element.append(self.get_description_list_as_xml_element())
+
+        return toolset_section_resume_item_element
