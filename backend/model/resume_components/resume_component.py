@@ -15,7 +15,6 @@ class ResumeComponent(ABC):
         """
         pass
 
-    # TODO: Implement this abstract method in all concrete subclasses of ResumeComponent
     @abstractmethod
     def to_xml_element(self) -> ElementTree.Element:
         """
