@@ -3,7 +3,7 @@ from xml.etree import ElementTree
 from bs4 import Tag
 
 from backend.model.resume_components.resume_items.toolset_section_resume_item import ToolsetSectionResumeItem
-from backend.model.resume_components.resume_sections.resume_section import ResumeSection, get_toolset_or_organisational_section_as_latex_lines, get_toolset_or_organisational_section_as_xml_element, classify_tags_in_organisational_or_toolset_section_by_resume_item
+from backend.model.resume_components.resume_sections.resume_section import ResumeSection, get_toolset_or_organisational_section_as_latex_lines, get_toolset_or_organisational_section_as_xml_element, classify_tags_in_toolset_or_organisation_section_by_resume_item
 
 
 class ToolsetSection(ResumeSection):
@@ -16,7 +16,7 @@ class ToolsetSection(ResumeSection):
 
         super().__init__(heading=heading)
 
-        tags_by_resume_item: list[list[Tag]] = classify_tags_in_organisational_or_toolset_section_by_resume_item(tags)
+        tags_by_resume_item: list[list[Tag]] = classify_tags_in_toolset_or_organisation_section_by_resume_item(tags)
 
         # Initialise resume items
         self.resume_items: list[ToolsetSectionResumeItem] = [

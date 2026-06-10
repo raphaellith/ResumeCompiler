@@ -55,7 +55,7 @@ def get_toolset_or_organisational_section_as_xml_element(section: Union[ToolsetS
     return section_element
 
 
-def classify_tags_in_organisational_or_toolset_section_by_resume_item(tags: list[Tag]) -> list[list[Tag]]:
+def classify_tags_in_toolset_or_organisation_section_by_resume_item(tags: list[Tag]) -> list[list[Tag]]:
     """
     :param tags: A list of tags representing a series of resume items in a toolset or organisational section.
     :return: A two-dimensional list of tags, with each sublist containing the tags that belong to a resume item.
