@@ -23,4 +23,6 @@ class ResumeComponent(ABC):
         pass
 
     def to_xml_string(self) -> str:
-        return ElementTree.tostring(self.to_xml_element(), encoding="unicode")
+        xml_element = self.to_xml_element()
+        ElementTree.indent(xml_element, space="  ")
+        return ElementTree.tostring(xml_element, encoding="unicode")
