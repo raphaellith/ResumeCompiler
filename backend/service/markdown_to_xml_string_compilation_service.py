@@ -8,6 +8,4 @@ def get_resume_as_xml_from_markdown(markdown: str) -> str:
     :return: The XML document containing the compiled resume contents.
     """
     resume = Resume(markdown)
-
-    # TODO: Implement XML conversion
-    pass
+    return resume.to_xml_string()

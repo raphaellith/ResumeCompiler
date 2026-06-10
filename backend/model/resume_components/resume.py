@@ -1,4 +1,5 @@
 from typing import Union
+from xml.etree import ElementTree
 
 from bs4 import BeautifulSoup
 from bs4.element import Tag
@@ -90,6 +91,11 @@ class Resume(ResumeComponent):
         result += get_latex_environment(env="document", contents=document_contents, indent_contents=False)
 
         return result
+
+    def to_xml_element(self) -> ElementTree.Element:
+        resume_element = ElementTree.Element("resume")
+        resume_element.extend(map(lambda component: component.to_xml_element(), self.components))
+        return resume_element
 
 
 def process_hidden_elements(tags: list[Tag]) -> list[Tag]:
