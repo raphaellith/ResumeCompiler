@@ -1,10 +1,8 @@
-from typing import Union
 from xml.etree import ElementTree
 
 from bs4.element import Tag
 
-from backend.model.resume_components.resume_sections.organisational_section import OrganisationalSection
-from backend.model.resume_components.resume_sections.toolset_section import ToolsetSection
+from backend.model.resume_components.resume_sections.resume_section import ResumeSection
 from backend.model.utils.latex_utils import get_latex_command, indent_lines
 from backend.model.resume_components.resume_items.resume_item import ResumeItem
 
@@ -29,15 +27,13 @@ def get_toolset_or_organisational_section_as_latex_lines(heading: str, resume_it
     return result
 
 
-def get_toolset_or_organisational_section_as_xml_element(section: Union[ToolsetSection, OrganisationalSection]) -> ElementTree.Element:
+def get_toolset_or_organisational_section_as_xml_element(section: ResumeSection, is_toolset_section: bool) -> ElementTree.Element:
     """
     :param section: The toolset or organisational section.
+    :param is_toolset_section: Whether the section is a toolset or organisational section.
     :return: The XML representation of the toolset or organisational section.
     """
-    if isinstance(section, ToolsetSection):
-        tag = "toolset-section"
-    else:
-        tag = "organisational-section"
+    tag = "toolset-section" if is_toolset_section else "organisational-section"
 
     section_element = ElementTree.Element(tag)
     section_element.set("heading", section.heading)

@@ -1,4 +1,4 @@
-from xml.etree.ElementTree import ElementTree
+from xml.etree import ElementTree
 
 from bs4.element import Tag
 
