@@ -7,8 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "tauri": "tauri",
-    "mock:pdf": "node scripts/mock-compile.mjs"
+    "tauri": "tauri"
   },
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",
