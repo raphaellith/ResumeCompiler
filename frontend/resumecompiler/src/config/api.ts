@@ -5,4 +5,5 @@ export const API_BASE_URL = (
 ).replace(/\/+$/, "");
 
 export const COMPILED_PDF_ENDPOINT = `${API_BASE_URL}/pdf/`;
+export const COMPILED_XML_ENDPOINT = `${API_BASE_URL}/xml/`;
 

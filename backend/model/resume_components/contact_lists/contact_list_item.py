@@ -1,3 +1,5 @@
+from xml.etree import ElementTree
+
 from backend.model.resume_components.resume_component import ResumeComponent
 from backend.model.utils.latex_utils import get_latex_command
 
@@ -31,3 +33,12 @@ class ContactListItem(ResumeComponent):
                 arguments=[self.link, get_latex_command(command="underline", arguments=[self.displayed_text])]
             )
         ]
+
+    def to_xml_element(self) -> ElementTree.Element:
+        contact_list_item_element = ElementTree.Element("contact-list-item")
+        contact_list_item_element.text = self.displayed_text
+
+        if self.link:
+            contact_list_item_element.set("href", self.link)
+
+        return contact_list_item_element

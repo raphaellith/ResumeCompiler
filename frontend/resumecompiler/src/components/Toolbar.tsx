@@ -2,18 +2,24 @@ export type ToolbarProps = {
   hasFile: boolean;
   isCompiling: boolean;
   canExport: boolean;
+  canExportXml: boolean;
+  isExportingXml: boolean;
   onOpenFile: () => void;
   onCompile: () => void;
   onExport: () => void;
+  onExportXml: () => void;
 };
 
 export function Toolbar({
   hasFile,
   isCompiling,
   canExport,
+  canExportXml,
+  isExportingXml,
   onOpenFile,
   onCompile,
   onExport,
+  onExportXml,
 }: ToolbarProps) {
   return (
     <header className="toolbar">
@@ -35,11 +41,20 @@ export function Toolbar({
 
         <button
           type="button"
-          className="action primary"
+          className="action"
           onClick={onExport}
           disabled={!canExport}
         >
           Export PDF
+        </button>
+
+        <button
+          type="button"
+          className="action"
+          onClick={onExportXml}
+          disabled={!canExportXml || isExportingXml}
+        >
+          {isExportingXml ? "Exporting XML..." : "Export XML"}
         </button>
       </div>
     </header>

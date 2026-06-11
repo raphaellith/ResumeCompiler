@@ -8,10 +8,11 @@ import { MarkdownEditorPane } from "./components/MarkdownEditorPane";
 import { PdfPreviewPane } from "./components/PdfPreviewPane";
 import { ResizableHandle } from "./components/ResizableHandle";
 import { Toolbar } from "./components/Toolbar";
-import { COMPILED_PDF_ENDPOINT } from "./config/api";
+import { COMPILED_PDF_ENDPOINT, COMPILED_XML_ENDPOINT } from "./config/api";
 import { useMarkdownDocument } from "./hooks/useMarkdownDocument";
 import { usePdfCompilation } from "./hooks/usePdfCompilation";
 import { useSaveMarkdownOnClose } from "./hooks/useSaveMarkdownOnClose";
+import { useXmlExport } from "./hooks/useXmlExport";
 import { stripExtension } from "./utils/path";
 
 const HANDLE_WIDTH = 12;
@@ -31,6 +32,9 @@ function App() {
 
   const { pdfUrl, pdfBlob, isCompiling, compileError, compilePdf } =
     usePdfCompilation(COMPILED_PDF_ENDPOINT);
+
+  const { isExportingXml, exportXml } =
+    useXmlExport(COMPILED_XML_ENDPOINT);
 
   useSaveMarkdownOnClose({
     filePath,
@@ -117,15 +121,45 @@ function App() {
     }
   }, [fileDisplayName, pdfBlob]);
 
+  const handleExportXml = useCallback(() => {
+    const baseName = stripExtension(fileDisplayName) || "resume";
+    const fileName = `${baseName}.xml`;
+
+    void exportXml(markdown).then((xmlText) => {
+      if (isTauri()) {
+        void (async () => {
+          const filePath = await save({
+            defaultPath: fileName,
+            filters: [{ name: "XML", extensions: ["xml"] }],
+          });
+          if (!filePath) return;
+          const encoder = new TextEncoder();
+          await writeFile(filePath, encoder.encode(xmlText));
+        })();
+      } else {
+        const blob = new Blob([xmlText], { type: "application/xml" });
+        const exportUrl = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = exportUrl;
+        link.download = fileName;
+        link.click();
+        URL.revokeObjectURL(exportUrl);
+      }
+    });
+  }, [fileDisplayName, markdown, exportXml]);
+
   return (
     <main className="app">
       <Toolbar
         hasFile={hasFile}
         isCompiling={isCompiling}
         canExport={Boolean(pdfBlob)}
+        canExportXml={Boolean(pdfBlob)}
+        isExportingXml={isExportingXml}
         onOpenFile={handleOpenFile}
         onCompile={handleCompile}
         onExport={handleExport}
+        onExportXml={handleExportXml}
       />
 
       <input
