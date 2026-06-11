@@ -1,13 +1,9 @@
 from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
 
+from backend.controller.data_transfer_objects.data_transfer_objects import MarkdownInput
 from backend.service.markdown_to_pdf_bytes_compilation_service import get_pdf_bytes_from_markdown
 from backend.service.markdown_to_xml_string_compilation_service import get_resume_as_xml_from_markdown
-
-
-class MarkdownInput(BaseModel):
-    markdown: str
 
 app = FastAPI()
 app.add_middleware(
@@ -16,6 +12,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+# ------------------------------ API ENDPOINTS ------------------------------
 
 @app.post("/pdf/", response_class=Response)
 def compile_markdown_to_pdf(payload: MarkdownInput):
