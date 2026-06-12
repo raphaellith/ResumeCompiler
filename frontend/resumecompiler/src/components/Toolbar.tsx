@@ -32,18 +32,11 @@ export function Toolbar({
         setIsExportMenuOpen(false);
       }
     }
-    function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") {
-        setIsExportMenuOpen(false);
-      }
-    }
     if (isExportMenuOpen) {
       document.addEventListener("mousedown", handleMouseDown);
-      document.addEventListener("keydown", handleKeyDown);
     }
     return () => {
       document.removeEventListener("mousedown", handleMouseDown);
-      document.removeEventListener("keydown", handleKeyDown);
     };
   }, [isExportMenuOpen]);
 
