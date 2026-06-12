@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Button from "@mui/material/Button";
+import ButtonGroup from "@mui/material/ButtonGroup";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 
@@ -46,17 +47,17 @@ export function Toolbar({
       </div>
 
       <div className="actions">
-        <Button
-          variant="contained"
-          onClick={onCompile}
-          disabled={!hasFile || isCompiling}
-        >
-          {isCompiling ? "Compiling..." : "Compile"}
-        </Button>
-
-        <Button variant="contained" onClick={onSettings}>
-          Settings
-        </Button>
+        <ButtonGroup variant="contained">
+          <Button
+            onClick={onCompile}
+            disabled={!hasFile || isCompiling}
+          >
+            {isCompiling ? "Compiling..." : "Compile"}
+          </Button>
+          <Button onClick={onSettings}>
+            Settings
+          </Button>
+        </ButtonGroup>
 
         <Button
           variant="contained"
