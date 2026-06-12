@@ -60,6 +60,62 @@ body {
   opacity: 0.6;
 }
 
+.action-with-menu {
+  position: relative;
+  display: inline-flex;
+}
+
+.export-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  min-width: 160px;
+  padding: 4px;
+  border-radius: 8px;
+  border: 1px solid var(--color-dominant-border);
+  background: var(--color-dominant-light);
+  list-style: none;
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.export-menu-item {
+  display: block;
+  width: 100%;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: none;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  background: transparent;
+  color: var(--color-secondary);
+}
+
+.export-menu-item-primary {
+  background: var(--color-accent);
+  color: var(--color-accent-dark);
+}
+
+.export-menu-item-secondary {
+  border: 1px solid var(--color-dominant-border);
+}
+
+.export-menu-item:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.export-menu-item-secondary:hover:not(:disabled) {
+  background: var(--color-dominant-border);
+}
+
+.export-menu-item:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
 .panes {
   flex: 1;
   display: flex;

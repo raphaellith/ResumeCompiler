@@ -1,3 +1,5 @@
+import { useEffect, useRef, useState } from "react";
+
 export type ToolbarProps = {
   hasFile: boolean;
   isCompiling: boolean;
@@ -21,6 +23,30 @@ export function Toolbar({
   onExport,
   onExportXml,
 }: ToolbarProps) {
+  const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleMouseDown(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setIsExportMenuOpen(false);
+      }
+    }
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setIsExportMenuOpen(false);
+      }
+    }
+    if (isExportMenuOpen) {
+      document.addEventListener("mousedown", handleMouseDown);
+      document.addEventListener("keydown", handleKeyDown);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleMouseDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isExportMenuOpen]);
+
   return (
     <header className="toolbar">
       <div className="actions">
@@ -39,23 +65,48 @@ export function Toolbar({
           {isCompiling ? "Compiling..." : "Compile"}
         </button>
 
-        <button
-          type="button"
-          className="action"
-          onClick={onExport}
-          disabled={!canExport}
-        >
-          Export PDF
-        </button>
+        <div className="action-with-menu" ref={menuRef}>
+          <button
+            type="button"
+            className="action"
+            onClick={() => setIsExportMenuOpen((prev) => !prev)}
+          >
+            Export ▼
+          </button>
 
-        <button
-          type="button"
-          className="action"
-          onClick={onExportXml}
-          disabled={!canExportXml || isExportingXml}
-        >
-          {isExportingXml ? "Exporting XML..." : "Export XML"}
-        </button>
+          {isExportMenuOpen && (
+            <ul className="export-menu" role="menu">
+              <li role="none">
+                <button
+                  type="button"
+                  className="export-menu-item export-menu-item-primary"
+                  role="menuitem"
+                  onClick={() => {
+                    onExport();
+                    setIsExportMenuOpen(false);
+                  }}
+                  disabled={!canExport}
+                >
+                  Export PDF
+                </button>
+              </li>
+              <li role="none">
+                <button
+                  type="button"
+                  className="export-menu-item export-menu-item-secondary"
+                  role="menuitem"
+                  onClick={() => {
+                    onExportXml();
+                    setIsExportMenuOpen(false);
+                  }}
+                  disabled={!canExportXml || isExportingXml}
+                >
+                  {isExportingXml ? "Exporting XML..." : "Export XML"}
+                </button>
+              </li>
+            </ul>
+          )}
+        </div>
       </div>
     </header>
   );
