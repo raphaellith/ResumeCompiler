@@ -85,7 +85,7 @@ export function Toolbar({
               <li role="none">
                 <button
                   type="button"
-                  className="export-menu-item export-menu-item-secondary"
+                  className="export-menu-item"
                   role="menuitem"
                   onClick={() => {
                     onExportXml();
