@@ -33,7 +33,7 @@ function App() {
   const { pdfUrl, pdfBlob, isCompiling, compileError, compilePdf } =
     usePdfCompilation(COMPILED_PDF_ENDPOINT);
 
-  const { isExportingXml, exportXml } =
+  const { exportXml } =
     useXmlExport(COMPILED_XML_ENDPOINT);
 
   useSaveMarkdownOnClose({
@@ -155,7 +155,6 @@ function App() {
         isCompiling={isCompiling}
         canExport={Boolean(pdfBlob)}
         canExportXml={Boolean(pdfBlob)}
-        isExportingXml={isExportingXml}
         onOpenFile={handleOpenFile}
         onCompile={handleCompile}
         onExport={handleExport}
