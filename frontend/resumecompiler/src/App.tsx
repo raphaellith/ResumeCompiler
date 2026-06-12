@@ -7,8 +7,10 @@ import { writeFile } from "@tauri-apps/plugin-fs";
 import { MarkdownEditorPane } from "./components/MarkdownEditorPane";
 import { PdfPreviewPane } from "./components/PdfPreviewPane";
 import { ResizableHandle } from "./components/ResizableHandle";
+import { SettingsModal } from "./components/SettingsModal";
 import { Toolbar } from "./components/Toolbar";
 import { COMPILED_PDF_ENDPOINT, COMPILED_XML_ENDPOINT } from "./config/api";
+import { DEFAULT_FONT } from "./config/font";
 import { useMarkdownDocument } from "./hooks/useMarkdownDocument";
 import { usePdfCompilation } from "./hooks/usePdfCompilation";
 import { useSaveMarkdownOnClose } from "./hooks/useSaveMarkdownOnClose";
@@ -41,6 +43,22 @@ function App() {
     markdown,
   });
 
+  const [font, setFont] = useState(DEFAULT_FONT);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+  const handleOpenSettings = useCallback(() => {
+    setIsSettingsOpen(true);
+  }, []);
+
+  const handleCloseSettings = useCallback(() => {
+    setIsSettingsOpen(false);
+  }, []);
+
+  const handleSaveFont = useCallback((nextFont: string) => {
+    setFont(nextFont);
+    setIsSettingsOpen(false);
+  }, []);
+
   const [leftPaneWidth, setLeftPaneWidth] = useState<number | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -70,29 +88,29 @@ function App() {
   const handleOpenFile = useCallback(async () => {
     const result = await openFilePicker();
     if (result) {
-      compilePdf(result.markdown);
+      compilePdf(result.markdown, font);
     } else if (!isTauri()) {
       fileInputRef.current?.click();
     }
-  }, [openFilePicker, compilePdf]);
+  }, [openFilePicker, compilePdf, font]);
 
   const handleFileInputChange = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
       if (!file) return;
       const result = await loadFile(file);
-      compilePdf(result.markdown);
+      compilePdf(result.markdown, font);
       e.target.value = "";
     },
-    [loadFile, compilePdf]
+    [loadFile, compilePdf, font]
   );
 
   const handleCompile = useCallback(() => {
     if (!hasFile) {
       return;
     }
-    void compilePdf(markdown);
-  }, [compilePdf, hasFile, markdown]);
+    void compilePdf(markdown, font);
+  }, [compilePdf, hasFile, markdown, font]);
 
   const handleExport = useCallback(() => {
     if (!pdfBlob) {
@@ -157,8 +175,16 @@ function App() {
         canExportXml={Boolean(pdfBlob)}
         onOpenFile={handleOpenFile}
         onCompile={handleCompile}
+        onSettings={handleOpenSettings}
         onExport={handleExport}
         onExportXml={handleExportXml}
+      />
+
+      <SettingsModal
+        isOpen={isSettingsOpen}
+        initialFont={font}
+        onSave={handleSaveFont}
+        onClose={handleCloseSettings}
       />
 
       <input

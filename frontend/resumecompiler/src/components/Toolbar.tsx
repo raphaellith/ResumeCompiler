@@ -7,6 +7,7 @@ export type ToolbarProps = {
   canExportXml: boolean;
   onOpenFile: () => void;
   onCompile: () => void;
+  onSettings: () => void;
   onExport: () => void;
   onExportXml: () => void;
 };
@@ -18,6 +19,7 @@ export function Toolbar({
   canExportXml,
   onOpenFile,
   onCompile,
+  onSettings,
   onExport,
   onExportXml,
 }: ToolbarProps) {
@@ -54,6 +56,10 @@ export function Toolbar({
           disabled={!hasFile || isCompiling}
         >
           {isCompiling ? "Compiling..." : "Compile"}
+        </button>
+
+        <button type="button" className="action" onClick={onSettings}>
+          Settings
         </button>
 
         <div className="action-with-menu" ref={menuRef}>
