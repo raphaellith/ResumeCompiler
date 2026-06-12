@@ -1,7 +1,8 @@
-from fastapi import FastAPI, Response
+from fastapi import FastAPI, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
 
 from backend.controller.data_transfer_objects.data_transfer_objects import MarkdownInput
+from backend.model.enums.font import Font
 from backend.service.markdown_to_pdf_bytes_compilation_service import get_pdf_bytes_from_markdown
 from backend.service.markdown_to_xml_string_compilation_service import get_resume_as_xml_from_markdown
 
@@ -17,9 +18,12 @@ app.add_middleware(
 # ------------------------------ API ENDPOINTS ------------------------------
 
 @app.post("/pdf/", response_class=Response)
-def compile_markdown_to_pdf(payload: MarkdownInput):
+def compile_markdown_to_pdf(
+    payload: MarkdownInput,
+    font: str | None = Query(default=None, alias="font"),
+):
     markdown = payload.markdown
-    pdf_bytes = get_pdf_bytes_from_markdown(markdown)
+    pdf_bytes = get_pdf_bytes_from_markdown(markdown, Font.from_query_parameter(font))
 
     return Response(
         content=pdf_bytes,
