@@ -1,4 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
+import Button from "@mui/material/Button";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 
 export type ToolbarProps = {
   hasFile: boolean;
@@ -23,88 +26,73 @@ export function Toolbar({
   onExport,
   onExportXml,
 }: ToolbarProps) {
-  const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
+  const [exportAnchorEl, setExportAnchorEl] = useState<HTMLElement | null>(null);
+  const exportOpen = Boolean(exportAnchorEl);
 
-  useEffect(() => {
-    function handleMouseDown(e: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setIsExportMenuOpen(false);
-      }
-    }
-    if (isExportMenuOpen) {
-      document.addEventListener("mousedown", handleMouseDown);
-    }
-    return () => {
-      document.removeEventListener("mousedown", handleMouseDown);
-    };
-  }, [isExportMenuOpen]);
+  const handleExportClick = (event: React.MouseEvent<HTMLElement>) => {
+    setExportAnchorEl(event.currentTarget);
+  };
+
+  const handleExportClose = () => {
+    setExportAnchorEl(null);
+  };
 
   return (
     <header className="toolbar">
       <div className="actions">
-        <button type="button" className="action" onClick={onOpenFile}>
+        <Button variant="contained" onClick={onOpenFile}>
           Select File
-        </button>
+        </Button>
       </div>
 
       <div className="actions">
-        <button
-          type="button"
-          className="action"
+        <Button
+          variant="contained"
           onClick={onCompile}
           disabled={!hasFile || isCompiling}
         >
           {isCompiling ? "Compiling..." : "Compile"}
-        </button>
+        </Button>
 
-        <button type="button" className="action" onClick={onSettings}>
+        <Button variant="contained" onClick={onSettings}>
           Settings
-        </button>
+        </Button>
 
-        <div className="action-with-menu" ref={menuRef}>
-          <button
-            type="button"
-            className="action"
-            onClick={() => setIsExportMenuOpen((prev) => !prev)}
+        <Button
+          variant="contained"
+          onClick={handleExportClick}
+          disabled={!canExport}
+        >
+          Export ▼
+        </Button>
+
+        <Menu
+          anchorEl={exportAnchorEl}
+          open={exportOpen}
+          onClose={handleExportClose}
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+          transformOrigin={{ vertical: "top", horizontal: "right" }}
+        >
+          <MenuItem
+            onClick={() => {
+              onExport();
+              handleExportClose();
+            }}
             disabled={!canExport}
+            sx={{ fontWeight: 800 }}
           >
-            Export ▼
-          </button>
-
-          {isExportMenuOpen && (
-            <ul className="export-menu" role="menu">
-              <li role="none">
-                <button
-                  type="button"
-                  className="export-menu-item export-menu-item-primary"
-                  role="menuitem"
-                  onClick={() => {
-                    onExport();
-                    setIsExportMenuOpen(false);
-                  }}
-                  disabled={!canExport}
-                >
-                  Export PDF
-                </button>
-              </li>
-              <li role="none">
-                <button
-                  type="button"
-                  className="export-menu-item"
-                  role="menuitem"
-                  onClick={() => {
-                    onExportXml();
-                    setIsExportMenuOpen(false);
-                  }}
-                  disabled={!canExportXml}
-                >
-                  Export XML
-                </button>
-              </li>
-            </ul>
-          )}
-        </div>
+            Export PDF
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              onExportXml();
+              handleExportClose();
+            }}
+            disabled={!canExportXml}
+          >
+            Export XML
+          </MenuItem>
+        </Menu>
       </div>
     </header>
   );
