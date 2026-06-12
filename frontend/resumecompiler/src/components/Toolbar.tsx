@@ -5,7 +5,6 @@ export type ToolbarProps = {
   isCompiling: boolean;
   canExport: boolean;
   canExportXml: boolean;
-  isExportingXml: boolean;
   onOpenFile: () => void;
   onCompile: () => void;
   onExport: () => void;
@@ -17,7 +16,6 @@ export function Toolbar({
   isCompiling,
   canExport,
   canExportXml,
-  isExportingXml,
   onOpenFile,
   onCompile,
   onExport,
@@ -63,6 +61,7 @@ export function Toolbar({
             type="button"
             className="action"
             onClick={() => setIsExportMenuOpen((prev) => !prev)}
+            disabled={!canExport}
           >
             Export ▼
           </button>
@@ -92,9 +91,9 @@ export function Toolbar({
                     onExportXml();
                     setIsExportMenuOpen(false);
                   }}
-                  disabled={!canExportXml || isExportingXml}
+                  disabled={!canExportXml}
                 >
-                  {isExportingXml ? "Exporting XML..." : "Export XML"}
+                  Export XML
                 </button>
               </li>
             </ul>
