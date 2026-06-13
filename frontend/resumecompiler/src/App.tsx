@@ -50,7 +50,6 @@ const theme = createTheme({
           borderRadius: 8,
           textTransform: "none",
           fontWeight: 600,
-          fontSize: "0.75rem",
           padding: "8px 14px",
           lineHeight: 1.75,
           minWidth: 0,
@@ -87,7 +86,6 @@ const theme = createTheme({
         root: {
           background: cssVar("--color-dominant"),
           fontWeight: 700,
-          fontSize: "1rem",
           padding: "14px 18px",
         },
       },
@@ -124,7 +122,6 @@ const theme = createTheme({
         input: {
           color: cssVar("--color-secondary"),
           fontWeight: 600,
-          fontSize: "0.75rem",
           padding: "8px 10px",
         },
       },
@@ -133,7 +130,6 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           color: cssVar("--color-secondary"),
-          fontSize: "0.8rem",
           fontWeight: 600,
           "&.Mui-focused": {
             color: cssVar("--color-accent"),
@@ -155,7 +151,6 @@ const theme = createTheme({
         root: {
           color: cssVar("--color-secondary"),
           fontWeight: 600,
-          fontSize: "0.75rem",
           "&:hover": {
             background: `color-mix(in srgb, ${cssVar("--color-dominant")} 50%, ${cssVar("--color-dominant-light")} 50%)`,
           },
