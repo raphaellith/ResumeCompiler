@@ -18,7 +18,7 @@ import { useSaveMarkdownOnClose } from "./hooks/useSaveMarkdownOnClose";
 import { useXmlExport } from "./hooks/useXmlExport";
 import { stripExtension } from "./utils/path";
 
-function cssVar(name: string): string {
+function cssVar(name: string): string {  // instead of using var([custom-property]) directly
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 }
 
