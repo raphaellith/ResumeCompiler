@@ -6,9 +6,8 @@ import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
 import { FONT_OPTIONS, type FontOption } from "../config/font";
+import { SettingRow } from "./SettingRow";
 
 export type SettingsModalProps = {
   isOpen: boolean;
@@ -38,21 +37,17 @@ export function SettingsModal({
   return (
     <Dialog open={isOpen} onClose={onClose} aria-label="Settings">
       <DialogTitle>Settings</DialogTitle>
-      <DialogContent>
-        <FormControl fullWidth variant="outlined" sx={{ mt: 3, minWidth: 240 }}>
-          <InputLabel id="font-select-label" sx={{ "&.Mui-focused": { color: "text.primary" } }}>
-            Font
-          </InputLabel>
+      <DialogContent sx={{ display: "flex", flexDirection: "column", justifyContent: "center", py: 0, minHeight: 100 }}>
+        <SettingRow label="Font">
           <Select
-            labelId="font-select-label"
             id="font-select"
             value={selectedFont}
-            label="Font"
             onChange={(e) => setSelectedFont(e.target.value)}
             sx={{
-              "& .MuiOutlinedInput-notchedOutline": { borderColor: "divider" },
-              "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "text.primary" },
-              "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "text.primary" },
+              minWidth: 240,
+              "& .MuiOutlinedInput-notchedOutline": { borderColor: "var(--color-dominant-border)" },
+              "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "var(--color-dominant-border)" },
+              "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "var(--color-dominant-border)" },
             }}
           >
             {FONT_OPTIONS.map((option: FontOption) => (
@@ -68,7 +63,7 @@ export function SettingsModal({
               </MenuItem>
             ))}
           </Select>
-        </FormControl>
+        </SettingRow>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Cancel</Button>

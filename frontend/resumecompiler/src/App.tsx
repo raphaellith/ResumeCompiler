@@ -162,6 +162,13 @@ const theme = createTheme({
           "&.Mui-disabled": {
             opacity: 0.6,
           },
+          "&.Mui-focusVisible": {
+            outline: 0,
+          },
+          "&.Mui-selected": {
+            border: "none",
+            outline: 0,
+          },
         },
       },
     },
