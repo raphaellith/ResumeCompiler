@@ -118,6 +118,7 @@ body {
 .pane-header-end {
   font-weight: 400;
   font-style: italic;
+  font-size: inherit;
 }
 
 .pane-body {
