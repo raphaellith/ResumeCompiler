@@ -51,6 +51,9 @@ const theme = createTheme({
           padding: "8px 14px",
           lineHeight: 1.75,
           minWidth: 0,
+          "&.Mui-disabled": {
+            opacity: 0.6,
+          },
         },
         contained: {
           border: `1px solid ${cssVar("--color-dominant-border")}`,
@@ -58,9 +61,11 @@ const theme = createTheme({
           "&:hover": {
             boxShadow: "none",
           },
-          "&:disabled": {
-            opacity: 0.6,
-            cursor: "not-allowed",
+          "&.Mui-disabled": {
+            border: `1px solid ${cssVar("--color-dominant-border")}`,
+            boxShadow: "none",
+            backgroundColor: cssVar("--color-accent"),
+            color: cssVar("--color-accent-dark"),
           },
         },
       },
