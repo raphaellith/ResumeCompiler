@@ -18,22 +18,26 @@ import { useSaveMarkdownOnClose } from "./hooks/useSaveMarkdownOnClose";
 import { useXmlExport } from "./hooks/useXmlExport";
 import { stripExtension } from "./utils/path";
 
+function cssVar(name: string): string {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+
 const theme = createTheme({
   palette: {
     primary: {
-      main: "var(--color-accent)",
-      contrastText: "var(--color-accent-dark)",
+      main: cssVar("--color-accent"),
+      contrastText: cssVar("--color-accent-dark"),
     },
     secondary: {
-      main: "var(--color-dominant)",
-      contrastText: "var(--color-secondary)",
+      main: cssVar("--color-dominant"),
+      contrastText: cssVar("--color-secondary"),
     },
     background: {
-      default: "var(--color-dominant)",
-      paper: "var(--color-dominant-light)",
+      default: cssVar("--color-dominant"),
+      paper: cssVar("--color-dominant-light"),
     },
     text: {
-      primary: "var(--color-secondary)",
+      primary: cssVar("--color-secondary"),
     },
   },
   components: {
@@ -49,7 +53,7 @@ const theme = createTheme({
           minWidth: 0,
         },
         contained: {
-          border: "1px solid var(--color-dominant-border)",
+          border: `1px solid ${cssVar("--color-dominant-border")}`,
           boxShadow: "none",
           "&:hover": {
             boxShadow: "none",
@@ -64,7 +68,7 @@ const theme = createTheme({
     MuiDialog: {
       styleOverrides: {
         paper: {
-          border: "1px solid var(--color-dominant-border)",
+          border: `1px solid ${cssVar("--color-dominant-border")}`,
           borderRadius: 12,
           backgroundImage: "none",
         },
@@ -73,7 +77,7 @@ const theme = createTheme({
     MuiDialogTitle: {
       styleOverrides: {
         root: {
-          background: "var(--color-dominant)",
+          background: cssVar("--color-dominant"),
           fontWeight: 700,
           fontSize: "1rem",
           padding: "14px 18px",
@@ -97,20 +101,20 @@ const theme = createTheme({
     MuiOutlinedInput: {
       styleOverrides: {
         root: {
-          background: "var(--color-dominant)",
+          background: cssVar("--color-dominant"),
           borderRadius: 8,
           "& .MuiOutlinedInput-notchedOutline": {
-            borderColor: "var(--color-dominant-border)",
+            borderColor: cssVar("--color-dominant-border"),
           },
           "&:hover .MuiOutlinedInput-notchedOutline": {
-            borderColor: "var(--color-accent)",
+            borderColor: cssVar("--color-accent"),
           },
           "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-            borderColor: "var(--color-accent)",
+            borderColor: cssVar("--color-accent"),
           },
         },
         input: {
-          color: "var(--color-secondary)",
+          color: cssVar("--color-secondary"),
           padding: "8px 10px",
         },
       },
@@ -118,11 +122,11 @@ const theme = createTheme({
     MuiInputLabel: {
       styleOverrides: {
         root: {
-          color: "var(--color-secondary)",
+          color: cssVar("--color-secondary"),
           fontSize: "0.8rem",
           fontWeight: 600,
           "&.Mui-focused": {
-            color: "var(--color-accent)",
+            color: cssVar("--color-accent"),
           },
         },
       },
@@ -130,8 +134,8 @@ const theme = createTheme({
     MuiMenu: {
       styleOverrides: {
         paper: {
-          background: "var(--color-dominant-light)",
-          border: "1px solid var(--color-dominant-border)",
+          background: cssVar("--color-dominant-light"),
+          border: `1px solid ${cssVar("--color-dominant-border")}`,
           borderRadius: 8,
         },
       },
@@ -139,11 +143,11 @@ const theme = createTheme({
     MuiMenuItem: {
       styleOverrides: {
         root: {
-          color: "var(--color-secondary)",
+          color: cssVar("--color-secondary"),
           fontWeight: 600,
           fontSize: "0.75rem",
           "&:hover": {
-            background: "color-mix(in srgb, var(--color-dominant) 50%, var(--color-dominant-light) 50%)",
+            background: `color-mix(in srgb, ${cssVar("--color-dominant")} 50%, ${cssVar("--color-dominant-light")} 50%)`,
           },
           "&.Mui-disabled": {
             opacity: 0.6,
@@ -154,7 +158,7 @@ const theme = createTheme({
     MuiSelect: {
       styleOverrides: {
         icon: {
-          color: "var(--color-secondary)",
+          color: cssVar("--color-secondary"),
         },
       },
     },
