@@ -21,19 +21,19 @@ import { stripExtension } from "./utils/path";
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#efbf43",
-      contrastText: "#33260e",
+      main: "var(--color-accent)",
+      contrastText: "var(--color-accent-dark)",
     },
     secondary: {
-      main: "#2d6148",
-      contrastText: "#f9fafb",
+      main: "var(--color-dominant)",
+      contrastText: "var(--color-secondary)",
     },
     background: {
-      default: "#2d6148",
-      paper: "#628876",
+      default: "var(--color-dominant)",
+      paper: "var(--color-dominant-light)",
     },
     text: {
-      primary: "#f9fafb",
+      primary: "var(--color-secondary)",
     },
   },
   components: {
@@ -49,7 +49,7 @@ const theme = createTheme({
           minWidth: 0,
         },
         contained: {
-          border: "1px solid #587a6a",
+          border: "1px solid var(--color-dominant-border)",
           boxShadow: "none",
           "&:hover": {
             boxShadow: "none",
@@ -64,7 +64,7 @@ const theme = createTheme({
     MuiDialog: {
       styleOverrides: {
         paper: {
-          border: "1px solid #587a6a",
+          border: "1px solid var(--color-dominant-border)",
           borderRadius: 12,
           backgroundImage: "none",
         },
@@ -73,7 +73,7 @@ const theme = createTheme({
     MuiDialogTitle: {
       styleOverrides: {
         root: {
-          background: "#2d6148",
+          background: "var(--color-dominant)",
           fontWeight: 700,
           fontSize: "1rem",
           padding: "14px 18px",
@@ -97,20 +97,20 @@ const theme = createTheme({
     MuiOutlinedInput: {
       styleOverrides: {
         root: {
-          background: "#2d6148",
+          background: "var(--color-dominant)",
           borderRadius: 8,
           "& .MuiOutlinedInput-notchedOutline": {
-            borderColor: "#587a6a",
+            borderColor: "var(--color-dominant-border)",
           },
           "&:hover .MuiOutlinedInput-notchedOutline": {
-            borderColor: "#efbf43",
+            borderColor: "var(--color-accent)",
           },
           "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-            borderColor: "#efbf43",
+            borderColor: "var(--color-accent)",
           },
         },
         input: {
-          color: "#f9fafb",
+          color: "var(--color-secondary)",
           padding: "8px 10px",
         },
       },
@@ -118,11 +118,11 @@ const theme = createTheme({
     MuiInputLabel: {
       styleOverrides: {
         root: {
-          color: "#f9fafb",
+          color: "var(--color-secondary)",
           fontSize: "0.8rem",
           fontWeight: 600,
           "&.Mui-focused": {
-            color: "#efbf43",
+            color: "var(--color-accent)",
           },
         },
       },
@@ -130,8 +130,8 @@ const theme = createTheme({
     MuiMenu: {
       styleOverrides: {
         paper: {
-          background: "#628876",
-          border: "1px solid #587a6a",
+          background: "var(--color-dominant-light)",
+          border: "1px solid var(--color-dominant-border)",
           borderRadius: 8,
         },
       },
@@ -139,11 +139,11 @@ const theme = createTheme({
     MuiMenuItem: {
       styleOverrides: {
         root: {
-          color: "#f9fafb",
+          color: "var(--color-secondary)",
           fontWeight: 600,
           fontSize: "0.75rem",
           "&:hover": {
-            background: "#4a7058",
+            background: "color-mix(in srgb, var(--color-dominant) 50%, var(--color-dominant-light) 50%)",
           },
           "&.Mui-disabled": {
             opacity: 0.6,
@@ -154,7 +154,7 @@ const theme = createTheme({
     MuiSelect: {
       styleOverrides: {
         icon: {
-          color: "#f9fafb",
+          color: "var(--color-secondary)",
         },
       },
     },
