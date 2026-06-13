@@ -6,8 +6,9 @@
   --color-dominant-light: color-mix(in srgb, var(--color-dominant) 75%, white);
   --color-dominant-border: color-mix(in srgb, var(--color-dominant-light) 90%, black);
   --color-accent-dark: color-mix(in srgb, var(--color-accent) 40%, black);
+  --font-family: "Lato", "Helvetica Neue", sans-serif;
 
-  font-family: "Lato", "Helvetica Neue", sans-serif;
+  font-family: var(--font-family);
   color: var(--color-secondary);
   background-color: var(--color-dominant);
   text-rendering: optimizeLegibility;

@@ -23,6 +23,9 @@ function cssVar(name: string): string {  // instead of using var([custom-propert
 }
 
 const theme = createTheme({
+  typography: {
+    fontFamily: cssVar("--font-family"),
+  },
   palette: {
     primary: {
       main: cssVar("--color-accent"),
@@ -120,6 +123,8 @@ const theme = createTheme({
         },
         input: {
           color: cssVar("--color-secondary"),
+          fontWeight: 600,
+          fontSize: "0.75rem",
           padding: "8px 10px",
         },
       },

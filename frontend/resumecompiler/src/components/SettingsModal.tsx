@@ -39,17 +39,31 @@ export function SettingsModal({
     <Dialog open={isOpen} onClose={onClose} aria-label="Settings">
       <DialogTitle>Settings</DialogTitle>
       <DialogContent>
-        <FormControl fullWidth variant="outlined" sx={{ mt: 1, minWidth: 240 }}>
-          <InputLabel id="font-select-label">Font</InputLabel>
+        <FormControl fullWidth variant="outlined" sx={{ mt: 3, minWidth: 240 }}>
+          <InputLabel id="font-select-label" sx={{ "&.Mui-focused": { color: "text.primary" } }}>
+            Font
+          </InputLabel>
           <Select
             labelId="font-select-label"
             id="font-select"
             value={selectedFont}
             label="Font"
             onChange={(e) => setSelectedFont(e.target.value)}
+            sx={{
+              "& .MuiOutlinedInput-notchedOutline": { borderColor: "divider" },
+              "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "text.primary" },
+              "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "text.primary" },
+            }}
           >
             {FONT_OPTIONS.map((option: FontOption) => (
-              <MenuItem key={option.value} value={option.value}>
+              <MenuItem
+                key={option.value}
+                value={option.value}
+                sx={{
+                  "&.Mui-selected": { backgroundColor: "action.selected" },
+                  "&.Mui-selected:hover": { backgroundColor: "action.hover" },
+                }}
+              >
                 {option.label}
               </MenuItem>
             ))}
