@@ -1,9 +1,12 @@
 # Resume Syntax Guide
 
-This document describes the Markdown-style syntax used to author a résumé that the Resume Compiler can parse and compile into a PDF. The syntax extends standard Markdown with conventions for sections, resume items, hiding elements, and LaTeX escape sequences.
+This document describes the Markdown-style syntax used to author a résumé that the Resume Compiler can parse and compile into a PDF. The syntax extends standard Markdown with conventions for sections, resume items, hiding elements and LaTeX escape sequences.
 
 
 ## 1. Title, subtitle and contact list
+
+1. The title, subtitle (optional), and contact list (optional) must appear before the first section heading.
+
 
 ### 1A. Title
 
@@ -13,7 +16,7 @@ This document describes the Markdown-style syntax used to author a résumé that
 
 ### 1B. Subtitle
 
-1. Use a line indented by exactly 4 spaces to define a subtitle.
+1. Use an indented line to define a subtitle.
 2. The subtitle appears below the title as a secondary description.
 
 
@@ -21,13 +24,8 @@ This document describes the Markdown-style syntax used to author a résumé that
 
 1. Use an unordered list (`-` items) after the title to define a contact list.
 2. Each list item represents one contact detail (phone number, email address, website, etc.).
-3. Items may include hyperlinks using standard Markdown link syntax: `[label](url)`.
+3. Items may be formatted as hyperlinks using standard Markdown link syntax: `[label](url)`.
 4. Contacts are rendered on a single centred line separated by pipe (`|`) characters.
-
-
-### 1D. Ordering
-
-1. The title, subtitle (optional), and contact list (optional) must appear before the first section heading.
 
 
 ## 2. Organisational sections
@@ -35,7 +33,7 @@ This document describes the Markdown-style syntax used to author a résumé that
 ### 2A. Section heading
 
 1. Use an H2 heading (`##`) to create a new organisational section.
-2. The heading text becomes the section title in the compiled document.
+2. The heading text becomes a section title in the compiled document.
 
 
 ### 2B. Resume item heading
@@ -46,11 +44,8 @@ This document describes the Markdown-style syntax used to author a résumé that
 
 ### 2C. Auxiliary information
 
-1. After an H3, add an indented preformatted block (4 spaces) containing 3 lines of auxiliary information.
-2. Line 1: date or time range (e.g. "June 2020 -- Present").
-3. Line 2: organisation name.
-4. Line 3: location.
-5. These fields are laid out from left to right and top to bottom in the compiled PDF.
+1. After an H3, add an indented preformatted block (4 spaces) containing 3 lines of auxiliary information:  a date or time range (e.g. "June 2020 -- Present"), an organisation name and a location.
+2. These fields are laid out from left to right and top to bottom in the compiled PDF.
 
 
 ### 2D. Description list
@@ -64,7 +59,6 @@ This document describes the Markdown-style syntax used to author a résumé that
 ### 3A. Section heading
 
 1. Use an H2 heading prefixed with an exclamation mark (`## !Projects`) to create a toolset section.
-2. The `!` prefix is removed from the rendered heading.
 
 
 ### 3B. Resume item heading
@@ -74,9 +68,7 @@ This document describes the Markdown-style syntax used to author a résumé that
 
 ### 3C. Auxiliary information
 
-1. After an H3, add an indented preformatted block containing 2 lines of auxiliary information.
-2. Line 1: a comma-separated list of tools and technologies.
-3. Line 2: date or time range.
+1. After an H3, add an indented preformatted block containing 2 lines of auxiliary information: a comma-separated list of tools and technologies, and a date or time range.
 
 
 ### 3D. Description list
