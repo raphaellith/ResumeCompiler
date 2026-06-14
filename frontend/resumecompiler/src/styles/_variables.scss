@@ -1,0 +1,18 @@
+@use 'sass:color';
+
+$color-dominant: #2d6148;
+$color-secondary: #f9fafb;
+$color-accent: #efbf43;
+
+$color-dominant-light: color.mix($color-dominant, #fff, 75%);
+$color-dominant-border: color.mix($color-dominant-light, #000, 90%);
+$color-accent-dark: color.mix($color-accent, #000, 40%);
+$font-family: 'Lato', 'Helvetica Neue', sans-serif;
+
+$breakpoint-mobile: 960px;
+
+@mixin respond-mobile {
+  @media (max-width: $breakpoint-mobile) {
+    @content;
+  }
+}

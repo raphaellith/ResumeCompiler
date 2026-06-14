@@ -1,3 +1,5 @@
+import styles from "./CompilationErrorMessage.module.scss";
+
 export type CompilationErrorMessageProps = {
   message: string | null;
 };
@@ -7,5 +9,5 @@ export function CompilationErrorMessage({ message }: CompilationErrorMessageProp
     return null;
   }
 
-  return <div className="compile-error">Failed to compile: {message}</div>;
+  return <div className={styles["compile-error"]}>Failed to compile: {message}</div>;
 }

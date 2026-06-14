@@ -1,0 +1,11 @@
+@use 'variables' as *;
+
+:export {
+  colorDominant: $color-dominant;
+  colorSecondary: $color-secondary;
+  colorAccent: $color-accent;
+  colorDominantLight: $color-dominant-light;
+  colorDominantBorder: $color-dominant-border;
+  colorAccentDark: $color-accent-dark;
+  fontFamily: $font-family;
+}
