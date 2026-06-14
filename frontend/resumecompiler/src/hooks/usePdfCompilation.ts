@@ -9,7 +9,7 @@ export type PdfCompilationState = {
 };
 
 export type UsePdfCompilationResult = PdfCompilationState & {
-  compilePdf: (source: string) => Promise<void>;
+  compilePdf: (source: string, font?: string) => Promise<void>;
 };
 
 export function usePdfCompilation(compileEndpoint: string): UsePdfCompilationResult {
@@ -20,12 +20,16 @@ export function usePdfCompilation(compileEndpoint: string): UsePdfCompilationRes
   const [compileError, setCompileError] = useState<string | null>(null);
 
   const compilePdf = useCallback(
-    async (source: string) => {
+    async (source: string, font?: string) => {
       setIsCompiling(true);
       setCompileError(null);
 
+      const url = font
+        ? `${compileEndpoint}?font=${encodeURIComponent(font)}`
+        : compileEndpoint;
+
       try {
-        const response = await fetch(compileEndpoint, {
+        const response = await fetch(url, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

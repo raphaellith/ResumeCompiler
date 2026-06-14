@@ -1,0 +1,20 @@
+@use '../../styles/variables' as *;
+
+.preview-frame {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: $color-dominant-light;
+}
+
+.empty-preview {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: $color-secondary;
+  color: $color-dominant;
+  text-align: center;
+  padding: 20px;
+}

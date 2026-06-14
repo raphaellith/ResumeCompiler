@@ -1,0 +1,50 @@
+@use '../../styles/variables' as *;
+
+.resizable-handle {
+  width: 12px;
+  flex: 0 0 12px;
+  cursor: col-resize;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  background: transparent;
+  transition: background 0.15s;
+  position: relative;
+
+  &::after {
+    content: "";
+    display: block;
+    width: 4px;
+    height: 40px;
+    border-radius: 2px;
+    background: $color-dominant-border;
+    transition: background 0.15s, height 0.15s;
+  }
+
+  &:hover::after {
+    background: $color-accent;
+    height: 56px;
+  }
+
+  &:active::after {
+    background: $color-accent-dark;
+  }
+
+  @include respond-mobile {
+    width: 100%;
+    height: 12px;
+    flex: 0 0 12px;
+    cursor: row-resize;
+
+    &::after {
+      width: 40px;
+      height: 4px;
+    }
+
+    &:hover::after {
+      height: 4px;
+      width: 56px;
+    }
+  }
+}

@@ -1,3 +1,5 @@
+from xml.etree import ElementTree
+
 from bs4 import Tag
 
 from backend.model.resume_components.resume_items.resume_item import ResumeItem
@@ -45,3 +47,22 @@ class OrganisationalSectionResumeItem(ResumeItem):
             result += self.get_description_list_as_latex_lines()
 
         return result
+
+    def to_xml_element(self) -> ElementTree.Element:
+        organisational_section_resume_item_element = ElementTree.Element("organisational-section-resume-item")
+
+        subheading_element = ElementTree.SubElement(organisational_section_resume_item_element, "subheading")
+        subheading_element.text = self.subheading
+
+        first_row_right_element = ElementTree.SubElement(organisational_section_resume_item_element, "first-row-right")
+        first_row_right_element.text = self.first_row_right
+
+        second_row_left_element = ElementTree.SubElement(organisational_section_resume_item_element, "second-row-left")
+        second_row_left_element.text = self.second_row_left
+
+        second_row_right_element = ElementTree.SubElement(organisational_section_resume_item_element, "second-row-right")
+        second_row_right_element.text = self.second_row_right
+
+        organisational_section_resume_item_element.append(self.get_description_list_as_xml_element())
+
+        return organisational_section_resume_item_element

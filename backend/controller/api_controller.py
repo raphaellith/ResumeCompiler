@@ -1,12 +1,10 @@
-from fastapi import FastAPI, Response
+from fastapi import FastAPI, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
 
+from backend.controller.data_transfer_objects.data_transfer_objects import MarkdownInput
+from backend.model.enums.font import Font
 from backend.service.markdown_to_pdf_bytes_compilation_service import get_pdf_bytes_from_markdown
-
-
-class MarkdownInput(BaseModel):
-    markdown: str
+from backend.service.markdown_to_xml_string_compilation_service import get_resume_as_xml_from_markdown
 
 app = FastAPI()
 app.add_middleware(
@@ -16,12 +14,29 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.post("/compile/", response_class=Response)
-def compile_markdown_to_pdf(payload: MarkdownInput):
+
+# ------------------------------ API ENDPOINTS ------------------------------
+
+@app.post("/pdf/", response_class=Response)
+def compile_markdown_to_pdf(
+    payload: MarkdownInput,
+    font: str | None = Query(default=None, alias="font"),
+):
     markdown = payload.markdown
-    pdf_bytes = get_pdf_bytes_from_markdown(markdown)
+    pdf_bytes = get_pdf_bytes_from_markdown(markdown, Font.from_query_parameter(font))
 
     return Response(
         content=pdf_bytes,
         media_type="application/pdf",
+    )
+
+
+@app.post("/xml/", response_class=Response)
+def compile_markdown_to_xml(payload: MarkdownInput):
+    markdown = payload.markdown
+    xml_string = get_resume_as_xml_from_markdown(markdown)
+
+    return Response(
+        content=xml_string,
+        media_type="application/xml",
     )

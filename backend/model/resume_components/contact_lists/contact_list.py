@@ -1,3 +1,5 @@
+from xml.etree import ElementTree
+
 from bs4.element import Tag
 
 from backend.model.resume_components.contact_lists.contact_list_item import ContactListItem
@@ -25,3 +27,10 @@ class ContactList(ResumeComponent):
                 centered_lines.append(r"$|$")
 
         return get_latex_environment(env="center", contents=centered_lines)
+
+    def to_xml_element(self) -> ElementTree.Element:
+        contact_list_element: ElementTree.Element = ElementTree.Element("contact-list")
+        contact_list_element.extend(
+            map(lambda contact_list_item: contact_list_item.to_xml_element(), self.contacts)
+        )
+        return contact_list_element

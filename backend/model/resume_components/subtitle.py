@@ -1,3 +1,5 @@
+from xml.etree import ElementTree
+
 from bs4.element import Tag
 
 from backend.model.resume_components.resume_component import ResumeComponent
@@ -22,3 +24,8 @@ class Subtitle(ResumeComponent):
                 )
             ]
         )
+
+    def to_xml_element(self) -> ElementTree.Element:
+        subtitle_element = ElementTree.Element("subtitle")
+        subtitle_element.text = self.text
+        return subtitle_element

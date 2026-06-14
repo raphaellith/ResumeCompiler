@@ -1,0 +1,21 @@
+@use '../../styles/variables' as *;
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 18px;
+  border-bottom: 1px solid $color-dominant-border;
+  background: $color-dominant;
+  gap: 12px;
+
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  :global(.material-symbols-outlined) {
+    font-size: 18px;
+  }
+}
