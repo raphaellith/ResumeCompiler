@@ -6,6 +6,7 @@ import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
+import { cssVar } from "../utils/cssVar";
 import { FONT_OPTIONS, type FontOption } from "../config/font";
 import { SettingRow } from "./SettingRow";
 
@@ -45,9 +46,9 @@ export function SettingsModal({
             onChange={(e) => setSelectedFont(e.target.value)}
             sx={{
               minWidth: 240,
-              "& .MuiOutlinedInput-notchedOutline": { borderColor: "var(--color-dominant-border)" },
-              "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "var(--color-dominant-border)" },
-              "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "var(--color-dominant-border)" },
+              "& .MuiOutlinedInput-notchedOutline": { borderColor: cssVar("--color-dominant-border") },
+              "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: cssVar("--color-dominant-border") },
+              "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: cssVar("--color-dominant-border") },
             }}
           >
             {FONT_OPTIONS.map((option: FontOption) => (

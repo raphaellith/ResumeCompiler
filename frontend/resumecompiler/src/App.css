@@ -45,6 +45,10 @@ body {
   gap: 8px;
 }
 
+.toolbar .material-symbols-outlined {
+  font-size: 18px;
+}
+
 .panes {
   flex: 1;
   display: flex;

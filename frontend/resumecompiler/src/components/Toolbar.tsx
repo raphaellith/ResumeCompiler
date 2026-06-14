@@ -55,7 +55,7 @@ export function Toolbar({
             {isCompiling ? "Compiling..." : "Compile"}
           </Button>
           <Button onClick={onSettings} aria-label="Settings">
-            <span className="material-symbols-outlined" style={{ fontSize: 18 }}>settings</span>
+            <span className="material-symbols-outlined">settings</span>
           </Button>
         </ButtonGroup>
 
@@ -64,7 +64,7 @@ export function Toolbar({
           onClick={handleExportClick}
           disabled={!canExport}
         >
-          Export <span className="material-symbols-outlined" style={{ fontSize: 18 }}>arrow_drop_down</span>
+          Export <span className="material-symbols-outlined">arrow_drop_down</span>
         </Button>
 
         <Menu

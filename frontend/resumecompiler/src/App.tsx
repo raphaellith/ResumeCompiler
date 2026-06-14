@@ -5,6 +5,7 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { isTauri } from "@tauri-apps/api/core";
 import { save } from "@tauri-apps/plugin-dialog";
 import { writeFile } from "@tauri-apps/plugin-fs";
+import { cssVar } from "./utils/cssVar";
 import { MarkdownEditorPane } from "./components/MarkdownEditorPane";
 import { PdfPreviewPane } from "./components/PdfPreviewPane";
 import { ResizableHandle } from "./components/ResizableHandle";
@@ -17,10 +18,6 @@ import { usePdfCompilation } from "./hooks/usePdfCompilation";
 import { useSaveMarkdownOnClose } from "./hooks/useSaveMarkdownOnClose";
 import { useXmlExport } from "./hooks/useXmlExport";
 import { stripExtension } from "./utils/path";
-
-function cssVar(name: string): string {  // instead of using var([custom-property]) directly
-  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-}
 
 const theme = createTheme({
   typography: {
