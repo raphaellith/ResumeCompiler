@@ -64,7 +64,7 @@ export function Toolbar({
           onClick={handleExportClick}
           disabled={!canExport}
         >
-          Export ▼
+          Export <span className="material-symbols-outlined" style={{ fontSize: 18 }}>arrow_drop_down</span>
         </Button>
 
         <Menu
