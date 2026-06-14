@@ -2,12 +2,14 @@
 
 This document describes the functional behaviour of the Resume Compiler frontend. The frontend is a React 19 single-page application with a split-pane layout: a Markdown editor on the left and a PDF preview on the right, with a toolbar above both panes.
 
+
 ## 1. Basic layout
 
 1. The frontend consists of a window with two side-by-side panes.
 2. The left pane is the Markdown editor. The right pane is the PDF preview.
 3. A toolbar containing a collection of buttons is located above the panes.
 4. A resizable handle sits between the two panes, allowing the user to adjust the split ratio.
+
 
 ## 2. Editor pane
 
@@ -21,12 +23,14 @@ This document describes the functional behaviour of the Resume Compiler frontend
    - Reset Font Size: Ctrl/Cmd + 0.
 6. The default font size is 12px. The minimum is 8px and the maximum is 24px.
 
+
 ## 3. PDF preview pane
 
 1. The PDF preview pane displays the compiled PDF output of the Markdown code in the editor pane.
 2. The PDF preview pane is initially empty. It becomes populated with the compiled PDF output when a file is selected and compiled successfully.
 3. When no compilation has occurred, a centred placeholder message is displayed.
 4. If compilation fails, the pane displays a compilation error message.
+
 
 ## 4. Toolbar
 
@@ -37,12 +41,14 @@ This document describes the functional behaviour of the Resume Compiler frontend
 3. When a file is selected, its contents are loaded into the editor pane and immediately compiled once.
 4. In a Tauri environment, the native file dialog is used. In a browser environment, a hidden `<input type="file">` element is used as fallback.
 
+
 ### 4B. Compile button
 
 1. The "Compile" button is initially disabled. It becomes enabled when a file is loaded into the editor pane.
 2. Clicking it sends the current Markdown content to the backend's `/pdf/` endpoint for compilation.
 3. While a compilation request is in flight, the button text changes to "Compiling..." and the button is disabled.
 4. Upon success, the PDF preview pane is updated with the compiled output.
+
 
 ### 4C. Export dropdown
 
@@ -51,11 +57,13 @@ This document describes the functional behaviour of the Resume Compiler frontend
 3. Clicking the button opens a dropdown menu with export options.
 4. The dropdown closes on item selection, clicking outside the menu, or pressing Escape.
 
+
 ### 4D. Export PDF menu item
 
 1. The "Export PDF" menu item is the primary export action.
 2. When clicked, the frontend prompts the user to download the compiled PDF as a file.
 3. In a Tauri environment, a native save dialog is used. In a browser environment, a standard download link is triggered.
+
 
 ### 4E. Export XML menu item
 
@@ -64,11 +72,13 @@ This document describes the functional behaviour of the Resume Compiler frontend
 3. Upon receiving the XML response, the frontend prompts the user to download the XML file.
 4. In a Tauri environment, a native save dialog is used. In a browser environment, a standard download link is triggered.
 
+
 ### 4F. Settings button
 
 1. The settings button is styled with a gear icon.
 2. Clicking it opens the Settings modal, which allows the user to select the font used for PDF compilation.
 3. It is always enabled.
+
 
 ## 5. Settings modal
 
@@ -79,6 +89,7 @@ This document describes the functional behaviour of the Resume Compiler frontend
 5. "Save" confirms the selection and closes the dialog. The new font is used for subsequent compilations.
 6. "Cancel" or clicking outside the dialog closes it without changing the font.
 
+
 ## 6. Pane resize interaction
 
 1. A resizable handle is positioned between the editor pane and the PDF preview pane.
@@ -88,6 +99,7 @@ This document describes the functional behaviour of the Resume Compiler frontend
 5. On mouseup, event listeners are cleaned up and the overlay is removed.
 6. The left pane width is clamped between a minimum of 200px and the available container width minus the handle width and the minimum pane width.
 7. On initial render, the panes are split equally.
+
 
 ## 7. Hooks
 
@@ -100,6 +112,7 @@ This document describes the functional behaviour of the Resume Compiler frontend
 5. `updateMarkdown(next)` updates the editor content in state.
 6. An auto-save effect writes changes back to the source file with a 300ms debounce. Only absolute file paths (Tauri) trigger auto-save; relative paths (browser File API) are skipped to avoid permission errors.
 
+
 ### 7B. usePdfCompilation
 
 1. `usePdfCompilation` manages the PDF compilation lifecycle.
@@ -109,12 +122,14 @@ This document describes the functional behaviour of the Resume Compiler frontend
 5. On error, the response body is read as the error message.
 6. Blob URLs are cleaned up on unmount.
 
+
 ### 7C. useXmlExport
 
 1. `useXmlExport` manages the XML export lifecycle.
 2. It tracks `isExportingXml` (request in flight) and `xmlError` (error message on failure).
 3. `exportXml(markdown)` POSTs `{"markdown": source}` to the backend `/xml/` endpoint and returns the XML string on success.
 4. On error, the error message is stored and the exception is re-thrown.
+
 
 ### 7D. useSaveMarkdownOnClose
 
