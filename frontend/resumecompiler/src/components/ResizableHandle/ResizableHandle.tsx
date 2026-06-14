@@ -1,4 +1,5 @@
 import { useCallback, useRef } from "react";
+import styles from "./ResizableHandle.module.scss";
 
 export type ResizableHandleProps = {
   onDrag: (deltaX: number) => void;
@@ -51,7 +52,7 @@ export function ResizableHandle({ onDrag }: ResizableHandleProps) {
 
   return (
     <div
-      className="resizable-handle"
+      className={styles["resizable-handle"]}
       onMouseDown={handleMouseDown}
       role="separator"
       aria-orientation="vertical"

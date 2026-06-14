@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 import Editor, { type OnMount } from "@monaco-editor/react";
-import { Pane } from "./Pane.tsx";
+import { Pane } from "../Pane/Pane";
+import vars from "../../styles/variables.module.scss";
 
 const DEFAULT_FONT_SIZE = 12;
 const MIN_FONT_SIZE = 8;
@@ -24,16 +25,12 @@ export function MarkdownEditorPane({
 
   const handleMount: OnMount = useCallback(
     (editor, monaco) => {
-      const bg = getComputedStyle(document.documentElement)
-        .getPropertyValue('--color-secondary')
-        .trim();
-
       monaco.editor.defineTheme('resume-compiler', {
         base: 'vs',
         inherit: true,
         rules: [],
         colors: {
-          'editor.background': bg,
+          'editor.background': vars.colorSecondary,
         },
       });
 

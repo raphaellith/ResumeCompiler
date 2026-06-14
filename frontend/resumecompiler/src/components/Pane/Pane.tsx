@@ -1,4 +1,5 @@
 import { memo, type HTMLAttributes, type ReactNode } from "react";
+import styles from "./Pane.module.scss";
 
 export type PaneProps = {
   title: string;
@@ -11,12 +12,12 @@ function PaneBase({ title, titleEnd, children, bodyProps }: PaneProps) {
   const { className, ...restBodyProps } = bodyProps ?? {};
 
   return (
-    <div className="pane">
-      <div className="pane-header">
+    <div className={styles.pane}>
+      <div className={styles["pane-header"]}>
         <span>{title}</span>
-        {titleEnd && <span className="pane-header-end">{titleEnd}</span>}
+        {titleEnd && <span className={styles["pane-header-end"]}>{titleEnd}</span>}
       </div>
-      <div className={`pane-body${className ? ` ${className}` : ""}`} {...restBodyProps}>
+      <div className={`${styles["pane-body"]}${className ? ` ${className}` : ""}`} {...restBodyProps}>
         {children}
       </div>
     </div>
@@ -24,6 +25,3 @@ function PaneBase({ title, titleEnd, children, bodyProps }: PaneProps) {
 }
 
 export const Pane = memo(PaneBase);
-
-
-
