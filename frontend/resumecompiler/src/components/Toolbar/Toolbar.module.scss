@@ -8,14 +8,14 @@
   border-bottom: 1px solid $color-dominant-border;
   background: $color-dominant;
   gap: 12px;
-}
 
-.actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
 
-.toolbar :global(.material-symbols-outlined) {
-  font-size: 18px;
+  :global(.material-symbols-outlined) {
+    font-size: 18px;
+  }
 }
