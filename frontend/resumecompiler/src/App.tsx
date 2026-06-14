@@ -1,16 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import "./App.css";
 
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { isTauri } from "@tauri-apps/api/core";
 import { save } from "@tauri-apps/plugin-dialog";
 import { writeFile } from "@tauri-apps/plugin-fs";
-import { cssVar } from "./utils/cssVar";
-import { MarkdownEditorPane } from "./components/MarkdownEditorPane";
-import { PdfPreviewPane } from "./components/PdfPreviewPane";
-import { ResizableHandle } from "./components/ResizableHandle";
-import { SettingsModal } from "./components/SettingsModal";
-import { Toolbar } from "./components/Toolbar";
+import { MarkdownEditorPane } from "./components/MarkdownEditorPane/MarkdownEditorPane";
+import { PdfPreviewPane } from "./components/PdfPreviewPane/PdfPreviewPane";
+import { ResizableHandle } from "./components/ResizableHandle/ResizableHandle";
+import { SettingsModal } from "./components/SettingsModal/SettingsModal";
+import { Toolbar } from "./components/Toolbar/Toolbar";
 import { COMPILED_PDF_ENDPOINT, COMPILED_XML_ENDPOINT } from "./config/api";
 import { DEFAULT_FONT } from "./config/font";
 import { useMarkdownDocument } from "./hooks/useMarkdownDocument";
@@ -18,26 +16,28 @@ import { usePdfCompilation } from "./hooks/usePdfCompilation";
 import { useSaveMarkdownOnClose } from "./hooks/useSaveMarkdownOnClose";
 import { useXmlExport } from "./hooks/useXmlExport";
 import { stripExtension } from "./utils/path";
+import vars from "./styles/variables.module.scss";
+import styles from "./App.module.scss";
 
 const theme = createTheme({
   typography: {
-    fontFamily: cssVar("--font-family"),
+    fontFamily: vars.fontFamily,
   },
   palette: {
     primary: {
-      main: cssVar("--color-accent"),
-      contrastText: cssVar("--color-accent-dark"),
+      main: vars.colorAccent,
+      contrastText: vars.colorAccentDark,
     },
     secondary: {
-      main: cssVar("--color-dominant"),
-      contrastText: cssVar("--color-secondary"),
+      main: vars.colorDominant,
+      contrastText: vars.colorSecondary,
     },
     background: {
-      default: cssVar("--color-dominant"),
-      paper: cssVar("--color-dominant-light"),
+      default: vars.colorDominant,
+      paper: vars.colorDominantLight,
     },
     text: {
-      primary: cssVar("--color-secondary"),
+      primary: vars.colorSecondary,
     },
   },
   components: {
@@ -55,16 +55,16 @@ const theme = createTheme({
           },
         },
         contained: {
-          border: `1px solid ${cssVar("--color-dominant-border")}`,
+          border: `1px solid ${vars.colorDominantBorder}`,
           boxShadow: "none",
           "&:hover": {
             boxShadow: "none",
           },
           "&.Mui-disabled": {
-            border: `1px solid ${cssVar("--color-dominant-border")}`,
+            border: `1px solid ${vars.colorDominantBorder}`,
             boxShadow: "none",
-            backgroundColor: cssVar("--color-accent"),
-            color: cssVar("--color-accent-dark"),
+            backgroundColor: vars.colorAccent,
+            color: vars.colorAccentDark,
           },
         },
       },
@@ -72,7 +72,7 @@ const theme = createTheme({
     MuiDialog: {
       styleOverrides: {
         paper: {
-          border: `1px solid ${cssVar("--color-dominant-border")}`,
+          border: `1px solid ${vars.colorDominantBorder}`,
           borderRadius: 12,
           backgroundImage: "none",
         },
@@ -81,7 +81,7 @@ const theme = createTheme({
     MuiDialogTitle: {
       styleOverrides: {
         root: {
-          background: cssVar("--color-dominant"),
+          background: vars.colorDominant,
           fontWeight: 700,
           padding: "14px 18px",
         },
@@ -104,20 +104,20 @@ const theme = createTheme({
     MuiOutlinedInput: {
       styleOverrides: {
         root: {
-          background: cssVar("--color-dominant"),
+          background: vars.colorDominant,
           borderRadius: 8,
           "& .MuiOutlinedInput-notchedOutline": {
-            borderColor: cssVar("--color-dominant-border"),
+            borderColor: vars.colorDominantBorder,
           },
           "&:hover .MuiOutlinedInput-notchedOutline": {
-            borderColor: cssVar("--color-accent"),
+            borderColor: vars.colorAccent,
           },
           "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-            borderColor: cssVar("--color-accent"),
+            borderColor: vars.colorAccent,
           },
         },
         input: {
-          color: cssVar("--color-secondary"),
+          color: vars.colorSecondary,
           fontWeight: 600,
           padding: "8px 10px",
         },
@@ -126,10 +126,10 @@ const theme = createTheme({
     MuiInputLabel: {
       styleOverrides: {
         root: {
-          color: cssVar("--color-secondary"),
+          color: vars.colorSecondary,
           fontWeight: 600,
           "&.Mui-focused": {
-            color: cssVar("--color-accent"),
+            color: vars.colorAccent,
           },
         },
       },
@@ -137,8 +137,8 @@ const theme = createTheme({
     MuiMenu: {
       styleOverrides: {
         paper: {
-          background: cssVar("--color-dominant-light"),
-          border: `1px solid ${cssVar("--color-dominant-border")}`,
+          background: vars.colorDominantLight,
+          border: `1px solid ${vars.colorDominantBorder}`,
           borderRadius: 8,
         },
       },
@@ -146,10 +146,10 @@ const theme = createTheme({
     MuiMenuItem: {
       styleOverrides: {
         root: {
-          color: cssVar("--color-secondary"),
+          color: vars.colorSecondary,
           fontWeight: 600,
           "&:hover": {
-            background: `color-mix(in srgb, ${cssVar("--color-dominant")} 50%, ${cssVar("--color-dominant-light")} 50%)`,
+            background: `color-mix(in srgb, ${vars.colorDominant} 50%, ${vars.colorDominantLight} 50%)`,
           },
           "&.Mui-disabled": {
             opacity: 0.6,
@@ -167,7 +167,7 @@ const theme = createTheme({
     MuiSelect: {
       styleOverrides: {
         icon: {
-          color: cssVar("--color-secondary"),
+          color: vars.colorSecondary,
         },
       },
     },
@@ -332,7 +332,7 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <main className="app">
+      <main className={styles.app}>
         <Toolbar
           hasFile={hasFile}
           isCompiling={isCompiling}
@@ -360,9 +360,9 @@ function App() {
           style={{ display: "none" }}
         />
 
-        <section className="panes" ref={containerRef}>
+        <section className={styles.panes} ref={containerRef}>
           <div
-            className="pane-wrapper"
+            className={styles["pane-wrapper"]}
             style={leftPaneWidth != null ? { flex: `0 0 ${leftPaneWidth}px` } : { flex: 1 }}
           >
             <MarkdownEditorPane
@@ -375,7 +375,7 @@ function App() {
 
           <ResizableHandle onDrag={handleDrag} />
 
-          <div className="pane-wrapper" style={{ flex: 1 }}>
+          <div className={styles["pane-wrapper"]} style={{ flex: 1 }}>
             <PdfPreviewPane
               pdfUrl={pdfUrl}
               compileError={compileError}

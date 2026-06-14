@@ -3,6 +3,7 @@ import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import styles from "./Toolbar.module.scss";
 
 export type ToolbarProps = {
   hasFile: boolean;
@@ -39,14 +40,14 @@ export function Toolbar({
   };
 
   return (
-    <header className="toolbar">
-      <div className="actions">
+    <header className={styles.toolbar}>
+      <div className={styles.actions}>
         <Button variant="contained" onClick={onOpenFile}>
           Select File
         </Button>
       </div>
 
-      <div className="actions">
+      <div className={styles.actions}>
         <ButtonGroup variant="contained">
           <Button
             onClick={onCompile}

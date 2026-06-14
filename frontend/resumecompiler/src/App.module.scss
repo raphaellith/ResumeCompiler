@@ -1,0 +1,26 @@
+@use 'styles/variables' as *;
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.panes {
+  flex: 1;
+  display: flex;
+  gap: 0;
+  padding: 12px;
+  overflow: hidden;
+}
+
+.pane-wrapper {
+  min-width: 0;
+  display: flex;
+}
+
+@media (max-width: 960px) {
+  .panes {
+    flex-direction: column;
+  }
+}
