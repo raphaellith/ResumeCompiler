@@ -55,7 +55,7 @@ export function Toolbar({
             {isCompiling ? "Compiling..." : "Compile"}
           </Button>
           <Button onClick={onSettings} aria-label="Settings">
-            <span className="material-symbols-outlined" style={{ fontSize: 20 }}>settings</span>
+            <span className="material-symbols-outlined" style={{ fontSize: 18 }}>settings</span>
           </Button>
         </ButtonGroup>
 
