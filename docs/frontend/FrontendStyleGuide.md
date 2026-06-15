@@ -44,4 +44,3 @@ This document describes the colour system, typography, iconography, and UI compo
 1. The frontend uses `@monaco-editor/react` for the Markdown editor.
 2. The frontend defines a custom Monaco theme named `"resume-compiler"` on component mount. The theme's background colour matches `$color-secondary`.
 3. The editor language is set to `"markdown"`.
-4. The font size is user-adjustable between 8px and 24px with a default of 12px and a step size of 2px.
