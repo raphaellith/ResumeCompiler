@@ -28,12 +28,14 @@ This document describes the colour system, typography, iconography, and UI compo
 ## 3. Icons
 
 1. The frontend loads icons from the Material Symbols library via the `material-symbols-outlined` CSS class.
+   - The Export dropdown menu uses the `arrow_drop_down` icon.
+   - The Settings button uses the `settings` icon.
 2. SCSS modules use the `:global()` pseudo-selector to reference Material Symbols class names.
 
 
 ## 4. Material UI (MUI)
 
-1. The frontend loads interactive UI components from MUI.
+1. The frontend loads interactive UI components (e.g. buttons, button groups and dropdown menus) from MUI.
 2. `App.tsx` defines a custom MUI theme based on the application colour scheme.
 
 
