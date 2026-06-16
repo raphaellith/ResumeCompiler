@@ -1,14 +1,13 @@
 # Backend Model Specification
 
-This document describes the model layer of the Resume Compiler backend. The model represents a résumé as a tree of `ResumeComponent` objects. Each component knows how to emit its LaTeX and XML representations. The top-level `Resume` class parses raw Markdown into this tree.
+This document describes the model layer of the Resume Compiler backend (`backend/model`). The model represents a résumé as a tree of `ResumeComponent` objects. Each component knows how to emit its LaTeX and XML representations. The top-level `Resume` class parses raw Markdown into this tree.
 
 ## 1. ResumeComponent
 
-1. `ResumeComponent` is an abstract base class.
-2. It declares abstract base methods for the following.
+1. `ResumeComponent` is an abstract base class that declares abstract methods for the following.
    - Rendering to LaTeX as a list of lines
    - Rendering to XML as an `Element`
-3. It also supports serialising the XML element to a string with indentation.
+2. It also supports serialising the XML element to a string with indentation.
 
 ## 2. Resume
 
@@ -146,7 +145,7 @@ This document describes the model layer of the Resume Compiler backend. The mode
 
 ### 14A. Font
 
-1. `Font` is an enum mapping each member to a LaTeX `\usepackage` command for the corresponding font package.
+1. The `Font` enum maps each member to a LaTeX `\usepackage` command for the corresponding font package.
 2. The available members are:
    - `COMPUTER_MODERN` (empty string, LaTeX default).
    - `TIMES_NEW_ROMAN` (`\usepackage{mathptmx}`).
@@ -156,31 +155,17 @@ This document describes the model layer of the Resume Compiler backend. The mode
    - `SOURCE_SANS_PRO` (`\usepackage[default]{sourcesanspro}`).
    - `CORMORANT_GARAMOND` (`\usepackage{CormorantGaramond}`).
    - `CHARTER` (`\usepackage{charter}`).
-3. A helper maps kebab-case strings (e.g. `"times-new-roman"`) to the corresponding member. It defaults to `TIMES_NEW_ROMAN` for `None` or unrecognised values.
-4. This helper is used by the controller layer to resolve the `?font=` query parameter.
+3. A helper maps kebab-case strings (e.g. `"times-new-roman"`) to the corresponding member. It defaults to `TIMES_NEW_ROMAN` for `None` or unrecognised values. This helper is used by the controller layer to resolve the `?font=` query parameter.
 
 
 ## 15. Utilities
 
-### 15A. beautiful_soup_utils
-
-1. Converts a Markdown string to a BeautifulSoup HTML tree.
-2. Filters a BeautifulSoup element's children to return only `Tag`-typed nodes.
-
-
-### 15B. input_parsing_utils
-
-1. Provides functions for truncating or padding lists to a fixed length, with configurable defaults or empty-string fallback.
-
-
-### 15C. latex_utils
-
-1. Provides indentation helpers, date-range normalisation (hyphens to LaTeX ` -- `), command construction (e.g. `\textbf{arg}`), and environment wrapping (`\begin{env}...\end{env}`).
-
-
-### 15D. file_utils
-
-1. Creates parent directories and writes a string to disk. Used by the compilation service to write the `.tex` file.
+1. The `beautiful_soup_utils` utility provides functions for
+   - Converting a Markdown string to a BeautifulSoup HTML tree.
+   - Filtering a BeautifulSoup element's children to return only `Tag`-typed nodes.
+2. The `input_parsing_utils` utility provides functions for truncating or padding lists to a fixed length, with configurable defaults or empty-string fallback.
+3. The `latex_utils` utility provides indentation helpers, date-range normalisation (hyphens to LaTeX ` -- `), command construction (e.g. `\textbf{arg}`), and environment wrapping (`\begin{env}...\end{env}`).
+4. The `file_utils` utility provides a function that creates parent directories and writes a string to disk. It is used by the compilation service to write the `.tex` file.
 
 
 ## 16. Resources
@@ -188,7 +173,7 @@ This document describes the model layer of the Resume Compiler backend. The mode
 ### 16A. preamble.tex
 
 1. `preamble.tex` is a LaTeX preamble template loaded at compile time.
-2. Line 17 contains the placeholder `% FONT CHOICE GOES HERE`, which is replaced with the `font.value` string from the selected `Font` enum member.
+2. It contains a placeholder `% FONT CHOICE GOES HERE` which is replaced with the `font.value` string from the selected `Font` enum member.
 3. The template declares:
    - Document class: `\documentclass[letterpaper, 11pt]{article}`.
    - Packages: `latexsym`, `fullpage`, `titlesec`, `marvosym`, `color`, `verbatim`, `enumitem`, `hyperref`, `fancyhdr`, `babel`, `tabularx`.
