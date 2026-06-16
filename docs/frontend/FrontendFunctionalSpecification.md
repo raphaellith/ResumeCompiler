@@ -105,35 +105,28 @@ This document describes the functional behaviour of the Resume Compiler frontend
 
 ### 6A. useMarkdownDocument
 
-1. `useMarkdownDocument` manages the Markdown source file state.
-2. It tracks `markdown` (the file content), `filePath` (the path of the loaded file), and derives `hasFile` and `fileDisplayName`.
-3. `openFilePicker()` opens a Tauri native file dialog filtered to `.md` files and loads the selected file.
-4. `loadFile(file)` reads a browser `File` object and sets state.
-5. `updateMarkdown(next)` updates the editor content in state.
-6. An auto-save effect writes changes back to the source file with a 300ms debounce. Only absolute file paths (Tauri) trigger auto-save; relative paths (browser File API) are skipped to avoid permission errors.
+1. `useMarkdownDocument` manages the Markdown source file state. It tracks `markdown` (the file content), `filePath` (the path of the loaded file), and derives `hasFile` and `fileDisplayName`.
+2. `openFilePicker()` opens a Tauri native file dialog filtered to `.md` files and loads the selected file.
+3. `loadFile(file)` reads a browser `File` object and sets state.
+4. `updateMarkdown(next)` updates the editor content in state.
+5. An auto-save effect writes changes back to the source file with a 300ms debounce. Only absolute file paths (Tauri) trigger auto-save; relative paths (browser File API) are skipped to avoid permission errors.
 
 
 ### 6B. usePdfCompilation
 
-1. `usePdfCompilation` manages the PDF compilation lifecycle.
-2. It tracks `pdfUrl` (object URL for the compiled PDF blob), `pdfBlob` (raw bytes), `isCompiling` (request in flight), `lastCompiledAt` (timestamp), and `compileError` (error message on failure).
-3. `compilePdf(source, font?)` POSTs `{"markdown": source}` to the backend `/pdf/` endpoint with an optional `?font=` query parameter.
-4. On success, a blob URL is created and previous blob URLs are revoked to prevent memory leaks.
-5. On error, the response body is read as the error message.
-6. Blob URLs are cleaned up on unmount.
+1. `usePdfCompilation` manages the PDF compilation lifecycle. It tracks `pdfUrl` (object URL for the compiled PDF blob), `pdfBlob` (raw bytes), `isCompiling` (request in flight), `lastCompiledAt` (timestamp), and `compileError` (error message on failure).
+2. `compilePdf(source, font?)` POSTs `{"markdown": source}` to the backend `/pdf/` endpoint with an optional `?font=` query parameter.
+   - On success, a blob URL is created and previous blob URLs are revoked to prevent memory leaks. Blob URLs are cleaned up on unmount.
+   - On error, the response body is read as the error message.
 
 
 ### 6C. useXmlExport
 
-1. `useXmlExport` manages the XML export lifecycle.
-2. It tracks `isExportingXml` (request in flight) and `xmlError` (error message on failure).
-3. `exportXml(markdown)` POSTs `{"markdown": source}` to the backend `/xml/` endpoint and returns the XML string on success.
-4. On error, the error message is stored and the exception is re-thrown.
+1. `useXmlExport` manages the XML export lifecycle. It tracks `isExportingXml` (request in flight) and `xmlError` (error message on failure).
+2. `exportXml(markdown)` POSTs `{"markdown": source}` to the backend `/xml/` endpoint and returns the XML string on success. On error, the error message is stored and the exception is re-thrown.
 
 
 ### 6D. useSaveMarkdownOnClose
 
-1. `useSaveMarkdownOnClose` provides a best-effort safety net for saving the Markdown file when the user closes the application.
-2. It registers a `beforeunload` listener on the browser window and, in Tauri, an `onCloseRequested` handler on the Tauri window.
-3. Both handlers write the current Markdown content to the source file path.
-4. Only absolute file paths are written. Relative paths (browser only) are skipped.
+1. `useSaveMarkdownOnClose` provides a best-effort safety net for saving the Markdown file when the user closes the application. It registers a `beforeunload` listener on the browser window and, in Tauri, an `onCloseRequested` handler on the Tauri window. Both handlers write the current Markdown content to the source file path.
+2. Only absolute file paths are written. Relative paths (browser only) are skipped.
