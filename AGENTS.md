@@ -1,5 +1,7 @@
 # AGENTS.md
 
+This is a desktop app — a Tauri 2 shell wrapping a React frontend, backed by a local Python FastAPI server.
+
 ## Two-process architecture
 
 - **Backend** — Python FastAPI server on port `8000`. `POST /pdf/` returns `application/pdf`; `POST /xml/` returns `application/xml` (debug component tree). Both accept `{"markdown": "..."}`.
