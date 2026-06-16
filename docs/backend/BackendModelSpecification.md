@@ -1,16 +1,14 @@
 # Backend Model Specification
 
-This document describes the model layer of the Resume Compiler backend. The model represents a résumé as a tree of `ResumeComponent` objects. Each component knows how to emit its LaTeX representation (via `to_latex_lines()`) and its XML representation (via `to_xml_element()`). The top-level `Resume` class parses raw Markdown into this tree.
-
+This document describes the model layer of the Resume Compiler backend. The model represents a résumé as a tree of `ResumeComponent` objects. Each component knows how to emit its LaTeX and XML representations. The top-level `Resume` class parses raw Markdown into this tree.
 
 ## 1. ResumeComponent
 
 1. `ResumeComponent` is an abstract base class defined in `backend/model/resume_components/resume_component.py`.
-2. It declares two abstract methods that every concrete component must implement.
-3. `to_latex_lines() -> list[str]` returns the component's LaTeX source as a list of lines.
-4. `to_xml_element() -> ElementTree.Element` returns the component's XML representation.
-5. `to_xml_string() -> str` calls `to_xml_element()` and serialises the result with indentation.
-
+2. It declares abstract base methods for the following.
+   - Rendering to LaTeX as a list of lines
+   - Rendering to XML as an `Element`
+3. It also supports serialising the XML element to a string with indentation.
 
 ## 2. Resume
 
@@ -21,16 +19,16 @@ This document describes the model layer of the Resume Compiler backend. The mode
 
 ### 2A. Parsing pipeline
 
-1. `get_soup_from_markdown(markdown_contents)` converts the Markdown string to a BeautifulSoup HTML tree using the `markdown` library and `html.parser`.
-2. `get_children_tags(soup)` extracts only `Tag`-typed children from the soup body.
-3. `process_hidden_elements(tags)` scans all tags and strips those prefixed with `^`:
+1. The Markdown string is converted to a BeautifulSoup HTML tree using the `markdown` library and `html.parser`.
+2. Only `Tag`-typed children of the soup body are retained.
+3. Tags prefixed with `^` are stripped:
    - H2 and H3 headings prefixed with `^` have their entire tag group removed.
    - List items (`<li>`) whose text starts with `^` are removed from their parent `<ul>`.
 4. Tags before the first H2 are parsed as pre-section components:
    - H1 becomes `Title`.
    - Preformatted block (`<pre>`) becomes `Subtitle`.
    - Unordered list (`<ul>`) becomes `ContactList`.
-5. Remaining tags are grouped by H2 boundaries. Each group is dispatched by `get_resume_section_from_tags()`:
+5. Remaining tags are grouped by H2 boundaries. Each group is dispatched by section type:
    - H2 heading starts with `!` → `ToolsetSection`.
    - Group contains any H3 → `OrganisationalSection`.
    - Otherwise → `CatalogueSection`.
@@ -38,12 +36,12 @@ This document describes the model layer of the Resume Compiler backend. The mode
 
 ### 2B. LaTeX generation
 
-1. `to_latex_lines(font)` reads the preamble template from `preamble.tex`, substitutes the `% FONT CHOICE GOES HERE` placeholder with the chosen font's LaTeX package command, then appends each component's LaTeX output inside a `document` environment.
+1. The preamble template from `preamble.tex` is read, the `% FONT CHOICE GOES HERE` placeholder is substituted with the chosen font's LaTeX package command, then each component's LaTeX output is appended inside a `document` environment.
 
 
 ### 2C. XML generation
 
-1. `to_xml_string()` builds an `ElementTree` by calling `to_xml_element()` on each child and serialises the result.
+1. Each child's XML element is collected into a root element and serialised with indentation.
 
 
 ## 3. Title
@@ -64,7 +62,6 @@ This document describes the model layer of the Resume Compiler backend. The mode
 
 ## 5. ContactList and ContactListItem
 
-
 ### 5A. ContactList
 
 1. `ContactList` is defined in `backend/model/resume_components/contact_lists/contact_list.py`. It represents a horizontal list of contact details.
@@ -77,7 +74,7 @@ This document describes the model layer of the Resume Compiler backend. The mode
 
 1. `ContactListItem` is defined in `backend/model/resume_components/contact_lists/contact_list_item.py`. It represents a single contact entry.
 2. It stores `displayed_text` (the visible label) and `link` (the URL, or `None` if no hyperlink).
-3. If `link` is present, LaTeX output uses `\href{link}{\underline{displayed_text}}`. Otherwise it outputs `displayed_text`.
+3. If `link` is present, LaTeX output uses `\href{link}{\underline{displayed_text}}`. Otherwise, it outputs `displayed_text`.
 
 
 ## 6. ResumeSection
@@ -116,7 +113,7 @@ This document describes the model layer of the Resume Compiler backend. The mode
 
 1. `ResumeItem` is an abstract base class in `backend/model/resume_components/resume_items/resume_item.py`. It is the base for items within organisational and toolset sections.
 2. It stores `subheading` (the item title) and `description_list` (a list of bullet-point descriptions).
-3. It provides `get_description_list_as_latex_lines()` and `get_description_list_as_xml_element()` as shared helpers.
+3. It provides shared helpers for rendering the description list to LaTeX and XML.
 
 
 ## 11. OrganisationalSectionResumeItem
@@ -125,7 +122,7 @@ This document describes the model layer of the Resume Compiler backend. The mode
 2. Its constructor expects a group of tags: H3 (subheading), `<pre>` (auxiliary info), and `<ul>` (description list).
 3. The `<pre>` block provides up to 3 lines mapped to `first_row_right`, `second_row_left`, and `second_row_right` (date, organisation, location).
 4. If fewer than 3 lines are provided, missing fields are padded with empty strings.
-5. Date ranges are normalised via `format_date_range()`.
+5. Date ranges are normalised via a shared formatting utility.
 6. Its LaTeX output uses the `\resumeItemSubheading` custom command.
 
 
@@ -141,7 +138,7 @@ This document describes the model layer of the Resume Compiler backend. The mode
 ## 13. Shared section utilities
 
 1. `toolset_and_organisational_section_utils.py` (in `backend/model/resume_components/resume_sections/utils/`) contains helper functions used by both `OrganisationalSection` and `ToolsetSection`.
-2. It provides `classify_tags_in_toolset_or_organisation_section_by_resume_item()` for grouping tags into per-item tag groups.
+2. It provides tag classification logic for grouping tags into per-item groups.
 3. It provides functions for generating LaTeX and XML output for both section types.
 
 
@@ -160,36 +157,35 @@ This document describes the model layer of the Resume Compiler backend. The mode
    - `SOURCE_SANS_PRO` (`\usepackage[default]{sourcesanspro}`).
    - `CORMORANT_GARAMOND` (`\usepackage{CormorantGaramond}`).
    - `CHARTER` (`\usepackage{charter}`).
-4. `from_query_parameter(value: str | None) -> Font` maps kebab-case strings (e.g. `"times-new-roman"`) to the corresponding member. It defaults to `TIMES_NEW_ROMAN` for `None` or unrecognised values.
-5. This method is used by the controller layer to resolve the `?font=` query parameter.
+4. A helper maps kebab-case strings (e.g. `"times-new-roman"`) to the corresponding member. It defaults to `TIMES_NEW_ROMAN` for `None` or unrecognised values.
+5. This helper is used by the controller layer to resolve the `?font=` query parameter.
 
 
 ## 15. Utilities
 
 ### 15A. beautiful_soup_utils
 
-1. `get_soup_from_markdown(markdown_contents)` converts a Markdown string to a BeautifulSoup HTML tree.
-2. `get_children_tags(tag)` returns only `Tag`-typed children of a BeautifulSoup element, filtering out `NavigableString` and other non-tag nodes.
+1. Defined in `backend/model/utils/beautiful_soup_utils.py`.
+2. Converts a Markdown string to a BeautifulSoup HTML tree.
+3. Filters a BeautifulSoup element's children to return only `Tag`-typed nodes.
 
 
 ### 15B. input_parsing_utils
 
-1. `take_fixed_num_of_inputs_with_defaults(inputs, defaults)` truncates or pads `inputs` to match the length of `defaults`.
-2. `take_fixed_num_of_inputs_with_same_default(inputs, n, default)` truncates or pads `inputs` to length `n` using a single default value.
-3. `take_fixed_num_of_input_strings(inputs, n)` pads with empty strings.
+1. Defined in `backend/model/utils/input_parsing_utils.py`.
+2. Functions for truncating or padding lists to a fixed length, with configurable defaults or empty-string fallback.
 
 
 ### 15C. latex_utils
 
-1. `indent_lines(lines)` prepends a tab character to each line.
-2. `format_date_range(string)` normalises date-range hyphens to LaTeX ` -- `.
-3. `get_latex_command(command, arguments, square_bracket_options)` builds a LaTeX command string such as `\textbf{arg}` or `\command[opt]{arg1}{arg2}`.
-4. `get_latex_environment(env, contents, indent_contents)` wraps `contents` in `\begin{env}...\end{env}`.
+1. Defined in `backend/model/utils/latex_utils.py`.
+2. Provides indentation helpers, date-range normalisation (hyphens to LaTeX ` -- `), command construction (e.g. `\textbf{arg}`), and environment wrapping (`\begin{env}...\end{env}`).
 
 
 ### 15D. file_utils
 
-1. `create_and_write_file(file_path, contents)` creates parent directories as needed and writes a string to disk. Used by the compilation service to write the `.tex` file.
+1. Defined in `backend/model/utils/file_utils.py`.
+2. Creates parent directories and writes a string to disk. Used by the compilation service to write the `.tex` file.
 
 
 ## 16. Resources
@@ -197,8 +193,8 @@ This document describes the model layer of the Resume Compiler backend. The mode
 ### 16A. preamble.tex
 
 1. `preamble.tex` is located at `backend/model/resources/preamble.tex`.
-2. It is a LaTeX preamble template loaded by `Resume.to_latex_lines()`.
-3. Line 17 contains the placeholder `% FONT CHOICE GOES HERE`, which is replaced at compile time with the `font.value` string from the selected `Font` enum member.
+2. It is a LaTeX preamble template loaded at compile time.
+3. Line 17 contains the placeholder `% FONT CHOICE GOES HERE`, which is replaced with the `font.value` string from the selected `Font` enum member.
 4. The template declares:
    - Document class: `\documentclass[letterpaper, 11pt]{article}`.
    - Packages: `latexsym`, `fullpage`, `titlesec`, `marvosym`, `color`, `verbatim`, `enumitem`, `hyperref`, `fancyhdr`, `babel`, `tabularx`.
