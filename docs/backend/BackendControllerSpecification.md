@@ -40,4 +40,3 @@ CORS middleware is configured with `allow_origins=["*"]`, `allow_methods=["*"]`,
 2. A successful conversion returns `200 OK` with `Content-Type: application/xml`. The response body is an XML string representing the parsed `Resume` component tree.
 
 3. `422 Unprocessable Entity` is returned for invalid request bodies.
-
