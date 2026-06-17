@@ -20,7 +20,7 @@ uvicorn backend.controller.api_controller:app
 - CORS: wide open (`allow_origins=["*"]`). Acceptable for local-only use.
 - Compilation pipeline: Markdown → BeautifulSoup → `Resume` component tree (`backend/model/resume_components/`) → `to_latex_lines()` → `preamble.tex` (font placeholder `% FONT CHOICE GOES HERE`) → `pdflatex` in temp dir → PDF bytes. Entrypoint: `backend.service.markdown_to_pdf_bytes_compilation_service.get_pdf_bytes_from_markdown`.
 - `POST /pdf/?font=kebab-case-font-name` — query param parsed by `Font.from_query_parameter` in `backend/model/enums/font.py`. Default: `times-new-roman`.
-- Build config (`pyproject.toml`/`setup.py`) lives on `main` branch only (not on feature branches). PyPI package: `resumecompiler` (see `README.md` for CLI/library API).
+- `README.md` covers the markdown syntax and terminology.
 
 ## Frontend
 
