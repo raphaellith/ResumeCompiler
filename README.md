@@ -1,7 +1,5 @@
 <div align="center">
 
-<img src="frontend/resumecompiler/src-tauri/icons/icon.png" width="100" alt="Resume Compiler icon">
-
 # Resume Compiler
 
 <b>From .md to .pdf: Quality LaTeX résumés from everyday Markdown.</b>
