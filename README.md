@@ -16,10 +16,6 @@
 
 <br>
 
----
-
-<br>
-
 ## Quick Start
 
 ### Desktop app
