@@ -269,12 +269,3 @@ The frontend sends markdown to the backend API:
 - `POST /xml/` — returns `application/xml` (debug component tree)
 
 Both accept `{"markdown": "..."}`. Available fonts are listed in `frontend/resumecompiler/src/config/font.ts`; the default is Times New Roman (`times-new-roman`).
-
-
-## Future improvements
-
-Future improvements with regard to more robust parsing and compilation:
-
-- More user-friendly error handling
-- More mature handling of escape characters and LaTeX injection
-- UML visualisation of classes
