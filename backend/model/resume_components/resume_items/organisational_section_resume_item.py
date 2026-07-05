@@ -1,0 +1,68 @@
+from xml.etree import ElementTree
+
+from bs4 import Tag
+
+from backend.model.resume_components.resume_items.resume_item import ResumeItem
+from backend.model.utils.input_parsing_utils import take_fixed_num_of_input_strings, take_fixed_num_of_inputs_with_same_default
+from backend.model.utils.beautiful_soup_utils import get_children_tags
+from backend.model.utils.latex_utils import get_latex_command, format_date_range
+
+
+class OrganisationalSectionResumeItem(ResumeItem):
+    def __init__(self, tags: list[Tag]):
+        """
+        :param tags: A list of HTML tags that belong to this organisation section resume item.
+        """
+        tags = take_fixed_num_of_inputs_with_same_default(tags, 3, None)
+
+        subheading = tags[0].text if tags[0] else ""
+        pre_block_contents = tags[1].text if tags[1] else ""
+        description_list = [item.text for item in get_children_tags(tags[2])] if tags[2] else []
+
+        super().__init__(subheading=subheading, description_list=description_list)
+
+        # Parse preformatted block as exactly three pieces of auxiliary information
+        # If more than three are provided, only the first three pieces of information are accepted as input
+        # If less than three are provided, we pad them with empty strings
+
+        num_of_auxiliary_info = 3
+        pre_block_lines = pre_block_contents.split("\n")[:num_of_auxiliary_info]
+
+        self.first_row_right, self.second_row_left, self.second_row_right = take_fixed_num_of_input_strings(pre_block_lines, num_of_auxiliary_info)
+
+        self.first_row_right = format_date_range(self.first_row_right)
+        self.second_row_right = format_date_range(self.second_row_right)
+
+    def to_latex_lines(self) -> list[str]:
+        # Resume subheading with auxiliary info
+        result = [
+            get_latex_command(
+                command="resumeItemSubheading",
+                arguments=[self.subheading, self.first_row_right, self.second_row_left, self.second_row_right]
+            )
+        ]
+
+        if self.description_list:
+            result.append("")
+            result += self.get_description_list_as_latex_lines()
+
+        return result
+
+    def to_xml_element(self) -> ElementTree.Element:
+        organisational_section_resume_item_element = ElementTree.Element("organisational-section-resume-item")
+
+        subheading_element = ElementTree.SubElement(organisational_section_resume_item_element, "subheading")
+        subheading_element.text = self.subheading
+
+        first_row_right_element = ElementTree.SubElement(organisational_section_resume_item_element, "first-row-right")
+        first_row_right_element.text = self.first_row_right
+
+        second_row_left_element = ElementTree.SubElement(organisational_section_resume_item_element, "second-row-left")
+        second_row_left_element.text = self.second_row_left
+
+        second_row_right_element = ElementTree.SubElement(organisational_section_resume_item_element, "second-row-right")
+        second_row_right_element.text = self.second_row_right
+
+        organisational_section_resume_item_element.append(self.get_description_list_as_xml_element())
+
+        return organisational_section_resume_item_element
