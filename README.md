@@ -2,6 +2,8 @@
 
 # Resume Compiler
 
+<b>From .md to .pdf: Quality LaTeX résumés from everyday Markdown.</b>
+
 [![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-blue?logo=python&logoColor=white)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![React 19](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)](https://react.dev/)
@@ -13,12 +15,6 @@
 <img src="frontend/resumecompiler/src-tauri/icons/icon.png" width="100" alt="Resume Compiler icon">
 
 </div>
-<br>
-
-A desktop app that compiles Markdown into a polished résumé PDF using LaTeX. Built with
-[Tauri 2](https://v2.tauri.app/), [React 19](https://react.dev/),
-and [FastAPI](https://fastapi.tiangolo.com/). Résumés are based on the
-[Jake's Resume](https://www.overleaf.com/latex/templates/jakes-resume/syzfjbzwjncs) template.
 
 ---
 
