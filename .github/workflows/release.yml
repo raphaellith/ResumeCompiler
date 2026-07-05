@@ -63,12 +63,13 @@ jobs:
 
       - name: Stage sidecar binary for Tauri
         shell: bash
+        working-directory: frontend/resumecompiler
         run: |
           mkdir -p src-tauri/binaries
           if [ "${{ runner.os }}" = "Windows" ]; then
-            cp dist/backend.exe "src-tauri/binaries/backend-${{ matrix.target }}.exe"
+            cp "$GITHUB_WORKSPACE/dist/backend.exe" "src-tauri/binaries/backend-${{ matrix.target }}.exe"
           else
-            cp dist/backend "src-tauri/binaries/backend-${{ matrix.target }}"
+            cp "$GITHUB_WORKSPACE/dist/backend" "src-tauri/binaries/backend-${{ matrix.target }}"
           fi
 
       - name: Setup Node
