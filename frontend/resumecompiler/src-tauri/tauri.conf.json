@@ -35,9 +35,7 @@
       "binaries/backend"
     ],
     "macOS": {
-      "signing": {
-        "skip": true
-      }
+      "signingIdentity": null
     }
   }
 }
