@@ -13,8 +13,8 @@
 [![Windows](https://img.shields.io/badge/Windows-0078D6?logo=windows&logoColor=white)]()
 
 </div>
-
----
+<br>
+<br>
 
 ## Quick Start
 
