@@ -10,7 +10,7 @@
 [![macOS](https://img.shields.io/badge/macOS-000000?logo=apple&logoColor=white)]()
 [![Windows](https://img.shields.io/badge/Windows-0078D6?logo=windows&logoColor=white)]()
 
-<img src="frontend/resumecompiler/src-tauri/icons/icon.png" width="100" style="border-radius: 15px;" alt="Resume Compiler icon">
+<img src="frontend/resumecompiler/src-tauri/icons/icon.png" width="100" alt="Resume Compiler icon">
 
 </div>
 <br>
