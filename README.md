@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="frontend/resumecompiler/src-tauri/icons/icon.png" width="100" alt="Resume Compiler icon">
+
 # Resume Compiler
 
 <b>From .md to .pdf: Quality LaTeX résumés from everyday Markdown.</b>
@@ -11,8 +13,6 @@
 
 [![macOS](https://img.shields.io/badge/macOS-000000?logo=apple&logoColor=white)]()
 [![Windows](https://img.shields.io/badge/Windows-0078D6?logo=windows&logoColor=white)]()
-
-<img src="frontend/resumecompiler/src-tauri/icons/icon.png" width="100" alt="Resume Compiler icon">
 
 </div>
 
