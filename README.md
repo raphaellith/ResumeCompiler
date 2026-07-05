@@ -13,6 +13,7 @@
 <img src="frontend/resumecompiler/src-tauri/icons/icon.png" width="100" style="border-radius: 15px;" alt="Resume Compiler icon">
 
 </div>
+<br>
 
 A desktop app that compiles Markdown into a polished résumé PDF using LaTeX. Built with
 [Tauri 2](https://v2.tauri.app/), [React 19](https://react.dev/),
