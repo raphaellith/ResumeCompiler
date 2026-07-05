@@ -9,7 +9,7 @@ import { PdfPreviewPane } from "./components/PdfPreviewPane/PdfPreviewPane";
 import { ResizableHandle } from "./components/ResizableHandle/ResizableHandle";
 import { SettingsModal } from "./components/SettingsModal/SettingsModal";
 import { Toolbar } from "./components/Toolbar/Toolbar";
-import { COMPILED_PDF_ENDPOINT, COMPILED_XML_ENDPOINT } from "./config/api";
+import { getCompiledPdfEndpoint, getCompiledXmlEndpoint } from "./config/api";
 import { DEFAULT_FONT } from "./config/font";
 import { useMarkdownDocument } from "./hooks/useMarkdownDocument";
 import { usePdfCompilation } from "./hooks/usePdfCompilation";
@@ -197,10 +197,10 @@ function App() {
   } = useMarkdownDocument();
 
   const { pdfUrl, pdfBlob, isCompiling, compileError, compilePdf } =
-    usePdfCompilation(COMPILED_PDF_ENDPOINT);
+    usePdfCompilation(getCompiledPdfEndpoint);
 
   const { exportXml } =
-    useXmlExport(COMPILED_XML_ENDPOINT);
+    useXmlExport(getCompiledXmlEndpoint);
 
   useSaveMarkdownOnClose({
     filePath,

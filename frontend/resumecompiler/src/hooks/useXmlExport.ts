@@ -6,7 +6,9 @@ export type UseXmlExportResult = {
   exportXml: (markdown: string) => Promise<string>;
 };
 
-export function useXmlExport(xmlEndpoint: string): UseXmlExportResult {
+export function useXmlExport(
+  getXmlEndpoint: () => Promise<string>
+): UseXmlExportResult {
   const [isExportingXml, setIsExportingXml] = useState(false);
   const [xmlError, setXmlError] = useState<string | null>(null);
 
@@ -14,6 +16,8 @@ export function useXmlExport(xmlEndpoint: string): UseXmlExportResult {
     async (markdown: string): Promise<string> => {
       setIsExportingXml(true);
       setXmlError(null);
+
+      const xmlEndpoint = await getXmlEndpoint();
 
       try {
         const response = await fetch(xmlEndpoint, {
@@ -40,7 +44,7 @@ export function useXmlExport(xmlEndpoint: string): UseXmlExportResult {
         setIsExportingXml(false);
       }
     },
-    [xmlEndpoint]
+    [getXmlEndpoint]
   );
 
   return { isExportingXml, xmlError, exportXml };
