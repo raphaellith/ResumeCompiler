@@ -3,6 +3,7 @@ name: Release
 on:
   push:
     tags: "v*"
+  workflow_dispatch:
 
 concurrency:
   group: release-${{ github.ref }}
@@ -118,6 +119,7 @@ jobs:
           if-no-files-found: warn
 
   create-release:
+    if: github.ref_type == 'tag'
     needs: build
     runs-on: ubuntu-latest
     permissions:
