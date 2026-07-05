@@ -4,7 +4,7 @@ This document describes the HTTP controller layer of the Resume Compiler backend
 
 The controller delegates all business logic to the service layer.
 
-CORS middleware is configured with `allow_origins=["*"]`, `allow_methods=["*"]`, and `allow_headers=["*"]`. This permissive configuration is acceptable for local-only use. Credentials are not shared (no `allow_credentials`).
+CORS middleware is configured with `allow_origins=["http://localhost:1420", "tauri://localhost", "https://tauri.localhost"]`, `allow_methods=["*"]`, and `allow_headers=["*"]`. This restricts access to the Vite dev server and Tauri webview origins. Credentials are not shared (no `allow_credentials`).
 
 
 ## 1. POST /pdf/

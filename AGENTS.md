@@ -14,7 +14,7 @@ python backend/run.py                                  # default :8001 (used by 
 - Requires `pdflatex` on `$PATH` (system LaTeX distribution).
 - `POST /pdf/?font=kebab-case-name` → `application/pdf`; `POST /xml/` → `application/xml` (debug component tree). Both accept `{"markdown": "..."}`. Default font: `times-new-roman`.
 - Pipeline: Markdown → BeautifulSoup → `Resume` component tree → `to_latex_lines()` → `preamble.tex` (font placeholder `% FONT CHOICE GOES HERE`) → `pdflatex` in temp dir → PDF bytes. Entrypoint: `backend.service.markdown_to_pdf_bytes_compilation_service.get_pdf_bytes_from_markdown`.
-- CORS wide open (`allow_origins=["*"]`). Acceptable for local-only use.
+- CORS restricted to known frontend origins: `http://localhost:1420` (Vite dev), `tauri://localhost` and `https://tauri.localhost` (Tauri webview).
 
 ## Frontend
 

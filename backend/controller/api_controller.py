@@ -13,7 +13,11 @@ from backend.service.markdown_to_xml_string_compilation_service import get_resum
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "http://localhost:1420",  # The Vite dev server and Tauri's devUrl, used during development
+        "tauri://localhost",  # Tauri's webview origin when serving production build from bundled frontend
+        "https://tauri.localhost",  # Additional origin on some platforms, e.g. Linux
+    ],
     allow_methods=["*"],
     allow_headers=["*"],
 )
