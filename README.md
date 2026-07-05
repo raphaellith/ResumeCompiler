@@ -1,16 +1,32 @@
 # Resume Compiler
 
-A compiler that compiles Markdown files into a resume PDF file, formatted in LaTeX.
+A desktop app that compiles Markdown into a formatted resume PDF using LaTeX.
 
-Resumes outputted by this compiler will follow the structure given by the ["Jake's Resume" template](https://www.overleaf.com/latex/templates/jakes-resume/syzfjbzwjncs).
+Built with a Tauri 2 shell wrapping a React 19 frontend (Vite 7), backed by a Python FastAPI server. Resumes follow the ["Jake's Resume" template](https://www.overleaf.com/latex/templates/jakes-resume/syzfjbzwjncs).
 
 
-## Installation
+## Running
 
-The compiler is available as a [Python package on PyPI](https://pypi.org/project/resumecompiler/). To install the compiler through ```pip```, simply run the following terminal command.
+Start the backend (from repo root):
 
-```aiignore
-pip install resumecompiler
+```sh
+pip install -r requirements.txt
+uvicorn backend.controller.api_controller:app
+```
+
+Start the frontend (separate terminal):
+
+```sh
+cd frontend/resumecompiler
+npm install
+npm run dev
+```
+
+Or launch the Tauri desktop app:
+
+```sh
+cd frontend/resumecompiler
+npm run tauri dev
 ```
 
 
@@ -247,47 +263,12 @@ When necessary, it is possible to inject LaTeX code into Markdown source code (e
 
 ## Compilation
 
-To compile a markdown file in the source directory into a LaTeX file in the destination directory, import the class ```ResumeCompiler```  and create a ```ResumeCompiler``` instance with the source and destination directory paths as arguments. Then, run any one of the methods on the ```ResumeCompiler``` object:
-- ```ResumeCompiler.compile(src_file_path, font)``` compiles the file specified by the inputted path.
-- ```ResumeCompiler.run(font)``` compiles all Markdown files in the source directory and saves the results in the destination directory, with each LaTeX file in a different subdirectory.
-- ```ResumeCompiler.run_with_live_reload(font)``` runs a loop to continuously detect when a Markdown file in the source directory is created or saved. Whenever this happens, that file is compiled with outputs saved in the destination directory.
+The frontend sends markdown to the backend API:
 
-```aiignore
-from resumecompiler import ResumeCompiler
+- `POST /pdf/?font=kebab-case-font-name` — returns `application/pdf`
+- `POST /xml/` — returns `application/xml` (debug component tree)
 
-compiler = ResumeCompiler("src", "dist")
-compiler.run_with_live_reload()
-```
-
-Each of these methods includes an optional ```font``` parameter that determines the typeface used to create the PDF document. This parameter takes an instance of the enum class ```Font```, which can be any of the following.
-
-- ```Font.COMPUTER_MODERN```
-- ```Font.TIMES_NEW_ROMAN```
-- ```Font.FIRA_SANS```
-- ```Font.ROBOTO```
-- ```Font.NOTO_SANS```
-- ```Font.SOURCE_SANS_PRO```
-- ```Font.CORMORANT_GARAMOND```
-- ```Font.CHARTER```
-
-The argument defaults to Times New Roman (```Font.TIMES_NEW_ROMAN```). See an example code snippet below.
-
-```
-from resumecompiler.Enums.Font import Font
-from resumecompiler import ResumeCompiler
-
-compiler = ResumeCompiler("example-src", "example-dist")
-compiler.run_with_live_reload(font=Font.TIMES_NEW_ROMAN)
-```
-
-
-### Accessing the Resume object
-
-The compiler works by reading the contents of the input Markdown file and then creating a corresponding ```Resume``` object. To access this internal ```Resume``` object, use the function ```get_resume_object_from_markdown```. The function takes the path to the Markdown source file as input.
-
-```aiignore
-resume = get_resume_object_from_markdown('example-src/example.md')
-```
+Both accept `{"markdown": "..."}`. Available fonts are listed in `frontend/resumecompiler/src/config/font.ts`; the default is Times New Roman (`times-new-roman`).
 
 
 ## Future improvements

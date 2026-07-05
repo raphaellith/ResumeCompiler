@@ -4,6 +4,7 @@ import tempfile
 
 from backend.model.resume_components.resume import Resume
 from backend.model.enums.font import Font
+from backend.service.errors.pdf_latex_not_found_error import PdfLatexNotFoundError
 
 
 def get_pdf_bytes_from_markdown(markdown: str, font: Font = Font.TIMES_NEW_ROMAN) -> bytes:
@@ -71,6 +72,10 @@ def _run_pdflatex(latex_file_name: str, working_directory: Path) -> tuple[str, s
             check=False,               # Do not raise exception on non-zero exit
         )
     except FileNotFoundError as error:
-        raise RuntimeError("Could not find 'pdflatex'. Install a LaTeX distribution on the backend host.") from error
+        raise PdfLatexNotFoundError() from error
+    except OSError as error:
+        if "not found" in str(error).lower() or "no such file" in str(error).lower():
+            raise PdfLatexNotFoundError() from error
+        raise
 
     return process.stdout, process.stderr, process.returncode

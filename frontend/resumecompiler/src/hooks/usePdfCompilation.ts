@@ -12,7 +12,9 @@ export type UsePdfCompilationResult = PdfCompilationState & {
   compilePdf: (source: string, font?: string) => Promise<void>;
 };
 
-export function usePdfCompilation(compileEndpoint: string): UsePdfCompilationResult {
+export function usePdfCompilation(
+  getCompileEndpoint: () => Promise<string>
+): UsePdfCompilationResult {
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [pdfBlob, setPdfBlob] = useState<Blob | null>(null);
   const [isCompiling, setIsCompiling] = useState(false);
@@ -24,9 +26,10 @@ export function usePdfCompilation(compileEndpoint: string): UsePdfCompilationRes
       setIsCompiling(true);
       setCompileError(null);
 
+      const baseEndpoint = await getCompileEndpoint();
       const url = font
-        ? `${compileEndpoint}?font=${encodeURIComponent(font)}`
-        : compileEndpoint;
+        ? `${baseEndpoint}?font=${encodeURIComponent(font)}`
+        : baseEndpoint;
 
       try {
         const response = await fetch(url, {
@@ -39,8 +42,12 @@ export function usePdfCompilation(compileEndpoint: string): UsePdfCompilationRes
         });
 
         if (!response.ok) {
-          const errorText = await response.text().catch(() => "");
-          throw new Error(errorText || `Backend returned ${response.status}.`);
+          const errorBody = await response.json().catch(() => null);
+          if (errorBody?.error === "pdflatex_not_found") {
+            throw new Error("LATEX_NOT_FOUND");
+          }
+          const errorText = errorBody?.message || `Backend returned ${response.status}.`;
+          throw new Error(errorText);
         }
 
         const nextBlob = await response.blob();
@@ -62,7 +69,7 @@ export function usePdfCompilation(compileEndpoint: string): UsePdfCompilationRes
         setIsCompiling(false);
       }
     },
-    [compileEndpoint]
+    [getCompileEndpoint]
   );
 
   useEffect(() => {
@@ -82,4 +89,3 @@ export function usePdfCompilation(compileEndpoint: string): UsePdfCompilationRes
     compilePdf,
   };
 }
-

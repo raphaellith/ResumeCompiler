@@ -1,0 +1,136 @@
+name: Release
+
+on:
+  push:
+    tags: "v*"
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: macos-latest
+            target: aarch64-apple-darwin
+            pyinstaller-sep: ":"
+            tauri-bundle-suffix: dmg
+          - os: macos-13
+            target: x86_64-apple-darwin
+            pyinstaller-sep: ":"
+            tauri-bundle-suffix: dmg
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            pyinstaller-sep: ";"
+            tauri-bundle-suffix: msi
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+          cache-dependency-path: requirements.txt
+
+      - name: Install Python dependencies
+        run: |
+          pip install -r requirements.txt pyinstaller
+
+      - name: Build Python sidecar with PyInstaller
+        shell: bash
+        run: |
+          pyinstaller --onefile \
+            --name backend \
+            --add-data "backend/model/resources/preamble.tex${{ matrix.pyinstaller-sep }}backend/model/resources/" \
+            --hidden-import uvicorn \
+            --hidden-import uvicorn.logging \
+            --hidden-import uvicorn.loops \
+            --hidden-import uvicorn.loops.auto \
+            --hidden-import uvicorn.protocols \
+            --hidden-import uvicorn.protocols.http \
+            --hidden-import uvicorn.protocols.http.auto \
+            --hidden-import uvicorn.protocols.websocket \
+            --hidden-import uvicorn.protocols.websocket.auto \
+            backend/run.py
+
+      - name: Stage sidecar binary for Tauri
+        shell: bash
+        run: |
+          mkdir -p src-tauri/binaries
+          if [ "${{ runner.os }}" = "Windows" ]; then
+            cp dist/backend.exe "src-tauri/binaries/backend-${{ matrix.target }}.exe"
+          else
+            cp dist/backend "src-tauri/binaries/backend-${{ matrix.target }}"
+          fi
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: frontend/resumecompiler/package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm ci
+        working-directory: frontend/resumecompiler
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Install system dependencies (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          # webkit2gtk is not needed on macOS; Tauri uses WKWebView natively
+
+      - name: Install system dependencies (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          # WebView2 is preinstalled on Windows 10+ / GitHub Actions runners
+
+      - name: Cache Rust build artifacts
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: frontend/resumecompiler/src-tauri
+
+      - name: Build Tauri application
+        run: npm run tauri build
+        working-directory: frontend/resumecompiler
+        env:
+          TARGET: ${{ matrix.target }}
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: resumecompiler-${{ matrix.target }}
+          path: |
+            frontend/resumecompiler/src-tauri/target/release/bundle/dmg/*.dmg
+            frontend/resumecompiler/src-tauri/target/release/bundle/msi/*.msi
+            frontend/resumecompiler/src-tauri/target/release/bundle/nsi/*.exe
+          if-no-files-found: warn
+
+  create-release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download all build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/**/*
+          generate_release_notes: true
