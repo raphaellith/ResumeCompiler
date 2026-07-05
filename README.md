@@ -1,271 +1,284 @@
+<div style="text-align: center;">
+
 # Resume Compiler
 
-A desktop app that compiles Markdown into a formatted resume PDF using LaTeX.
+[![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-blue?logo=python&logoColor=white)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![React 19](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)](https://react.dev/)
+[![Tauri 2](https://img.shields.io/badge/Tauri-2-FFC131?logo=tauri&logoColor=white)](https://v2.tauri.app/)
 
-Built with a Tauri 2 shell wrapping a React 19 frontend (Vite 7), backed by a Python FastAPI server. Resumes follow the ["Jake's Resume" template](https://www.overleaf.com/latex/templates/jakes-resume/syzfjbzwjncs).
+[![macOS](https://img.shields.io/badge/macOS-000000?logo=apple&logoColor=white)]()
+[![Windows](https://img.shields.io/badge/Windows-0078D6?logo=windows&logoColor=white)]()
 
+<img src="frontend/resumecompiler/src-tauri/icons/icon.png" width="100" style="border-radius: 15px;" alt="Resume Compiler icon">
 
-## Running
+</div>
 
-Start the backend (from repo root):
+A desktop app that compiles Markdown into a polished résumé PDF using LaTeX. Built with
+[Tauri 2](https://v2.tauri.app/), [React 19](https://react.dev/),
+and [FastAPI](https://fastapi.tiangolo.com/). Résumés are based on the
+[Jake's Resume](https://www.overleaf.com/latex/templates/jakes-resume/syzfjbzwjncs) template.
+
+---
+
+## Quick Start
+
+### Desktop app
 
 ```sh
 pip install -r requirements.txt
+cd frontend/resumecompiler
+npm install && npm run tauri dev
+```
+
+### Web development
+
+Two terminals from the repo root:
+
+```sh
+# Terminal 1 — backend API server
 uvicorn backend.controller.api_controller:app
 ```
 
-Start the frontend (separate terminal):
-
 ```sh
+# Terminal 2 — frontend dev server
 cd frontend/resumecompiler
-npm install
 npm run dev
 ```
 
-Or launch the Tauri desktop app:
+### Headless API
 
-```sh
-cd frontend/resumecompiler
-npm run tauri dev
-```
+The backend exposes `POST /pdf/` and `POST /xml/` endpoints directly.
+See [`docs/backend/BackendControllerSpecification.md`](docs/backend/BackendControllerSpecification.md)
+for the full API reference, available fonts, and error responses.
 
+---
 
-## Terminology
+## Syntax Reference
 
-This section introduces several terms (in bold) used throughout this project and its documentation. The ["Jake's Resume" template](https://www.overleaf.com/latex/templates/jakes-resume/syzfjbzwjncs) is used as an example.
+This section describes the Markdown-based syntax used to author a résumé.
+The compiler extends standard Markdown with conventions for sections,
+resume items, hidden elements, and LaTeX escape sequences.
 
-A resume begins with a **title** stating the candidate's first and last name, e.g. ```Jake Ryan```.
+### Title, Subtitle and Contact List
 
-There may also be a **subtitle**, a brief line describing the candidate.
+A résumé begins with a **title** (the candidate's name), an optional
+**subtitle**, and an optional **contact list**. These three elements must
+appear before the first section heading.
 
-Below that is a **contact list**, which provides the candidate's contact details, e.g.
-```
-123-456-7890 | jake@su.edu | ... | github.com/jake
-```
+Use an H1 heading for the title:
 
-In a resume, all achievements, projects and skills are categorised into separate **sections**. Each section is marked with a **heading**, such as ```Education```, ```Experience```, ```Projects``` or ```Technical Skills```.
-
-There are 3 types of sections:
-
-  - **A toolset section**
-  - **An organisational section**
-  - **A catalogue section**
-
-A toolset section contains a list of **resume items**, each of which includes:
-- a **subheading** describing the achievement (e.g. ```Gitlytics```),
-- a **toolset** listing the tools involved (e.g. ```Python, Flask, ...```)
-- the time and duration thereof, and
-- a **description list**, which is a collection of sentences detailing the achievement (e.g. ```Developed a full-stack web application...```).
-
-A resume item in a toolset section is formatted like this:
-```aiignore
-Gitlytics | Python, Flask, React...     June 2020 – Present
-
-• Description list item #1
-• Description list item #2
-```
-
-An organisational section also has a list of resume items. Each resume item in an organisational section contains:
-- a subheading describing the achievement (e.g. ```Undergraduate Research Assistant```),
-- the time, organisation and location associated therewith, and
-- a description list (e.g. ```Developed a REST API using...```).
-
-A resume item in an organisational section is formatted like this:
-
-```aiignore
-Undergraduate Research Assistant     June 2020 – Present
-Texas A&M University                 College Station, TX
-
-• Description list item #1
-• Description list item #2
-```
-
-A catalogue section does not contain any resume items. Instead, it displays a simple unordered list, formatted like this:
-
-```aiignore
-• Languages: Java, Python, C/C++, SQL (Postgres), JavaScript, HTML/CSS, R
-• Frameworks: React, Node.js, Flask, JUnit, WordPress, Material-UI, FastAPI
-• Developer Tools: Git, Docker, TravisCI, Google Cloud Platform, VS Code, Visual Studio, PyCharm, IntelliJ, Eclipse
-• Libraries: pandas, NumPy, Matplotlib
-```
-
-In the above example, the text before each colon (```Languages```, ```Frameworks```, etc.) are called labels and are formatted in bold.
-
-
-
-## Syntax
-
-### Create a title, subtitle and contact list
-
-Use an H1 line to create a title.
-
-```aiignore
+```markdown
 # Jake Ryan
 ```
 
-Use a preformatted block to create a subtitle.
+Use an indented preformatted block for the subtitle:
 
-```aiignore
+```markdown
     A brief subtitle
 ```
 
-Use an unordered list to create a contact list. Contacts may include hyperlinks.
+Use an unordered list for the contact list. Items may include hyperlinks
+using standard Markdown link syntax.
 
-```aiignore
+```markdown
 # Jake Ryan
 - 123-456-7890
 - jake@su.edu
-- [resume-compiler.com](resume-compiler.com)
+- [resume-compiler.com](https://resume-compiler.com)
 ```
 
-The title, subtitle and contact list must precede the first section.
+Only one H1 is permitted — the compiler uses the first one as the title.
+Contacts are rendered on a single centred line separated by pipe (`|`).
 
+---
 
-### Create an organisational section
+### Sections
 
-Use an H2 heading to create a new section.
+Achievements, projects, and skills are grouped into **sections**, each
+marked with an H2 heading (e.g. `## Education`, `## Experience`). There
+are three types of sections:
 
-```aiignore
+- **Organisational** — for roles with an organisation and location
+  (jobs, education, etc.)
+- **Toolset** — for achievements defined by tools and technologies
+  (projects, etc.)
+- **Catalogue** — a flat unordered list (technical skills, etc.)
+
+#### Organisational sections
+
+Use an H2 heading to create an organisational section:
+
+```markdown
 ## Education
 ```
 
-Add an H3 subheading for each resume item. Use an indented preformatted code block to add 3 lines of auxiliary information.
+Each **resume item** within the section is introduced with an H3
+**subheading** followed by an indented preformatted block containing
+three lines of **auxiliary information**: a date or time range, an
+organisation name, and a location.
 
-```aiignore
-### Undergraduate Research Assistant 
-    June 2020 - Present
+```markdown
+### Undergraduate Research Assistant
+    June 2020 – Present
     Texas A&M University
     College Station, TX
 ```
 
-The subheading and auxiliary information will appear from left to right and from top to bottom in the compiled document.
+Then use an unordered list to add a **description list** — bullet points
+detailing the achievement:
 
-Then, use an unordered list to create a description list.
-
-```aiignore
-### Undergraduate Research Assistant 
-    June 2020 - Present
+```markdown
+### Undergraduate Research Assistant
+    June 2020 – Present
     Texas A&M University
     College Station, TX
 
-- Description list item #1
-- Description list item #2
+- Developed a REST API using Python and Flask
+- Presented research findings at the annual symposium
 ```
 
+The subheading and auxiliary information appear from left to right and
+from top to bottom in the compiled PDF:
 
-### Create a toolset section
+```text
+Undergraduate Research Assistant          June 2020 – Present
+Texas A&M University                      College Station, TX
 
-Use an H2 heading to create a new section. To indicate that this is a toolset section, prefix the heading with an exclamation mark.
+• Developed a REST API using Python and Flask
+• Presented research findings at the annual symposium
+```
 
-```aiignore
+#### Toolset sections
+
+To create a toolset section, prefix the H2 heading with an exclamation
+mark (`!`):
+
+```markdown
 ## !Projects
 ```
 
-Add an H3 subheading for each resume item. Use an indented preformatted code block to add 2 lines of auxiliary information.
+Each resume item uses an H3 subheading followed by an indented
+preformatted block with two lines of auxiliary information: a comma-
+separated **toolset** (tools and technologies) and a date or time range.
 
-```aiignore
+```markdown
 ### Gitlytics
     Python, Flask, React, PostgreSQL, Docker
-    June 2020 - Present
+    June 2020 – Present
+
+- Developed a full-stack web application for analysing GitHub repositories
+- Containerised the application with Docker and deployed to Google Cloud
 ```
 
-The subheading and auxiliary information will appear from left to right in the compiled document.
+The subheading and auxiliary information appear from left to right:
 
-Then, use an unordered list to create a description list.
+```text
+Gitlytics | Python, Flask, React, PostgreSQL, Docker     June 2020 – Present
 
-```aiignore
-### Gitlytics
-    Python, Flask, React, PostgreSQL, Docker
-    June 2020 - Present
-
-- Description list item #1
-- Description list item #2
+• Developed a full-stack web application...
+• Containerised the application with Docker...
 ```
 
+#### Catalogue sections
 
-### Create a catalogue section
+A catalogue section contains no H3 subheadings. Use an H2 heading
+followed directly by an unordered list:
 
-Create a new section by adding an H2 heading. A catalogue section contains no resume items, so do not add any H3 subheadings here.
-
-```aiignore
-## Technical Skills
-```
-
-Create an unordered list. Each item in the unordered list may optionally begin with a label followed by a colon.
-
-```aiignore
+```markdown
 ## Technical Skills
 
-- Languages: Java, Python, ...
-- Another label: Something else, ...
+- Languages: Java, Python, C/C++, SQL (Postgres), JavaScript, HTML/CSS, R
+- Frameworks: React, Node.js, Flask, JUnit, WordPress, Material-UI, FastAPI
+- Developer Tools: Git, Docker, TravisCI, Google Cloud Platform, VS Code
+- Libraries: pandas, NumPy, Matplotlib
 ```
 
-Labels are formatted in bold in the compiled document.
+Each item may optionally begin with a **label** followed by a colon.
+Labels (e.g. `Languages`, `Frameworks`) are rendered in bold.
 
+---
 
 ### Comments
 
-Any plain text that is not part of a title, contact list, heading, subheading or resume item (i.e. that when translated to HTML does not belong to a tag) will be ignored. This is analogous to comments in most programming languages.
+Plain text that does not belong to a heading, list, or preformatted
+block is treated as a comment and ignored. Comments are visible in the
+source Markdown but do not appear in the compiled output.
 
+```markdown
+This sentence is a comment and will be ignored.
 
-### Hide resume items
+## Education
+```
 
-You can hide resume sections, resume items, description list items, or catalogue section items. A hidden element will not appear in the compiled document.
+---
 
-To hide a resume section or resume item, prefix its heading or subheading with a caret (```^```).
+### Hiding Elements
 
-```aiignore
+Prefix an H2 or H3 heading with a caret (`^`) to hide the entire
+section or resume item. All of its content (auxiliary information,
+description list) is omitted from the compiled output.
+
+```markdown
 ## ^Education
 ```
 
-```aiignore
+```markdown
 ### ^Gitlytics
     Python, Flask, React, PostgreSQL, Docker
-    June 2020 - Present
+    June 2020 – Present
 
 - Description list item #1
 - Description list item #2
 ```
 
-When you do this, the entire resume section or item (not just the heading or subheading) will disappear from the compiled document.
+Prefix a list item with a caret to hide that single item (works for
+both description list items and catalogue section items):
 
-Similarly, to hide a description list item or catalogue section item, simply prefix that item with a caret.
-
-```aiignore
+```markdown
 - ^Description list item #1
-```
-
-```aiignore
 - ^Languages: Java, Python, ...
 ```
 
+---
 
+### Escape Characters and LaTeX Injection
 
-### On escape characters and LaTeX injections.
+Characters with special meaning in LaTeX must be escaped in Markdown:
 
-Some characters have special meaning in LaTeX and should be escaped using backslashes (```\```) when writing Markdown source code. See table below.
+| Character | Escape sequence in Markdown |
+|:---------:|:--------------------------:|
+| `&` | `\&` |
+| `%` | `\%` |
+| `$` | `\$` |
+| `#` | `\#` in code blocks, `\\\#` otherwise |
+| `_` | `\_` in code blocks, `\\\_` otherwise |
+| `{` | `\{` in code blocks, `\\\{` otherwise |
+| `}` | `\}` in code blocks, `\\\}` otherwise |
+| `~` | `\textasciitilde` |
+| `^` | `\textasciicircum` |
+| `\` | `\textbackslash` |
 
-| Character |                Escape sequence in Markdown                 |
-|:---------:|:----------------------------------------------------------:|
-|  ```&```  |                          ```\&```                          |
-|  ```%```  |                          ```\%```                          |
-|  ```$```  |                          ```\$```                          |
-|  ```#```  | ```\#``` in preformatted code blocks, ```\\\#``` otherwise |
-|  ```_```  | ```\_``` in preformatted code blocks, ```\\\_``` otherwise |
-|  ```{```  | ```\{``` in preformatted code blocks, ```\\\{``` otherwise |
-|  ```}```  | ```\}``` in preformatted code blocks, ```\\\}``` otherwise |
-|  ```~```  |                   ```\textasciitilde```                    |
-|  ```^```  |                   ```\textasciicircum```                   |
-|  ```\```  |                    ```\textbackslash```                    |
+Raw LaTeX code can be injected into the preamble or document body
+through preformatted code blocks. Escape sequences should still be
+applied to LaTeX special characters as needed.
 
-When necessary, it is possible to inject LaTeX code into Markdown source code (especially in preformatted code blocks). Note, however, that precautions should be taken and escape sequences should be used.
+---
 
+## Development
 
-## Compilation
+Refer to the [`docs/`](docs/) directory for detailed design documents:
 
-The frontend sends markdown to the backend API:
+- **Backend** — controller, model, and service specifications
+- **Frontend** — functional specification and style guide
+- **Release & CI/CD** — build pipeline, sidecar architecture, and
+  GitHub Actions workflow
 
-- `POST /pdf/?font=kebab-case-font-name` — returns `application/pdf`
-- `POST /xml/` — returns `application/xml` (debug component tree)
+The repository also includes [`AGENTS.md`](AGENTS.md) with project
+conventions for AI-assisted development.
 
-Both accept `{"markdown": "..."}`. Available fonts are listed in `frontend/resumecompiler/src/config/font.ts`; the default is Times New Roman (`times-new-roman`).
+## Acknowledgements
+
+- Résumé structure based on
+[Jake's Resume](https://www.overleaf.com/latex/templates/jakes-resume/syzfjbzwjncs)
+by Jake Gutierrez.
