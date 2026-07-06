@@ -47,7 +47,6 @@ The backend exposes `POST /pdf/` and `POST /xml/` endpoints directly.
 See [`docs/backend/BackendControllerSpecification.md`](docs/backend/BackendControllerSpecification.md)
 for the full API reference.
 
----
 
 ## Syntax Reference
 
@@ -129,7 +128,6 @@ Prefix with `^` to omit from output:
 | `### ` | Hides that resume item |
 | `- ` | Hides that list item |
 
----
 
 ## Development
 
