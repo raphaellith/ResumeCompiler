@@ -1,6 +1,8 @@
-<div style="text-align: center;">
+<div align="center">
 
 # Resume Compiler
+
+<b>From .md to .pdf: Quality LaTeX résumés from everyday Markdown.</b>
 
 [![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-blue?logo=python&logoColor=white)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
@@ -10,16 +12,9 @@
 [![macOS](https://img.shields.io/badge/macOS-000000?logo=apple&logoColor=white)]()
 [![Windows](https://img.shields.io/badge/Windows-0078D6?logo=windows&logoColor=white)]()
 
-<img src="frontend/resumecompiler/src-tauri/icons/icon.png" width="100" style="border-radius: 15px;" alt="Resume Compiler icon">
-
 </div>
 
-A desktop app that compiles Markdown into a polished résumé PDF using LaTeX. Built with
-[Tauri 2](https://v2.tauri.app/), [React 19](https://react.dev/),
-and [FastAPI](https://fastapi.tiangolo.com/). Résumés are based on the
-[Jake's Resume](https://www.overleaf.com/latex/templates/jakes-resume/syzfjbzwjncs) template.
-
----
+<br>
 
 ## Quick Start
 
@@ -50,9 +45,8 @@ npm run dev
 
 The backend exposes `POST /pdf/` and `POST /xml/` endpoints directly.
 See [`docs/backend/BackendControllerSpecification.md`](docs/backend/BackendControllerSpecification.md)
-for the full API reference, available fonts, and error responses.
+for the full API reference.
 
----
 
 ## Syntax Reference
 
@@ -134,7 +128,6 @@ Prefix with `^` to omit from output:
 | `### ` | Hides that resume item |
 | `- ` | Hides that list item |
 
----
 
 ## Development
 
