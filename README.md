@@ -45,10 +45,8 @@ Résumé Compiler allows you to streamline your CV writing process, leveraging t
 
 ## Download
 
-Check out the [latest release](https://github.com/raphaellith/ResumeCompiler/releases/latest) for prebuilt binaries for macOS and Windows.
-
-Required dependencies:
-- **LaTeX distribution** providing `pdflatex` (e.g. [MacTeX](https://tug.org/mactex/) on macOS, [MiKTeX](https://miktex.org/) on Windows)
+1. Install a LaTeX distribution that provides `pdflatex` (e.g. [MacTeX](https://tug.org/mactex/) on macOS, [MiKTeX](https://miktex.org/) on Windows).
+2. Download prebuilt binaries for macOS and Windows from the [latest release](https://github.com/raphaellith/ResumeCompiler/releases/latest).
 
 
 ## Syntax Reference
@@ -61,12 +59,13 @@ reference with examples on how to structure your résumé in Markdown.
 
 ### Run the app from source
 
-Prerequisites:
-- Python 3.12+
-- Node.js 20+
-- npm
-- Rust toolchain
+1. Ensure you have these prerequisites installed:
+   - Python 3.12+
+   - Node.js 20+
+   - npm
+   - Rust toolchain
 
+2. In the repository root, install Python dependencies and start the Tauri dev server:
 ```sh
 pip install -r requirements.txt
 cd frontend/resumecompiler
@@ -75,12 +74,12 @@ npm install && npm run tauri dev
 
 ### Web development (browser only)
 
-Prerequisites:
-- Python 3.12+
-- Node.js 20+
-- npm
+1. Ensure you have these prerequisites installed:
+   - Python 3.12+
+   - Node.js 20+
+   - npm
 
-Start two terminal sessions from the repository root:
+2. Start two terminal sessions from the repository root:
 
 ```sh
 # Terminal 1: backend API server
