@@ -48,6 +48,13 @@ Résumé Compiler allows you to streamline your CV writing process, leveraging t
 1. Install a LaTeX distribution that provides `pdflatex` (e.g. [MacTeX](https://tug.org/mactex/) on macOS, [MiKTeX](https://miktex.org/) on Windows).
 2. Download prebuilt binaries for macOS and Windows from the [latest release](https://github.com/raphaellith/ResumeCompiler/releases/latest).
 
+> [!IMPORTANT]
+> MacOS users may encounter an error claiming that the app is "damaged and can't be opened". This is usually because the application code is [unsigned](https://v2.tauri.app/distribute/sign/macos/), not because it is corrupted. To solve this issue, run
+> ```sh
+> xattr -c /Applications/resumecompiler.app
+> ```
+> in Terminal and then reopen the app.
+
 
 ## Syntax Reference
 
