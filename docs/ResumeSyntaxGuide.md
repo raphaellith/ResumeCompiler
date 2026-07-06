@@ -5,8 +5,6 @@ to turn your résumé into a polished PDF. The syntax builds on everyday
 Markdown, adding a few conventions for sections, contact info, hiding
 elements and working with LaTeX special characters.
 
----
-
 
 ## 1. Title, subtitle and contacts
 
@@ -28,8 +26,6 @@ heading.
   email or website. They are rendered on a single centred line
   separated by `|`. You can use Markdown links like
   `[label](url)` inside list items.
-
----
 
 
 ## 2. Section types
@@ -117,8 +113,6 @@ Just an H2 heading followed directly by an unordered list. If an item
 starts with a label followed by a colon (e.g. `Languages:`), that label
 is rendered in bold.
 
----
-
 
 ## 3. Hiding elements
 
@@ -131,16 +125,12 @@ compiled PDF.
 | `### ` | Hides that one resume item |
 | `- ` | Hides that single list item |
 
----
-
 
 ## 4. Comments
 
 Any text that is not a heading, a list item or inside an indented
 block is treated as a comment and ignored. You can use comments to
 leave notes to yourself in the source without affecting the output.
-
----
 
 
 ## 5. Escape characters and LaTeX injection
