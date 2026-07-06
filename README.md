@@ -45,7 +45,7 @@ npm run dev
 
 The backend exposes `POST /pdf/` and `POST /xml/` endpoints directly.
 See [`docs/backend/BackendControllerSpecification.md`](docs/backend/BackendControllerSpecification.md)
-for the full API reference, available fonts, and error responses.
+for the full API reference.
 
 ---
 
