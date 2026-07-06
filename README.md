@@ -1,6 +1,6 @@
 <div align="center">
 
-# Resume Compiler
+# Résumé Compiler
 
 <b>From .md to .pdf: Quality LaTeX résumés from everyday Markdown.</b>
 
@@ -16,36 +16,39 @@
 
 <br>
 
-## Quick Start
 
-### Desktop app
+## Introduction
 
-```sh
-pip install -r requirements.txt
-cd frontend/resumecompiler
-npm install && npm run tauri dev
-```
+One of the most popular LaTeX résumé templates available online, [Jake's Resume](https://www.overleaf.com/latex/templates/jakes-resume/syzfjbzwjncs) provides a clean and professional CV design that is easy to read and visually appealing. However, behind the elegantly simple PDF output is complex LaTeX code that can be difficult to read, maintain and customise.
 
-### Web development
+Résumé Compiler allows you to streamline your CV writing process, leveraging the simplicity of Markdown whilst keeping LaTeX professional formatting.
 
-Two terminals from the repo root:
 
-```sh
-# Terminal 1 — backend API server
-uvicorn backend.controller.api_controller:app
-```
+## Features
 
-```sh
-# Terminal 2 — frontend dev server
-cd frontend/resumecompiler
-npm run dev
-```
+- **Markdown Editor:** Write your résumé in readable Markdown. No LaTeX knowledge required.
+- **PDF Compilation:** Create and download publication-quality PDFs via LaTeX.
+- **Varying Section Layouts:** Choose from three different types of résumé sections: organisational, toolset and catalogue.
+- **Hide Elements:** Prefix headings or list items with `^` to omit them from output
+- **Font Selection:** Choose from 8 available LaTeX fonts.
+  - Times New Roman
+  - Computer Modern
+  - Roboto
+  - Noto Sans
+  - Source Sans Pro
+  - Fira Sans
+  - Cormorant Garamond
+  - Charter
+- **XML Exports:** Export your résumé as an XML representation of the parsed component tree.
+- **Full-Stack Desktop App:** Native browser-based macOS/Windows UI powered by Tauri 2, with an embedded Python backend.
 
-### Headless API
 
-The backend exposes `POST /pdf/` and `POST /xml/` endpoints directly.
-See [`docs/backend/BackendControllerSpecification.md`](docs/backend/BackendControllerSpecification.md)
-for the full API reference.
+## Download
+
+Check out the [latest release](https://github.com/raphaellith/ResumeCompiler/releases/) for prebuilt binaries for macOS and Windows.
+
+Required dependencies:
+- **LaTeX distribution** providing `pdflatex` (e.g. [MacTeX](https://tug.org/mactex/) on macOS, [MiKTeX](https://miktex.org/) on Windows)
 
 
 ## Syntax Reference
@@ -122,24 +125,47 @@ Text outside headings, lists, and preformatted blocks is ignored.
 
 Prefix with `^` to omit from output:
 
-| Prefix on | Effect |
-|-----------|--------|
-| `## ` | Hides entire section |
-| `### ` | Hides that resume item |
-| `- ` | Hides that list item |
+| Prefix on | Effect                 |
+|-----------|------------------------|
+| `## `     | Hides entire section   |
+| `### `    | Hides that resume item |
+| `- `      | Hides that list item   |
 
 
 ## Development
 
-Refer to the [`docs/`](docs/) directory for detailed design documents:
+### Run the app from source
 
-- **Backend** — controller, model, and service specifications
-- **Frontend** — functional specification and style guide
-- **Release & CI/CD** — build pipeline, sidecar architecture, and
-  GitHub Actions workflow
+Prerequisites: **Python 3.12+**, **Node.js 20+** & **npm**, **Rust toolchain**.
 
-The repository also includes [`AGENTS.md`](AGENTS.md) with project
-conventions for AI-assisted development.
+```sh
+pip install -r requirements.txt
+cd frontend/resumecompiler
+npm install && npm run tauri dev
+```
+
+### Web development (browser only)
+
+Prerequisites: **Python 3.12+**, **Node.js 20+** & **npm**.
+
+Start two terminal sessions from the repository root:
+
+```sh
+# Terminal 1: backend API server
+uvicorn backend.controller.api_controller:app
+```
+
+```sh
+# Terminal 2: frontend dev server
+cd frontend/resumecompiler
+npm run dev
+```
+
+
+## Documentation
+
+Refer to the [`docs/`](docs/) directory for detailed design guides and documentation. The repository also includes [`AGENTS.md`](AGENTS.md) with project conventions for AI-assisted development.
+
 
 ## Acknowledgements
 
