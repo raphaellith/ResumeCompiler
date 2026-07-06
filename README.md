@@ -61,7 +61,11 @@ reference with examples on how to structure your résumé in Markdown.
 
 ### Run the app from source
 
-Prerequisites: **Python 3.12+**, **Node.js 20+** & **npm**, **Rust toolchain**.
+Prerequisites:
+- Python 3.12+
+- Node.js 20+
+- npm
+- Rust toolchain
 
 ```sh
 pip install -r requirements.txt
@@ -71,7 +75,10 @@ npm install && npm run tauri dev
 
 ### Web development (browser only)
 
-Prerequisites: **Python 3.12+**, **Node.js 20+** & **npm**.
+Prerequisites:
+- Python 3.12+
+- Node.js 20+
+- npm
 
 Start two terminal sessions from the repository root:
 
