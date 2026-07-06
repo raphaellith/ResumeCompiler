@@ -53,83 +53,8 @@ Required dependencies:
 
 ## Syntax Reference
 
-See [`docs/ResumeSyntaxGuide.md`](docs/ResumeSyntaxGuide.md) for the full
-specification. Below is a quick overview.
-
-### Header
-
-```markdown
-# Jake Ryan                          ← H1 (required, first only)
-    A brief subtitle                 ← indented block (optional)
-- 123-456-7890                       ← unordered list (optional)
-- jake@su.edu
-```
-
-Contacts rendered on one line separated by `|`.
-
-### Sections (`## …`)
-
-| Type | Marker | Items | Auxiliary info |
-|------|--------|-------|----------------|
-| Organisational | (none) | H3 + description list | date, org, location (3 lines) |
-| Toolset | `!` prefix | H3 + description list | tools, date (2 lines) |
-| Catalogue | (none) | flat list | — |
-
-**Organisational** — roles with an org and location:
-```markdown
-## Experience
-
-### Undergraduate Research Assistant
-    June 2020 – Present
-    Texas A&M University
-    College Station, TX
-
-- Developed a REST API using Python and Flask
-```
-Rendered as:
-```text
-Undergraduate Research Assistant          June 2020 – Present
-Texas A&M University                      College Station, TX
-• Developed a REST API using Python and Flask
-```
-
-**Toolset** — achievements defined by tools/technologies:
-```markdown
-## !Projects
-
-### Gitlytics
-    Python, Flask, React, PostgreSQL, Docker
-    June 2020 – Present
-
-- Developed a full-stack web application
-```
-Rendered as:
-```text
-Gitlytics | Python, Flask, React, PostgreSQL, Docker     June 2020 – Present
-• Developed a full-stack web application
-```
-
-**Catalogue** — flat list, optional `Label:` prefix rendered in bold:
-```markdown
-## Technical Skills
-
-- Languages: Java, Python, C/C++
-- Frameworks: React, Node.js, Flask
-```
-
-### Comments
-
-Text outside headings, lists, and preformatted blocks is ignored.
-
-### Hiding Elements
-
-Prefix with `^` to omit from output:
-
-| Prefix on | Effect                 |
-|-----------|------------------------|
-| `## `     | Hides entire section   |
-| `### `    | Hides that resume item |
-| `- `      | Hides that list item   |
+See [`docs/ResumeSyntaxGuide.md`](docs/ResumeSyntaxGuide.md) for the full syntax
+reference with examples on how to structure your résumé in Markdown.
 
 
 ## Development

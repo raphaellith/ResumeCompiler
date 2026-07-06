@@ -1,98 +1,171 @@
 # Resume Syntax Guide
 
-This document describes the Markdown-style syntax used to author a résumé that the Resume Compiler can parse and compile into a PDF. The syntax extends standard Markdown with conventions for sections, resume items, hiding elements and LaTeX escape sequences.
+This guide walks you through the Markdown syntax the Résumé Compiler uses
+to turn your résumé into a polished PDF. The syntax builds on everyday
+Markdown, adding a few conventions for sections, contact info, hiding
+elements and working with LaTeX special characters.
+
+---
 
 
-## 1. Title, subtitle and contact list
+## 1. Title, subtitle and contacts
 
-1. The title, subtitle (optional), and contact list (optional) must appear before the first section heading.
+Everything starts with your name (required), an optional subtitle and
+optional contact details. These must appear before your first section
+heading.
 
+```markdown
+# Jake Ryan                          ← H1 (required, first only)
+    A brief subtitle                 ← indented block (optional)
+- 123-456-7890                       ← unordered list (optional)
+- jake@su.edu
+```
 
-### 1A. Title
+- **H1 heading** (`#`) — your name. Only one H1 per résumé; the first
+  one is used as the title.
+- **Indented line** — a subtitle that sits right below your name.
+- **Unordered list** (`-` items) — contact details such as phone,
+  email or website. They are rendered on a single centred line
+  separated by `|`. You can use Markdown links like
+  `[label](url)` inside list items.
 
-1. Use an H1 heading (`#`) to define the title. The title typically contains the candidate's first and last name.
-
-2. Only one H1 element is permitted. The compiler uses the first H1 as the title.
-
-
-### 1B. Subtitle
-
-1. Use an indented line to define a subtitle. The subtitle appears below the title as a secondary description.
-
-
-### 1C. Contact list
-
-1. Use an unordered list (`-` items) after the title to define a contact list. Each list item represents one contact detail (phone number, email address, website, etc.). Contacts are rendered on a single centred line separated by pipe (`|`) characters.
-
-2. Items may be formatted as hyperlinks using standard Markdown link syntax: `[label](url)`.
-
-
-## 2. Organisational sections
-
-1. Use an H2 heading (`##`) to create a new organisational section.
-2. Use an H3 heading (`###`) for each resume item within the section. This heading typically contains a role title such as "Undergraduate Research Assistant".
-
-3. After an H3, add an indented preformatted block containing 3 lines of auxiliary information:  a date or time range (e.g. "June 2020 -- Present"), an organisation name and a location. These fields are laid out from left to right and top to bottom in the compiled PDF.
-
-4. After the auxiliary block, use an unordered list to create a description list for the item. Each list item is one bullet-point description of the achievement or responsibility.
+---
 
 
-## 3. Toolset sections
+## 2. Section types
 
-1. Use an H2 heading prefixed with an exclamation mark (`## !Projects`) to create a toolset section.
+There are three kinds of sections, each with its own layout. Pick the
+one that fits best.
 
-2. Use an H3 heading for each resume item.
-
-3. After an H3, add an indented preformatted block containing 2 lines of auxiliary information: a comma-separated list of tools and technologies, and a date or time range.
-
-4. Description lists for toolset sections follow the same syntax as those for organisational sections: an unordered list of bullet-point descriptions.
-
-
-## 4. Catalogue sections
-
-1. Use an H2 heading to create a catalogue section.
-
-2. A catalogue section contains no H3 subheadings.
-
-3. Use an unordered list directly under the H2 heading.
-
-4. Each item may optionally include a label followed by a colon and a value (e.g. `Languages: Java, Python`). Labels are rendered in bold in the compiled document.
+| Type | Marker | Items | Auxiliary info |
+|------|--------|-------|----------------|
+| Organisational | (none) | H3 + description list | date, org, location (3 lines) |
+| Toolset | `!` prefix | H3 + description list | tools, date (2 lines) |
+| Catalogue | (none) | flat list | — |
 
 
-## 5. Hiding elements
+### Organisational
 
-1. Prefix an H2 or H3 heading with a caret (`^`) to hide the entire section or resume item. When hidden, the heading and all its content (auxiliary information, description list) are omitted from the compiled output.
+Use this for roles where you want to show an organisation name and
+location alongside the date.
 
-2. Prefix a list item (`- ^text`) with a caret to hide that single item. This applies to description list items and catalogue section items.
+```markdown
+## Experience
 
+### Undergraduate Research Assistant
+    June 2020 – Present
+    Texas A&M University
+    College Station, TX
 
-## 6. Comments
+- Developed a REST API using Python and Flask
+```
 
-1. Plain text that does not belong to a heading, list, or preformatted block is treated as a comment and ignored. Comments are analogous to comments in programming languages: they are visible in the source Markdown but do not appear in the compiled output.
+Rendered as:
 
+```text
+Undergraduate Research Assistant          June 2020 – Present
+Texas A&M University                      College Station, TX
+• Developed a REST API using Python and Flask
+```
 
-## 7. Escape characters and LaTeX injection
-
-### 7A. Special characters
-
-1. Characters with special meaning in LaTeX must be escaped in Markdown. The following table lists each character and its escape sequence.
-
-| Character |      Escape sequence in Markdown      |
-|:---------:|:-------------------------------------:|
-|    `&`    |                 `\&`                  |
-|    `%`    |                 `\%`                  |
-|    `$`    |                 `\$`                  |
-|    `#`    | `\#` in code blocks, `\\\#` otherwise |
-|    `_`    | `\_` in code blocks, `\\\_` otherwise |
-|    `{`    | `\{` in code blocks, `\\\{` otherwise |
-|    `}`    | `\}` in code blocks, `\\\}` otherwise |
-|    `~`    |           `\textasciitilde`           |
-|    `^`    |          `\textasciicircum`           |
-|    `\`    |           `\textbackslash`            |
+The H2 heading (`##`) creates the section. Each role gets an H3
+(`###`). Right after the H3, an indented block provides three lines:
+date, organisation and location. The description list below it holds your bullet-point achievements.
 
 
-### 7B. LaTeX injection
+### Toolset
 
-1. Raw LaTeX code can be injected into the preamble or document body through preformatted code blocks.
+Toolset sections highlight the tools and technologies you used, with
+the organisation name left out.
 
-2. Escape sequences should still be applied to LaTeX special characters as needed.
+```markdown
+## !Projects
+
+### Gitlytics
+    Python, Flask, React, PostgreSQL, Docker
+    June 2020 – Present
+
+- Developed a full-stack web application
+```
+
+Rendered as:
+
+```text
+Gitlytics | Python, Flask, React, PostgreSQL, Docker     June 2020 – Present
+• Developed a full-stack web application
+```
+
+Prefix the H2 heading with `!` (e.g. `## !Projects`). The auxiliary
+block still goes right after the H3, but now it has only two lines:
+a comma-separated list of tools, then the date. Description lists work
+the same way as in organisational sections.
+
+
+### Catalogue
+
+Catalogue sections are flat lists — no subheadings, no auxiliary
+blocks.
+
+```markdown
+## Technical Skills
+
+- Languages: Java, Python, C/C++
+- Frameworks: React, Node.js, Flask
+```
+
+Just an H2 heading followed directly by an unordered list. If an item
+starts with a label followed by a colon (e.g. `Languages:`), that label
+is rendered in bold.
+
+---
+
+
+## 3. Hiding elements
+
+Prefix any heading or list item with `^` to keep it out of the
+compiled PDF.
+
+| Prefix on | Effect |
+|-----------|--------|
+| `## ` | Hides the entire section |
+| `### ` | Hides that one resume item |
+| `- ` | Hides that single list item |
+
+---
+
+
+## 4. Comments
+
+Any text that is not a heading, a list item or inside an indented
+block is treated as a comment and ignored. You can use comments to
+leave notes to yourself in the source without affecting the output.
+
+---
+
+
+## 5. Escape characters and LaTeX injection
+
+### Special characters
+
+These characters have special meaning in LaTeX and need to be escaped
+in your Markdown:
+
+| Character | Escape sequence in Markdown |
+|:---------:|:---------------------------:|
+| `&` | `\&` |
+| `%` | `\%` |
+| `$` | `\$` |
+| `#` | `\#` in code blocks, `\\\#` otherwise |
+| `_` | `\_` in code blocks, `\\\_` otherwise |
+| `{` | `\{` in code blocks, `\\\{` otherwise |
+| `}` | `\}` in code blocks, `\\\}` otherwise |
+| `~` | `\textasciitilde` |
+| `^` | `\textasciicircum` |
+| `\` | `\textbackslash` |
+
+
+### LaTeX injection
+
+You can inject raw LaTeX into the preamble or document body using
+preformatted code blocks. Just remember to escape any LaTeX special
+characters as needed.
