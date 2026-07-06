@@ -47,8 +47,8 @@ Résumé Compiler allows you to streamline your CV writing process, leveraging t
 
 Check out the [latest release](https://github.com/raphaellith/ResumeCompiler/releases/latest) for prebuilt binaries for macOS and Windows.
 
-> Required dependencies:
-> - **LaTeX distribution** providing `pdflatex` (e.g. [MacTeX](https://tug.org/mactex/) on macOS, [MiKTeX](https://miktex.org/) on Windows)
+Required dependencies:
+- **LaTeX distribution** providing `pdflatex` (e.g. [MacTeX](https://tug.org/mactex/) on macOS, [MiKTeX](https://miktex.org/) on Windows)
 
 
 ## Syntax Reference
