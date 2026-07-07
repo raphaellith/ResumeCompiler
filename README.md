@@ -20,7 +20,7 @@
 
 ## Introduction
 
-One of the most popular LaTeX résumé templates available online, [Jake's Resume](https://www.overleaf.com/latex/templates/jakes-resume/syzfjbzwjncs) provides a clean and professional CV design that is easy to read and visually appealing. However, behind the elegantly simple PDF output is complex LaTeX code that can be difficult to read, maintain and customise.
+One of the most popular LaTeX résumé templates available online, [Jake's Résumé](https://www.overleaf.com/latex/templates/jakes-resume/syzfjbzwjncs) provides a clean and professional CV design that is easy to read and visually appealing. However, behind the elegantly simple PDF output is complex LaTeX code that can be difficult to read, maintain and customise.
 
 Résumé Compiler allows you to streamline your CV writing process, leveraging the simplicity of Markdown whilst keeping LaTeX professional formatting.
 
@@ -109,5 +109,5 @@ Refer to the [`docs/`](docs/) directory for detailed design guides and documenta
 ## Acknowledgements
 
 - Résumé structure based on
-[Jake's Resume](https://www.overleaf.com/latex/templates/jakes-resume/syzfjbzwjncs)
+[Jake's Résumé](https://www.overleaf.com/latex/templates/jakes-resume/syzfjbzwjncs)
 by Jake Gutierrez.

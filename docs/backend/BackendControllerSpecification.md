@@ -1,6 +1,6 @@
 # Backend Controller Specification
 
-This document describes the HTTP controller layer of the Resume Compiler backend. The controller is a FastAPI application that exposes two REST endpoints for compiling Markdown résumés into PDF documents and XML representations.
+This document describes the HTTP controller layer of the Résumé Compiler backend. The controller is a FastAPI application that exposes two REST endpoints for compiling Markdown résumés into PDF documents and XML representations.
 
 The controller delegates all business logic to the service layer.
 

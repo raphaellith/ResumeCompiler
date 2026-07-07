@@ -1,4 +1,4 @@
-# Resume Compiler Frontend
+# Résumé Compiler Frontend
 
 A Tauri + React UI for editing Markdown resumes and previewing mock-compiled PDFs.
 

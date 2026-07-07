@@ -1,6 +1,6 @@
 # Frontend Style Guide
 
-This document describes the colour system, typography, iconography, and UI component conventions used in the Resume Compiler frontend.
+This document describes the colour system, typography, iconography, and UI component conventions used in the Résumé Compiler frontend.
 
 
 ## 1. Colours
