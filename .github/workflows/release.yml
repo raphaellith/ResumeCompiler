@@ -109,12 +109,32 @@ jobs:
         env:
           TARGET: ${{ matrix.target }}
 
+      - name: Compute SHA256 and rename DMG (macOS)
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          DMG_DIR="frontend/resumecompiler/src-tauri/target/release/bundle/dmg"
+          VERSION=$(grep '"version"' frontend/resumecompiler/src-tauri/tauri.conf.json \
+            | head -1 | sed 's/.*"version": *"\(.*\)".*/\1/')
+          if [ "${{ matrix.target }}" = "aarch64-apple-darwin" ]; then
+            ARCH="aarch64"
+          else
+            ARCH="x64"
+          fi
+          DMG_FILE=$(ls "$DMG_DIR"/*.dmg | head -1)
+          NEW_NAME="resumecompiler_${VERSION}_${ARCH}.dmg"
+          echo "Renaming $(basename "$DMG_FILE") -> $NEW_NAME"
+          mv "$DMG_FILE" "$DMG_DIR/$NEW_NAME"
+          shasum -a 256 "$DMG_DIR/$NEW_NAME" > "$DMG_DIR/$NEW_NAME.sha256"
+          echo "SHA256: $(cat "$DMG_DIR/$NEW_NAME.sha256")"
+
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: resumecompiler-${{ matrix.target }}
           path: |
             frontend/resumecompiler/src-tauri/target/release/bundle/dmg/*.dmg
+            frontend/resumecompiler/src-tauri/target/release/bundle/dmg/*.sha256
             frontend/resumecompiler/src-tauri/target/release/bundle/msi/*.msi
             frontend/resumecompiler/src-tauri/target/release/bundle/nsi/*.exe
           if-no-files-found: warn
@@ -127,6 +147,14 @@ jobs:
       contents: write
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Switch to main branch
+        run: git checkout main
+
       - name: Download all build artifacts
         uses: actions/download-artifact@v4
         with:
@@ -135,5 +163,59 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: artifacts/**/*
+          files: |
+            artifacts/**/*.dmg
+            artifacts/**/*.msi
+            artifacts/**/*.exe
           generate_release_notes: true
+
+      - name: Update Homebrew cask formula
+        shell: bash
+        run: |
+          ARM_SHA=$(cat artifacts/resumecompiler-aarch64-apple-darwin/*.sha256 \
+            | cut -d' ' -f1)
+          INTEL_SHA=$(cat artifacts/resumecompiler-x86_64-apple-darwin/*.sha256 \
+            | cut -d' ' -f1)
+          VERSION=$(grep '"version"' frontend/resumecompiler/src-tauri/tauri.conf.json \
+            | head -1 | sed 's/.*"version": *"\(.*\)".*/\1/')
+
+          printf '%s\n' \
+            'cask "resumecompiler" do' \
+            "  version \"$VERSION\"" \
+            "  sha256 arm:   \"$ARM_SHA\"," \
+            "         intel: \"$INTEL_SHA\"" \
+            '' \
+            "  url arm:   \"https://github.com/raphaelli/ResumeCompiler/releases/download/v${VERSION}/resumecompiler_${VERSION}_aarch64.dmg\"," \
+            "      intel: \"https://github.com/raphaelli/ResumeCompiler/releases/download/v${VERSION}/resumecompiler_${VERSION}_x64.dmg\"" \
+            '' \
+            '  name "ResumeCompiler"' \
+            '  desc "Markdown to PDF resume builder"' \
+            '  homepage "https://github.com/raphaelli/ResumeCompiler"' \
+            '' \
+            '  livecheck do' \
+            '    url :url' \
+            '    strategy :github_latest' \
+            '  end' \
+            '' \
+            '  app "resumecompiler.app"' \
+            'end' > Casks/resumecompiler.rb
+
+          echo "Generated Casks/resumecompiler.rb for v${VERSION}"
+          echo "  ARM SHA:   $ARM_SHA"
+          echo "  INTEL SHA: $INTEL_SHA"
+
+      - name: Commit cask update
+        shell: bash
+        env:
+          VERSION: ${{ github.ref_name }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Casks/resumecompiler.rb
+          if git diff --cached --quiet; then
+            echo "No changes to commit — cask already up to date"
+          else
+            git commit -m "Update Homebrew cask to ${VERSION}"
+            git push
+            echo "Committed and pushed cask update"
+          fi

@@ -40,6 +40,8 @@ npm run tauri build # Tauri desktop (release)
 
 - `.github/workflows/release.yml`: triggered by `v*` tag push.
 - Builds Python sidecar with `pyinstaller --onefile --hidden-import uvicorn...` using `backend/run.py` as entrypoint, then `npm run tauri build`.
+- macOS DMGs renamed to `resumecompiler_{version}_{arch}.dmg`; SHA256 computed and uploaded as sidecar.
+- `create-release` job creates GitHub Release, then auto-generates `Casks/resumecompiler.rb` with version + SHA256 and commits it to `main`.
 - `backend/build.spec` is the local PyInstaller spec for reference.
 
 ## Markdown quirks
