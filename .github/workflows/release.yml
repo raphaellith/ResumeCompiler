@@ -172,9 +172,9 @@ jobs:
       - name: Update Homebrew cask formula
         shell: bash
         run: |
-          ARM_SHA=$(cat artifacts/resumecompiler-aarch64-apple-darwin/*.sha256 \
+          ARM_SHA=$(cat artifacts/resumecompiler-aarch64-apple-darwin/dmg/*.sha256 \
             | cut -d' ' -f1)
-          INTEL_SHA=$(cat artifacts/resumecompiler-x86_64-apple-darwin/*.sha256 \
+          INTEL_SHA=$(cat artifacts/resumecompiler-x86_64-apple-darwin/dmg/*.sha256 \
             | cut -d' ' -f1)
           VERSION=$(grep '"version"' frontend/resumecompiler/src-tauri/tauri.conf.json \
             | head -1 | sed 's/.*"version": *"\(.*\)".*/\1/')
