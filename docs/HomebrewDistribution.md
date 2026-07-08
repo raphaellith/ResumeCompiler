@@ -19,7 +19,7 @@ flowchart LR
     G --> H
     E --> H
     H --> I["GitHub Release<br/>(DMGs as assets)"]
-    H --> J["Update Casks/resumecompiler.rb<br/>with version + SHA256"]
+    H --> J["Update casks/resumecompiler.rb<br/>with version + SHA256"]
     J --> K["Commit cask to main"]
     I --> L["User: brew install --cask"]
     K --> L
@@ -27,13 +27,13 @@ flowchart LR
 
 Every `v*` tag push triggers CI to build all platforms, compute SHA256 checksums
 for both macOS DMGs, publish them as release assets, then auto-update the cask
-formula in `Casks/resumecompiler.rb` with the correct version and checksums,
+formula in `casks/resumecompiler.rb` with the correct version and checksums,
 and commit it back to the `main` branch.
 
 
 ## Cask Formula
 
-**File:** `Casks/resumecompiler.rb`
+**File:** `casks/resumecompiler.rb`
 
 ```ruby
 cask "resumecompiler" do
@@ -110,7 +110,7 @@ This job runs only on tag pushes (`if: github.ref_type == 'tag'`). It:
    `.exe`) — SHA sidecar files are excluded from the release.
 4. **Generates the cask formula** by reading the SHA256 values from the
    per-architecture artifact groups and the version from `tauri.conf.json`.
-5. **Commits and pushes** the updated `Casks/resumecompiler.rb` to `main`.
+5. **Commits and pushes** the updated `casks/resumecompiler.rb` to `main`.
 
 **Step 5 detail:**
 
@@ -119,7 +119,7 @@ This job runs only on tag pushes (`if: github.ref_type == 'tag'`). It:
   run: |
     git config user.name "github-actions[bot]"
     git config user.email "github-actions[bot]@users.noreply.github.com"
-    git add Casks/resumecompiler.rb
+    git add casks/resumecompiler.rb
     if git diff --cached --quiet; then
       echo "No changes to commit — cask already up to date"
     else
@@ -140,7 +140,7 @@ This job runs only on tag pushes (`if: github.ref_type == 'tag'`). It:
 ### Install
 
 ```bash
-brew install --cask https://raw.githubusercontent.com/raphaelli/ResumeCompiler/main/Casks/resumecompiler.rb --no-quarantine
+brew install --cask https://raw.githubusercontent.com/raphaelli/ResumeCompiler/main/casks/resumecompiler.rb --no-quarantine
 ```
 
 The `--no-quarantine` flag tells macOS not to set the quarantine attribute on
@@ -159,7 +159,7 @@ needed — `--no-quarantine` already handles it.
 
 ```bash
 # Re-run the same command — brew fetches the latest cask from main:
-brew install --cask https://raw.githubusercontent.com/raphaelli/ResumeCompiler/main/Casks/resumecompiler.rb --no-quarantine
+brew install --cask https://raw.githubusercontent.com/raphaelli/ResumeCompiler/main/casks/resumecompiler.rb --no-quarantine
 ```
 
 Or if you prefer to upgrade by version:

@@ -198,9 +198,9 @@ jobs:
             '  end' \
             '' \
             '  app "resumecompiler.app"' \
-            'end' > Casks/resumecompiler.rb
+            'end' > casks/resumecompiler.rb
 
-          echo "Generated Casks/resumecompiler.rb for v${VERSION}"
+          echo "Generated casks/resumecompiler.rb for v${VERSION}"
           echo "  ARM SHA:   $ARM_SHA"
           echo "  INTEL SHA: $INTEL_SHA"
 
@@ -211,7 +211,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add Casks/resumecompiler.rb
+          git add casks/resumecompiler.rb
           if git diff --cached --quiet; then
             echo "No changes to commit — cask already up to date"
           else
