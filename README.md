@@ -56,20 +56,10 @@ Résumé Compiler allows you to streamline your CV writing process, leveraging t
 > 
 > This is due to a lack of notarisation. See [this Tauri documentation page](https://v2.tauri.app/distribute/sign/macos/) for details.
 > 
-> ### Workaround 1
-> To resolve this, go to **System Settings** and **Privacy & Security**. Scroll down to **Security** where the message
+> There are currently two workarounds to resolve this issue:
 > 
-> > "resumecompiler" was blocked to protect your Mac.
-> 
-> may be found. Click **Open Anyway** and then confirm by clicking **Open** in the dialog that appears.
-> 
-> ### Workaround 2
-> Alternatively, run
-> 
-> ```sh
-> xattr -c /Applications/resumecompiler.app
-> ```
-> in Terminal and then reopen the app.
+> - Go to **System Settings** and **Privacy & Security**. Scroll down to the **Security** section and find the message which states that "resumecompiler" was blocked to protect your Mac. Click **Open Anyway** and then confirm by clicking **Open** in the dialog that appears.
+> - Run ```xattr -c /Applications/resumecompiler.app``` in Terminal and then reopen the app.
 
 
 ## Syntax Reference
