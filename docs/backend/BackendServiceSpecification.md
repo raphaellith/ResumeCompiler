@@ -1,6 +1,6 @@
 # Backend Service Specification
 
-This document describes the service layer of the Resume Compiler backend (`backend/service`). Services orchestrate the compilation pipeline by bridging the controller layer and the model layer. Two services exist: one for PDF compilation and one for XML compilation.
+This document describes the service layer of the Résumé Compiler backend (`backend/service`). Services orchestrate the compilation pipeline by bridging the controller layer and the model layer. Two services exist: one for PDF compilation and one for XML compilation.
 
 Services import only the `Resume` class and the `Font` enum from the model layer. All parsing and compilation logic is handled by the model.
 

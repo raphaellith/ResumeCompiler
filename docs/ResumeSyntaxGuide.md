@@ -1,6 +1,6 @@
 # Resume Syntax Guide
 
-This document describes the Markdown-style syntax used to author a résumé that the Resume Compiler can parse and compile into a PDF. The syntax extends standard Markdown with conventions for sections, resume items, hiding elements and LaTeX escape sequences.
+This document describes the Markdown-style syntax used to author a résumé that the Résumé Compiler can parse and compile into a PDF. The syntax extends standard Markdown with conventions for sections, resume items, hiding elements and LaTeX escape sequences.
 
 
 ## 1. Title, subtitle and contact list
