@@ -104,6 +104,7 @@ jobs:
           workspaces: frontend/resumecompiler/src-tauri
 
       - name: Clean old bundles from cache
+        shell: bash
         run: rm -rf src-tauri/target/release/bundle
         working-directory: frontend/resumecompiler
 
