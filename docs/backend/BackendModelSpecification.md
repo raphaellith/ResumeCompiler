@@ -1,6 +1,6 @@
 # Backend Model Specification
 
-This document describes the model layer of the Resume Compiler backend (`backend/model`). The model represents a résumé as a tree of `ResumeComponent` objects. Each component knows how to emit its LaTeX and XML representations. The top-level `Resume` class parses raw Markdown into this tree.
+This document describes the model layer of the Résumé Compiler backend (`backend/model`). The model represents a résumé as a tree of `ResumeComponent` objects. Each component knows how to emit its LaTeX and XML representations. The top-level `Resume` class parses raw Markdown into this tree.
 
 ## 1. ResumeComponent
 

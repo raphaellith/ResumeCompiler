@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "resumecompiler",
+  "productName": "Résumé Compiler",
   "version": "1.0.1",
   "identifier": "com.raphaelli.resumecompiler",
   "build": {
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "resumecompiler",
+        "title": "Résumé Compiler",
         "width": 1200,
         "height": 800
       }

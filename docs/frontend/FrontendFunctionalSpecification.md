@@ -1,6 +1,6 @@
 # Frontend Functional Specification
 
-This document describes the functional behaviour of the Resume Compiler frontend. The frontend is a single-page React application with a split-pane layout: a Markdown editor on the left and a PDF preview on the right, with a multi-button toolbar above both panes. A resizable handle sits between the two panes, allowing the user to adjust the split ratio.
+This document describes the functional behaviour of the Résumé Compiler frontend. The frontend is a single-page React application with a split-pane layout: a Markdown editor on the left and a PDF preview on the right, with a multi-button toolbar above both panes. A resizable handle sits between the two panes, allowing the user to adjust the split ratio.
 
 
 ## 1. Editor pane
