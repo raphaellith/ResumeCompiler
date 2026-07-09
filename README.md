@@ -58,7 +58,7 @@ Résumé Compiler allows you to streamline your CV writing process, leveraging t
 > 
 > There are currently two workarounds to resolve this issue:
 > 
-> - Go to **System Settings** and **Privacy & Security**. Scroll down to the **Security** section and find the message which states that "resumecompiler" was blocked to protect your Mac. Click **Open Anyway** and then confirm by clicking **Open** in the dialog that appears.
+> - Go to **System Settings** and locate **Privacy & Security**. In **Security**, click **Open Anyway**.
 > - Run ```xattr -c /Applications/resumecompiler.app``` in Terminal and then reopen the app.
 
 
