@@ -54,7 +54,7 @@ Résumé Compiler allows you to streamline your CV writing process, leveraging t
 > 
 > > Apple could not verify “resumecompiler” is free of malware that may harm your Mac or compromise your privacy.
 > 
-> This is due to a lack of notarisation. See this Tauri documentation page for details.
+> This is due to a lack of notarisation. See [this Tauri documentation page](https://v2.tauri.app/distribute/sign/macos/) for details.
 > 
 > ### Workaround 1
 > To resolve this, go to **System Settings** and **Privacy & Security**. Scroll down to **Security** where the message
