@@ -88,8 +88,9 @@ File: `.github/workflows/release.yml`
 3. Copy binary to `src-tauri/binaries/backend-{target}`
 4. Setup Node + `npm ci`
 5. Setup Rust + target
-6. `npm run tauri build`
-7. Upload `.dmg` / `.msi` as build artifact
+6. Sync `tauri.conf.json` version from git tag (e.g., `v1.0.1` → `"1.0.1"`) via inline Node script
+7. `npm run tauri build`
+8. Upload `.dmg` / `.msi` as build artifact
 
 **Post-matrix**: A `create-release` job (on `ubuntu-latest`, needs `build`)
 downloads all artifacts and creates a GitHub Release with generated release notes.

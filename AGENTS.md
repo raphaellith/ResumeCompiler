@@ -39,7 +39,9 @@ npm run tauri build # Tauri desktop (release)
 ## CI / Release
 
 - `.github/workflows/release.yml`: triggered by `v*` tag push.
-- Builds Python sidecar with `pyinstaller --onefile --hidden-import uvicorn...` using `backend/run.py` as entrypoint, then `npm run tauri build`.
+- Builds Python sidecar with `pyinstaller --onefile --hidden-import uvicorn...` using `backend/run.py` as entrypoint.
+- Syncs `tauri.conf.json` version from git tag (e.g., `v1.0.1` → `"1.0.1"`) before building, so bundle filenames match the release tag.
+- Then `npm run tauri build`.
 - `backend/build.spec` is the local PyInstaller spec for reference.
 
 ## Markdown quirks
