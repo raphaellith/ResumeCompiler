@@ -50,7 +50,17 @@ Résumé Compiler allows you to streamline your CV writing process, leveraging t
 2. Download prebuilt binaries for macOS and Windows from the [latest release](https://github.com/raphaellith/ResumeCompiler/releases/latest).
 
 > [!IMPORTANT]
-> MacOS users may encounter an error claiming that the app is "damaged and can't be opened". This is usually because the application code is [unsigned](https://v2.tauri.app/distribute/sign/macos/), not because it is corrupted. To solve this issue, run
+> MacOS users may encounter the following error when attempting to open the app for the first time:
+> > Apple could not verify “resumecompiler” is free of malware that may harm your Mac or compromise your privacy.
+> This is due to a lack of notarisation. See this Tauri documentation page for details.
+> 
+> ### Workaround 1
+> To resolve this, go to **System Settings** and **Privacy & Security**. Scroll down to **Security** where the message
+> > "resumecompiler" was blocked to protect your Mac.
+> may be found. Click **Open Anyway** and then confirm by clicking **Open** in the dialog that appears.
+> 
+> ### Workaround 2
+> Alternatively, run
 > ```sh
 > xattr -c /Applications/resumecompiler.app
 > ```
