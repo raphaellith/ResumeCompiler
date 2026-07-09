@@ -21,7 +21,7 @@ jobs:
           - os: macos-15-intel
             target: x86_64-apple-darwin
             pyinstaller-sep: ":"
-            tauri-bundle-suffix: dmg
+            tauri-bundle-suffix: app
           - os: windows-latest
             target: x86_64-pc-windows-msvc
             pyinstaller-sep: ";"
@@ -109,7 +109,7 @@ jobs:
         working-directory: frontend/resumecompiler
 
       - name: Build Tauri application
-        run: npm run tauri build
+        run: npm run tauri build -- --bundles ${{ matrix.tauri-bundle-suffix }}
         working-directory: frontend/resumecompiler
         env:
           TARGET: ${{ matrix.target }}
@@ -122,6 +122,7 @@ jobs:
             frontend/resumecompiler/src-tauri/target/release/bundle/dmg/*.dmg
             frontend/resumecompiler/src-tauri/target/release/bundle/msi/*.msi
             frontend/resumecompiler/src-tauri/target/release/bundle/nsi/*.exe
+            frontend/resumecompiler/src-tauri/target/release/bundle/macos/*.app
           if-no-files-found: warn
 
   create-release:
