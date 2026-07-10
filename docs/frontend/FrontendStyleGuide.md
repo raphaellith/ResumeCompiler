@@ -50,6 +50,6 @@ This document describes the colour system, typography, iconography, and UI compo
 
 1. The frontend uses `@monaco-editor/react` for the Markdown editor.
 
-2. The frontend defines a custom Monaco theme named `"résumé-compiler"` on component mount. The theme's background colour matches `$color-secondary`.
+2. The frontend defines a custom Monaco theme named `"resume-compiler"` on component mount. The theme's background colour matches `$color-secondary`.
 
 3. The editor language is set to `"markdown"`.
