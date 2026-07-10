@@ -10,8 +10,8 @@
 [![React 19](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)](https://react.dev/)
 [![Tauri 2](https://img.shields.io/badge/Tauri-2-FFC131?logo=tauri&logoColor=white)](https://v2.tauri.app/)
 
-[![macOS](https://img.shields.io/badge/macOS-000000?logo=apple&logoColor=white)]()
-[![Windows](https://img.shields.io/badge/Windows-0078D6?logo=windows&logoColor=white)]()
+![macOS](https://img.shields.io/badge/macOS-000000?logo=apple&logoColor=white)
+![Windows](https://img.shields.io/badge/Windows-0078D6?logo=windows&logoColor=white)
 
 </div>
 
