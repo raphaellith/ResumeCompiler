@@ -2,7 +2,7 @@ from pathlib import Path
 import subprocess
 import tempfile
 
-from backend.model.resume_components.resume import Resume
+from backend.model.transpilables.resume import Resume
 from backend.model.enums.font import Font
 from backend.service.errors.pdf_latex_not_found_error import PdfLatexNotFoundError
 
@@ -24,7 +24,7 @@ def _get_latex_code_from_resume(resume: Resume, font: Font = Font.TIMES_NEW_ROMA
     :param resume: The Resume object to be converted to LaTeX.
     :param font: The Font to be used in the resume.
     """
-    latex_lines: list[str] = resume.to_latex_lines(font)
+    latex_lines: list[str] = resume.to_latex(font)
     latex_result: str = "\n".join(latex_lines)
     return latex_result
 
