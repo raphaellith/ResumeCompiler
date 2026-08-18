@@ -15,6 +15,11 @@ class Font(Enum):
 
     @classmethod
     def from_query_parameter(cls, value: str | None) -> Font:
+        """
+        Resolves a kebab-case font query parameter to a Font enum member.
+        :param value: The kebab-case font name, or None.
+        :return: The matching Font member; defaults to TIMES_NEW_ROMAN when unknown or None.
+        """
         mapping = {
             "times-new-roman": cls.TIMES_NEW_ROMAN,
             "computer-modern": cls.COMPUTER_MODERN,
