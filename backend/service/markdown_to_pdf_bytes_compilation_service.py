@@ -18,6 +18,7 @@ def get_pdf_bytes_from_markdown(markdown: str, font: Font = Font.TIMES_NEW_ROMAN
     pdf_bytes = _get_pdf_bytes_from_latex_code(latex_code)
     return pdf_bytes
 
+
 def _get_pdf_bytes_from_latex_code(latex_code: str) -> bytes:
     """
     Compiles LaTeX source code into PDF bytes.
@@ -38,6 +39,7 @@ def _get_pdf_bytes_from_latex_code(latex_code: str) -> bytes:
             raise RuntimeError("LaTeX compilation finished but did not produce a PDF output file.")
 
         return pdf_output_path.read_bytes()
+
 
 def _run_pdflatex(latex_file_name: str, working_directory: Path) -> tuple[str, str, int]:
     """
