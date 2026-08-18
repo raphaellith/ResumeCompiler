@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from enum import Enum
+from typing import Optional
 
 
 class Font(Enum):
@@ -14,7 +15,7 @@ class Font(Enum):
     CHARTER = r"\usepackage{charter}"
 
     @classmethod
-    def from_query_parameter(cls, value: str | None) -> Font:
+    def from_query_parameter(cls, value: Optional[str]) -> Font:
         """
         Resolves a kebab-case font query parameter to a Font enum member.
         :param value: The kebab-case font name, or None.
