@@ -31,7 +31,7 @@ class Resume(Transpilable):
         self.summary: str = markdown_file_reader.get_string_argument_from_frontmatter("summary")
         self.summary_bold: bool = markdown_file_reader.get_boolean_argument_from_frontmatter("summary_bold")
 
-        self.contacts: list[Union[str, dict[str, str]]] = markdown_file_reader.get_list_argument_from_frontmatter("contacts")
+        self.contacts: list[dict[str, str]] = markdown_file_reader.get_list_argument_from_frontmatter("contacts")
         self.contacts_bold: bool = markdown_file_reader.get_boolean_argument_from_frontmatter("contacts_bold")
 
         self.tags: list[Tag] = markdown_file_reader.get_tags_from_body()
@@ -164,10 +164,12 @@ class Resume(Transpilable):
         num_of_contacts = len(self.contacts)
 
         for i, contact in enumerate(self.contacts):
-            if isinstance(contact, str):
-                contact_list += contact
-            if isinstance(contact, dict):
-                contact_list += r"\href{" + contact["displayed"] + r"}{\underline{" + contact["link"] + "}}"
+            contact_as_latex = contact["display"]
+            if "link" in contact:
+                contact_as_latex = r"\href{" + contact_as_latex + r"}{\underline{" + contact["link"] + "}}"
+
+            contact_list += contact_as_latex
+
             if i != num_of_contacts - 1:
                 contact_list += " $|$ "
 
@@ -223,11 +225,9 @@ class Resume(Transpilable):
         contacts_element = ElementTree.SubElement(frontmatter_element, "summary", attrib={"bold": str(self.contacts_bold).lower()})
         for contact in self.contacts:
             contact_element = ElementTree.SubElement(contacts_element, "contact")
-            if isinstance(contact, str):
-                contact_element.text = contact
-            else:  # contact is of type dict[str, str]
-                contact_element.text = contact.get("displayed", "")
-                contact_element.set("link", contact.get("link", ""))
+            contact_element.text = contact["display"]
+            if "link" in contact:
+                contact_element.set("link", contact["link"])
 
         return frontmatter_element
 
@@ -246,4 +246,4 @@ if __name__ == '__main__':
     with open("../../../files/base-template.md") as f:
         r = Resume(f.read())
 
-        print(ElementTree.dump(r.to_xml_element()))
+        ElementTree.dump(r.to_xml_element())
