@@ -33,12 +33,12 @@ class MarkdownFileReader:
         Retrieves a string argument from the frontmatter.
         :param parameter: The frontmatter parameter name.
         :return: The string argument value.
-        :raises KeyError: If the parameter is missing or not a string.
+        :raises TypeError: If the parameter is not a string.
         """
         argument: object = self._get_argument_from_frontmatter(parameter)
 
         if not isinstance(argument, str):
-            raise KeyError(f"The frontmatter parameter {parameter} does not have a string argument.")
+            raise TypeError(f"The value given by the frontmatter parameter {parameter} is not a string.")
 
         return argument
 
@@ -47,12 +47,12 @@ class MarkdownFileReader:
         Retrieves a boolean argument from the frontmatter.
         :param parameter: The frontmatter parameter name.
         :return: The boolean argument value.
-        :raises KeyError: If the parameter is missing or not a boolean.
+        :raises TypeError: If the parameter is not a boolean.
         """
         argument: object = self._get_argument_from_frontmatter(parameter)
 
         if not isinstance(argument, bool):
-            raise KeyError(f"The frontmatter parameter {parameter} does not have a boolean argument.")
+            raise TypeError(f"The value given by the frontmatter parameter {parameter} is not a boolean.")
 
         return argument
 
@@ -61,12 +61,12 @@ class MarkdownFileReader:
         Retrieves a list argument from the frontmatter.
         :param parameter: The frontmatter parameter name.
         :return: The list argument value.
-        :raises KeyError: If the parameter is missing or not a list.
+        :raises TypeError: If the parameter is not a list.
         """
         argument: object = self._get_argument_from_frontmatter(parameter)
 
         if not isinstance(argument, list):
-            raise KeyError(f"The frontmatter parameter {parameter} does not have a list argument.")
+            raise TypeError(f"The value given by the frontmatter parameter {parameter} is not a list.")
 
         return argument
 
