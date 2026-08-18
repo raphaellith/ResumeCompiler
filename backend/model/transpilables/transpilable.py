@@ -5,7 +5,8 @@ from abc import ABC, abstractmethod
 class Transpilable(ABC):
     def __init__(self):
         """
-        A Transpilable is an abstract base class that defines the interface of any part of a resume that can be compiled to LaTeX.
+        A Transpilable is an abstract base class that defines the interface of any part of a resume that can be compiled
+        to LaTeX.
         """
         pass
 
