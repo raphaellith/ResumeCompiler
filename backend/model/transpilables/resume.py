@@ -16,6 +16,11 @@ from backend.model.utils.markdown_file_reader import MarkdownFileReader
 
 class Contact:
     def __init__(self, display: str, link: Optional[str] = None):
+        """
+        Creates a contact with display text and an optional hyperlink.
+        :param display: The contact display text.
+        :param link: The contact hyperlink, or None.
+        """
         self.display: str = display
         self.link: Optional[str] = link
 
@@ -25,6 +30,7 @@ class Resume(Transpilable):
 
     def __init__(self, markdown_file_contents: str):
         """
+        Parses Markdown frontmatter and body into a Resume component tree.
         :param markdown_file_contents: The Markdown content to be compiled, including YAML-style frontmatter.
         """
         super().__init__()
@@ -59,6 +65,22 @@ class Resume(Transpilable):
 
     @staticmethod
     def _validate_and_parse_contacts(frontmatter_contacts: list) -> list[Contact]:
+        """
+        Validates and converts the frontmatter contacts list into Contact objects.
+
+        The input is valid if it is a list of dicts, where each dict:
+        - contains a required 'display' key whose value is a str; and
+        - optionally contains a 'link' key whose value, if present, is a str.
+
+        Any other keys in the dict are ignored.
+        Each dict yields exactly one Contact whose .display is the 'display' value.
+        Contact.link is set to the 'link' value only when the 'link' key is present.
+
+        :param frontmatter_contacts: The raw list of contacts from the frontmatter.
+        :return: One Contact per input dict.
+        :raises TypeError: If an element is not a dict, or if a 'display' or 'link' value is not a str.
+        :raises KeyError: If a dict lacks the required 'display' key.
+        """
         result: list[Contact] = []
 
         for frontmatter_contact in frontmatter_contacts:
@@ -81,6 +103,28 @@ class Resume(Transpilable):
         return result
 
     def _validate_tags(self):
+        """
+        Validates the structure and allowed tags of the parsed Markdown body.
+
+        The body's top-level tags, concatenated in document order as "<tag-name>" strings, must fully match the regular
+        expression (<h1>|<ul>|<h2><pre>|<p>)*.
+
+        Equivalently, the top-level tags must be a repetition (in any order) of: a standalone <h1>, a standalone <ul>, a
+        standalone <p>, or an <h2> immediately followed by a <pre>. An <h2> can therefore only ever appear as the tag
+        directly preceding a <pre>.
+
+        Each top-level tag must additionally satisfy the following requirements.
+        - h1/h2: Contains exactly one child, and that child must be a tagless text node (NavigableString).
+        - ul: Every direct child must be an <li> tag and must only contain <b> and <i> tags.
+        - pre: Contains exactly one child, which must be a <code> tag. That <code> must contain exactly one child,
+          which is a text node (NavigableString) whose stripped text spans exactly 2 or 3 lines.
+
+        :raises ValueError: If the concatenated top-level tag names do not match the pattern above,
+                            or if any tag found inside a list item is neither <b> nor <i>.
+        :raises TypeError: If a heading does not contain exactly one text node,
+                           if a <ul> has a direct child that is not an <li>, or
+                           if a <pre>/<code> block does not match the required structure.
+        """
         concatenated_top_level_tag_names: str = "".join([f"<{tag.name}>" for tag in self.tags])
 
         required_pattern_for_concatenated_top_level_tag_names: re.Pattern = re.compile(r"(<h1>|<ul>|<h2><pre>|<p>)*")
@@ -121,6 +165,9 @@ class Resume(Transpilable):
                     raise TypeError("Preformatted code blocks (<code>) must contain a string with 2 or 3 lines.")
 
     def _remove_hidden_tags(self):
+        """
+        Removes tags whose headings or list items start with the '^' hidden marker.
+        """
         result: list[Tag] = []
 
         # These booleans indicate, as we iterate through the following FOR loop,
@@ -156,6 +203,10 @@ class Resume(Transpilable):
         self.tags = result
 
     def _get_tags_grouped_by_component(self) -> list[list[Tag]]:
+        """
+        Groups tags into components, where h1/h2/ul start a new component and pre blocks extend the last one.
+        :return: A list of components, each a list of Tag objects.
+        """
         result: list[list[Tag]] = []
 
         for tag in self.tags:
@@ -167,6 +218,10 @@ class Resume(Transpilable):
         return result
 
     def _get_components_grouped_by_section(self) -> list[list[ResumeComponent]]:
+        """
+        Groups components into sections, where each Heading starts a new section.
+        :return: A list of sections, each a list of ResumeComponent objects.
+        """
         result: list[list[ResumeComponent]] = []
 
         for component in self.components:
@@ -178,6 +233,10 @@ class Resume(Transpilable):
         return result
 
     def get_title_as_latex(self) -> str:
+        """
+        Builds the LaTeX representation of the resume title, optionally bold.
+        :return: The title as a LaTeX string.
+        """
         title = self.title
 
         if self.title_bold:
@@ -186,6 +245,10 @@ class Resume(Transpilable):
         return r"\resumeTitle{" + title + "}"
 
     def get_summary_as_latex(self) -> str:
+        """
+        Builds the LaTeX representation of the resume summary, optionally bold.
+        :return: The summary as a LaTeX string.
+        """
         summary = self.summary
 
         if self.summary_bold:
@@ -194,6 +257,10 @@ class Resume(Transpilable):
         return r"\resumeSummary{" + summary + "}"
 
     def get_contact_list_as_latex(self) -> str:
+        """
+        Builds the LaTeX representation of the contact list, linking entries that have a link.
+        :return: The contact list as a LaTeX string.
+        """
         contact_list = ""
         num_of_contacts = len(self.contacts)
 
@@ -210,6 +277,10 @@ class Resume(Transpilable):
         return r"\resumeContactList{" + contact_list + "}"
 
     def get_document_contents_as_latex(self) -> str:
+        """
+        Renders each section's heading and its components into LaTeX, wrapping section contents in itemize lists.
+        :return: The document body as a LaTeX string.
+        """
         result = ""
 
         for component_group in self._get_components_grouped_by_section():
@@ -226,6 +297,11 @@ class Resume(Transpilable):
         return result
 
     def to_latex(self, font: Font = Font.TIMES_NEW_ROMAN) -> str:
+        """
+        Fills the LaTeX template with the resume's font, title, summary, contacts and contents.
+        :param font: The font to apply to the compiled resume.
+        :return: The compiled LaTeX string.
+        """
         arguments: dict[str, str] = {
             "FONT_CHOICE": font.value,
             "RESUME_TITLE": self.get_title_as_latex(),
@@ -248,6 +324,10 @@ class Resume(Transpilable):
         return pattern.sub(replacement, latex)
 
     def get_frontmatter_as_xml_element(self) -> ElementTree.Element:
+        """
+        Builds the frontmatter XML element containing title, summary and contacts.
+        :return: The frontmatter as an XML element.
+        """
         frontmatter_element = ElementTree.Element("frontmatter")
 
         title_element = ElementTree.SubElement(
@@ -281,6 +361,10 @@ class Resume(Transpilable):
         return frontmatter_element
 
     def to_xml_element(self) -> ElementTree.Element:
+        """
+        Builds the resume XML element with frontmatter and all components.
+        :return: The resume as an XML element.
+        """
         resume_element = ElementTree.Element("resume")
 
         resume_element.append(self.get_frontmatter_as_xml_element())
