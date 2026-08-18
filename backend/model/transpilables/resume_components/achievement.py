@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import Any, cast
+from typing import Any, cast, Union
 from xml.etree import ElementTree
 
 from bs4.element import Tag
@@ -8,8 +8,9 @@ from backend.model.transpilables.transpilable import Transpilable
 
 
 class Achievement(Transpilable, ABC):
-    def __init__(self):
+    def __init__(self, parts: Union[tuple[str, str, str], tuple[str, str, str, str]]):
         super().__init__()
+        self.parts = parts
 
     @classmethod
     def get_from_tags(cls, tags: list[Tag]) -> Any:
@@ -33,8 +34,7 @@ class Achievement(Transpilable, ABC):
 
 class ThreePartAchievement(Achievement):
     def __init__(self, parts: tuple[str, str, str]):
-        super().__init__()
-        self.parts = parts
+        super().__init__(parts)
 
     def to_latex(self) -> str:
         return r"\threePartAchievement" + "".join(map(lambda s: "{" + s + "}", self.parts))
@@ -45,8 +45,7 @@ class ThreePartAchievement(Achievement):
 
 class FourPartAchievement(Achievement):
     def __init__(self, parts: tuple[str, str, str, str]):
-        super().__init__()
-        self.parts = parts
+        super().__init__(parts)
 
     def to_latex(self) -> str:
         return r"\fourPartAchievement" + "".join(map(lambda s: "{" + s + "}", self.parts))
