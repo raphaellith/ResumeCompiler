@@ -29,13 +29,14 @@ class Achievement(Transpilable, ABC):
         pre_tag: Tag = next(filter(lambda tag: tag.name == "pre", tags))
 
         parts: list[str] = [h2_tag.text] + [line.removeprefix("^") for line in pre_tag.text.splitlines()]
+        num_of_parts = len(parts)
 
-        if len(parts) == 3:
+        if num_of_parts == 3:
             return ThreePartAchievement(
                 cast(tuple[str, str, str], tuple(parts))
             )
 
-        if len(parts) == 4:
+        if num_of_parts == 4:
             return FourPartAchievement(
                 cast(tuple[str, str, str, str], tuple(parts))
             )
