@@ -1,5 +1,5 @@
 import re
-from typing import Union, Callable, TypedDict, Optional
+from typing import Callable, TypedDict, Optional
 from xml.etree import ElementTree
 
 from bs4.element import Tag, NavigableString
