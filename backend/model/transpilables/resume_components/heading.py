@@ -17,4 +17,6 @@ class Heading(ResumeComponent):
         return r"\section{" + self.text + r"}"
 
     def to_xml_element(self) -> ElementTree.Element:
-        pass
+        heading_element = ElementTree.Element("heading")
+        heading_element.text = self.text
+        return heading_element

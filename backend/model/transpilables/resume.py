@@ -211,13 +211,39 @@ class Resume(Transpilable):
 
         return pattern.sub(replacement, latex)
 
+    def get_frontmatter_as_xml_element(self) -> ElementTree.Element:
+        frontmatter_element = ElementTree.Element("frontmatter")
+
+        title_element = ElementTree.SubElement(frontmatter_element, "title", attrib={"bold": str(self.title_bold).lower()})
+        title_element.text = self.title
+
+        summary_element = ElementTree.SubElement(frontmatter_element, "summary", attrib={"bold": str(self.summary_bold).lower()})
+        summary_element.text = self.summary
+
+        contacts_element = ElementTree.SubElement(frontmatter_element, "summary", attrib={"bold": str(self.contacts_bold).lower()})
+        for contact in self.contacts:
+            contact_element = ElementTree.SubElement(contacts_element, "contact")
+            if isinstance(contact, str):
+                contact_element.text = contact
+            else:  # contact is of type dict[str, str]
+                contact_element.text = contact.get("displayed", "")
+                contact_element.set("link", contact.get("link", ""))
+
+        return frontmatter_element
+
     def to_xml_element(self) -> ElementTree.Element:
-        # TODO
-        pass
+        resume_element = ElementTree.Element("resume")
+
+        resume_element.append(self.get_frontmatter_as_xml_element())
+
+        for component in self.components:
+            resume_element.append(component.to_xml_element())
+
+        return resume_element
 
 
 if __name__ == '__main__':
     with open("../../../files/base-template.md") as f:
         r = Resume(f.read())
 
-        print(r.to_latex())
+        print(ElementTree.dump(r.to_xml_element()))

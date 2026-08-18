@@ -35,5 +35,11 @@ class BulletedList(ResumeComponent):
         return result
 
     def to_xml_element(self) -> ElementTree.Element:
-        # TODO
-        pass
+        container_element = ElementTree.Element("bulleted-list")
+
+        for li_tag in self.li_tags:
+            list_item_element: ElementTree.Element = ElementTree.fromstring(li_tag.prettify(formatter="minimal"))
+            list_item_element.tag = "list-item"  # Other <b> and <i> tags stay as is
+            container_element.append(list_item_element)
+
+        return container_element
