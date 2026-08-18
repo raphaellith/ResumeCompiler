@@ -146,7 +146,7 @@ class Resume(Transpilable):
                 for list_item in tag.find_all("li"):
                     tags_used_in_list_item = list_item.find_all()
                     for tag_used_in_list_item in tags_used_in_list_item:
-                        if tag_used_in_list_item not in ("b", "i"):
+                        if tag_used_in_list_item.name not in ("b", "i"):
                             raise ValueError(f"The tag {tags_used_in_list_item} is not allowed inside a list item.")
 
             elif tag.name == "pre":
