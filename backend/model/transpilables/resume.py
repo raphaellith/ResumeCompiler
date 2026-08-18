@@ -1,5 +1,5 @@
 import re
-from typing import Union, Callable
+from typing import Union, Callable, TypedDict, Optional
 from xml.etree import ElementTree
 
 from bs4.element import Tag, NavigableString
@@ -12,6 +12,11 @@ from backend.model.transpilables.transpilable import Transpilable
 from backend.model.transpilables.resume_components.heading import Heading
 from backend.model.enums.font import Font
 from backend.model.utils.markdown_file_reader import MarkdownFileReader
+
+
+class Contact(TypedDict):
+    display: str
+    link: Optional[str]
 
 
 class Resume(Transpilable):
@@ -31,7 +36,7 @@ class Resume(Transpilable):
         self.summary: str = markdown_file_reader.get_string_argument_from_frontmatter("summary")
         self.summary_bold: bool = markdown_file_reader.get_boolean_argument_from_frontmatter("summary_bold")
 
-        self.contacts: list[dict[str, str]] = markdown_file_reader.get_list_argument_from_frontmatter("contacts")
+        self.contacts: list[Contact] = Resume._validate_and_parse_contacts(markdown_file_reader.get_list_argument_from_frontmatter("contacts"))
         self.contacts_bold: bool = markdown_file_reader.get_boolean_argument_from_frontmatter("contacts_bold")
 
         self.tags: list[Tag] = markdown_file_reader.get_tags_from_body()
@@ -48,6 +53,32 @@ class Resume(Transpilable):
                 self.components.append(Achievement.get_from_tags(tag_group))
             elif leading_tag_name == "ul":
                 self.components.append(BulletedList(tag_group[0]))
+
+    @staticmethod
+    def _validate_and_parse_contacts(frontmatter_contacts: list) -> list[Contact]:
+        result: list[Contact] = []
+
+        for frontmatter_contact in frontmatter_contacts:
+            if not isinstance(frontmatter_contact, dict):
+                raise TypeError(f"The frontmatter lists the contact {frontmatter_contact}, which is not a dictionary.")
+            if "display" not in frontmatter_contact:
+                raise KeyError(f"The contact {frontmatter_contact} does not have the required key 'display'.")
+            if not isinstance(frontmatter_contact["display"], str):
+                raise TypeError(f"The 'display' value in the contact {frontmatter_contact} is not a string.")
+
+            contact: Contact = {
+                "display": frontmatter_contact["display"],
+                "link": None
+            }
+
+            if "link" in frontmatter_contact:
+                if not isinstance(frontmatter_contact["link"], str):
+                    raise TypeError(f"The 'link' value in the contact {frontmatter_contact} is not a string.")
+                contact["link"] = frontmatter_contact["link"]
+
+            result.append(contact)
+
+        return result
 
     def _validate_tags(self):
         concatenated_top_level_tag_names: str = "".join([f"<{tag.name}>" for tag in self.tags])
