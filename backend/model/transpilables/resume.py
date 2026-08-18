@@ -1,5 +1,5 @@
 import re
-from typing import Callable, TypedDict, Optional
+from typing import Callable, Optional
 from xml.etree import ElementTree
 
 from bs4.element import Tag, NavigableString
@@ -14,9 +14,10 @@ from backend.model.enums.font import Font
 from backend.model.utils.markdown_file_reader import MarkdownFileReader
 
 
-class Contact(TypedDict):
-    display: str
-    link: Optional[str]
+class Contact:
+    def __init__(self, display: str, link: Optional[str] = None):
+        self.display: str = display
+        self.link: Optional[str] = link
 
 
 class Resume(Transpilable):
@@ -68,15 +69,12 @@ class Resume(Transpilable):
             if not isinstance(frontmatter_contact["display"], str):
                 raise TypeError(f"The 'display' value in the contact {frontmatter_contact} is not a string.")
 
-            contact: Contact = {
-                "display": frontmatter_contact["display"],
-                "link": None
-            }
+            contact: Contact = Contact(display=frontmatter_contact["display"])
 
             if "link" in frontmatter_contact:
                 if not isinstance(frontmatter_contact["link"], str):
                     raise TypeError(f"The 'link' value in the contact {frontmatter_contact} is not a string.")
-                contact["link"] = frontmatter_contact["link"]
+                contact.link = frontmatter_contact["link"]
 
             result.append(contact)
 
@@ -200,9 +198,9 @@ class Resume(Transpilable):
         num_of_contacts = len(self.contacts)
 
         for i, contact in enumerate(self.contacts):
-            contact_as_latex = contact["display"]
-            if "link" in contact:
-                contact_as_latex = r"\href{" + contact_as_latex + r"}{\underline{" + contact["link"] + "}}"
+            contact_as_latex = contact.display
+            if contact.link:
+                contact_as_latex = r"\href{" + contact_as_latex + r"}{\underline{" + contact.link + "}}"
 
             contact_list += contact_as_latex
 
@@ -276,9 +274,9 @@ class Resume(Transpilable):
 
         for contact in self.contacts:
             contact_element = ElementTree.SubElement(contacts_element, "contact")
-            contact_element.text = contact["display"]
-            if "link" in contact:
-                contact_element.set("link", contact["link"])
+            contact_element.text = contact.display
+            if contact.link:
+                contact_element.set("link", contact.link)
 
         return frontmatter_element
 
