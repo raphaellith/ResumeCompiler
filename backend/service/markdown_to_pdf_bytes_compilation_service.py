@@ -14,19 +14,9 @@ def get_pdf_bytes_from_markdown(markdown: str, font: Font = Font.TIMES_NEW_ROMAN
     :param font: The Font object to be used to convert the Markdown code to PDF.
     """
     resume = Resume(markdown)
-    latex_code = _get_latex_code_from_resume(resume, font)
+    latex_code = resume.to_latex(font)
     pdf_bytes = _get_pdf_bytes_from_latex_code(latex_code)
     return pdf_bytes
-
-def _get_latex_code_from_resume(resume: Resume, font: Font = Font.TIMES_NEW_ROMAN) -> str:
-    """
-    Returns the LaTeX representation of the resume.
-    :param resume: The Resume object to be converted to LaTeX.
-    :param font: The Font to be used in the resume.
-    """
-    latex_lines: list[str] = resume.to_latex(font)
-    latex_result: str = "\n".join(latex_lines)
-    return latex_result
 
 def _get_pdf_bytes_from_latex_code(latex_code: str) -> bytes:
     """
