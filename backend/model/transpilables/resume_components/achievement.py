@@ -31,11 +31,11 @@ class Achievement(Transpilable, ABC):
 
         raise ValueError("Neither three or four part achievement.")
 
-    def get_xml_element_containing_all_parts(self, name_for_container_element: str, name_for_part_elements: str = "part"):
-        container_element = ElementTree.Element(name_for_container_element)
+    def get_xml_element_containing_all_parts(self, container_element_name: str, part_element_name: str = "part"):
+        container_element = ElementTree.Element(container_element_name)
 
         for part in self.parts:
-            part_element = ElementTree.SubElement(container_element, name_for_part_elements)
+            part_element = ElementTree.SubElement(container_element, part_element_name)
             part_element.text = part
 
         return container_element
@@ -49,7 +49,7 @@ class ThreePartAchievement(Achievement):
         return r"\threePartAchievement" + "".join(map(lambda s: "{" + s + "}", self.parts))
 
     def to_xml_element(self) -> ElementTree.Element:
-        return self.get_xml_element_containing_all_parts(name_for_container_element="three-part-achievement")
+        return self.get_xml_element_containing_all_parts(container_element_name="three-part-achievement")
 
 
 class FourPartAchievement(Achievement):
@@ -60,4 +60,4 @@ class FourPartAchievement(Achievement):
         return r"\fourPartAchievement" + "".join(map(lambda s: "{" + s + "}", self.parts))
 
     def to_xml_element(self) -> ElementTree.Element:
-        return self.get_xml_element_containing_all_parts(name_for_container_element="four-part-achievement")
+        return self.get_xml_element_containing_all_parts(container_element_name="four-part-achievement")
