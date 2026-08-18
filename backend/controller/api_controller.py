@@ -39,7 +39,8 @@ def compile_markdown_to_pdf(
             status_code=502,
             content={
                 "error": "pdflatex_not_found",
-                "message": "Could not find 'pdflatex'. Install a LaTeX distribution (e.g. MacTeX on macOS, MiKTeX on Windows).",
+                "message":
+                    "Could not find 'pdflatex'. Install a LaTeX distribution (e.g. MacTeX on macOS, MiKTeX on Windows)."
             },
         )
 
