@@ -36,7 +36,9 @@ class Resume(Transpilable):
         self.summary: str = markdown_file_reader.get_string_argument_from_frontmatter("summary")
         self.summary_bold: bool = markdown_file_reader.get_boolean_argument_from_frontmatter("summary_bold")
 
-        self.contacts: list[Contact] = Resume._validate_and_parse_contacts(markdown_file_reader.get_list_argument_from_frontmatter("contacts"))
+        self.contacts: list[Contact] = Resume._validate_and_parse_contacts(
+            markdown_file_reader.get_list_argument_from_frontmatter("contacts")
+        )
         self.contacts_bold: bool = markdown_file_reader.get_boolean_argument_from_frontmatter("contacts_bold")
 
         self.tags: list[Tag] = markdown_file_reader.get_tags_from_body()
@@ -114,7 +116,8 @@ class Resume(Transpilable):
                     raise TypeError("Preformatted blocks (<pre>) must contain a child <code> tag.")
 
                 if not (len(child_node.contents) == 1 and isinstance(child_node.contents[0], NavigableString)):
-                    raise TypeError("Preformatted code blocks (<code>) must contain exactly one (possibly multiline) string and no tags.")
+                    raise TypeError("Preformatted code blocks (<code>) must contain exactly one (possibly multiline) "
+                                    "string and no tags.")
 
                 if not 2 <= len(child_node.contents[0].text.strip().splitlines()) <= 3:
                     raise TypeError("Preformatted code blocks (<code>) must contain a string with 2 or 3 lines.")
@@ -124,8 +127,10 @@ class Resume(Transpilable):
 
         # These booleans indicate, as we iterate through the following FOR loop,
         # whether we are currently in the scope of a hidden h1 or h2 heading.
-        # An h1 heading's scope starts with that heading and ends with the element immediately before the next h1 heading.
-        # An h2 heading's scope starts with that heading and ends with the element immediately before the next h1 or h2 heading.
+        # - An h1 heading's scope starts with that heading and ends with the element
+        #   immediately before the next h1 heading.
+        # - An h2 heading's scope starts with that heading and ends with the element
+        #   immediately before the next h1 or h2 heading.
         in_scope_of_hidden_h1: bool = False
         in_scope_of_hidden_h2: bool = False
 
@@ -247,13 +252,28 @@ class Resume(Transpilable):
     def get_frontmatter_as_xml_element(self) -> ElementTree.Element:
         frontmatter_element = ElementTree.Element("frontmatter")
 
-        title_element = ElementTree.SubElement(frontmatter_element, "title", attrib={"bold": str(self.title_bold).lower()})
+        title_element = ElementTree.SubElement(
+            frontmatter_element,
+            "title",
+            attrib={"bold": str(self.title_bold).lower()}
+        )
+
         title_element.text = self.title
 
-        summary_element = ElementTree.SubElement(frontmatter_element, "summary", attrib={"bold": str(self.summary_bold).lower()})
+        summary_element = ElementTree.SubElement(
+            frontmatter_element,
+            "summary",
+            attrib={"bold": str(self.summary_bold).lower()}
+        )
+
         summary_element.text = self.summary
 
-        contacts_element = ElementTree.SubElement(frontmatter_element, "summary", attrib={"bold": str(self.contacts_bold).lower()})
+        contacts_element = ElementTree.SubElement(
+            frontmatter_element,
+            "summary",
+            attrib={"bold": str(self.contacts_bold).lower()}
+        )
+
         for contact in self.contacts:
             contact_element = ElementTree.SubElement(contacts_element, "contact")
             contact_element.text = contact["display"]
