@@ -12,8 +12,8 @@ class Achievement(Transpilable, ABC):
         super().__init__()
         self.parts = parts
 
-    @classmethod
-    def get_from_tags(cls, tags: list[Tag]) -> Any:
+    @staticmethod
+    def get_from_tags(tags: list[Tag]) -> Any:
         h2_tag: Tag = next(filter(lambda tag: tag.name == "h2", tags))
         pre_tag: Tag = next(filter(lambda tag: tag.name == "pre", tags))
 
@@ -30,7 +30,7 @@ class Achievement(Transpilable, ABC):
             )
 
         raise ValueError("Neither three or four part achievement.")
-    
+
     def get_xml_element_containing_all_parts(self, name_for_container_element: str, name_for_part_elements: str = "part"):
         container_element = ElementTree.Element(name_for_container_element)
 
