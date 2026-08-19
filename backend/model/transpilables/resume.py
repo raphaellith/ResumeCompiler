@@ -323,6 +323,8 @@ class Resume(Transpilable):
 
         `sys.frozen` is set by the PyInstaller bootloader. `sys._MEIPASS` is the temporary directory into which the
         onefile bundle is unpacked at startup.
+
+        :return: The absolute path to the LaTeX template file.
         """
 
         if getattr(sys, "frozen", False):
