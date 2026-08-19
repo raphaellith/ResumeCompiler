@@ -1,3 +1,5 @@
+from typing import Optional
+
 from fastapi import FastAPI, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -28,7 +30,7 @@ app.add_middleware(
 @app.post("/pdf/", response_class=Response)
 def compile_markdown_to_pdf(
     payload: MarkdownInput,
-    font: str | None = Query(default=None, alias="font"),
+    font: Optional[str] = Query(default=None, alias="font"),
 ):
     markdown = payload.markdown
 
