@@ -14,12 +14,12 @@ def get_pdf_bytes_from_markdown(markdown: str, font: Font = Font.TIMES_NEW_ROMAN
     :param font: The Font object to be used to convert the Markdown code to PDF.
     """
     resume = Resume(markdown)
-    latex_code = resume.to_latex(font)
-    pdf_bytes = _get_pdf_bytes_from_latex_code(latex_code)
+    latex = resume.to_latex(font)
+    pdf_bytes = _get_pdf_bytes_from_latex(latex)
     return pdf_bytes
 
 
-def _get_pdf_bytes_from_latex_code(latex_code: str) -> bytes:
+def _get_pdf_bytes_from_latex(latex_code: str) -> bytes:
     """
     Compiles LaTeX source code into PDF bytes.
     Uses an isolated temporary directory so build artifacts are not persisted on disk.
