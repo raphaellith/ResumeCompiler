@@ -16,7 +16,7 @@ from backend.model.utils.markdown_file_reader import MarkdownFileReader
 
 
 class Resume(Transpilable):
-    TEMPLATE_TEX_FILE_PATH: str = "../resources/template.tex"
+    PATH_TO_TEMPLATE_TEX_FILE: str = "backend/model/resources/template.tex"
 
     class Contact:
         """
@@ -305,25 +305,32 @@ class Resume(Transpilable):
         """
         Locates and returns the path to the LaTeX template file.
 
-        The resolution strategy differs between a normal Python run and a PyInstaller-frozen one:
+        Different resolution strategies are used depending on whether this is called in a dev environment or in a
+        PyInstaller onefile sidecar.
+
+        Both strategies use the same relative path and differ only in the root directory they join it against.
 
         - Dev (unfrozen):
-          The template lives in the source tree next to this module's package
-          (backend/model/resources/template.tex), so a relative path is used.
+          We know the backend must be run from the repository root (see the `backend.*` absolute imports).
+          So the template is resolved against the current working directory.
+
         - Frozen (PyInstaller onefile sidecar):
           The modules are stored inside the bundled PYZ archive and are NOT extracted to disk.
           Hence, `backend/model/transpilables/` never exists as a real directory.
           Any path that must traverse through it fails with FileNotFoundError.
           The `--add-data` datas, however, ARE extracted under sys._MEIPASS preserving their relative destination
           (backend/model/resources/template.tex). We therefore resolve against sys._MEIPASS when frozen.
-          `sys.frozen` is set by the PyInstaller bootloader; `sys._MEIPASS` is the temporary directory into which the
-          onefile bundle is unpacked at startup.
+
+        `sys.frozen` is set by the PyInstaller bootloader. `sys._MEIPASS` is the temporary directory into which the
+        onefile bundle is unpacked at startup.
+
+        :return: The absolute path to the LaTeX template file.
         """
-        # Locate the LaTeX template file.
+
         if getattr(sys, "frozen", False):
-            return Path(sys._MEIPASS) / "backend" / "model" / "resources" / "template.tex"
+            return Path(getattr(sys, "_MEIPASS")) / cls.PATH_TO_TEMPLATE_TEX_FILE
         else:
-            return Path(__file__).parent.joinpath(cls.TEMPLATE_TEX_FILE_PATH)
+            return Path.cwd() / cls.PATH_TO_TEMPLATE_TEX_FILE
 
     def to_latex(self, font: Font = Font.TIMES_NEW_ROMAN) -> str:
         """
