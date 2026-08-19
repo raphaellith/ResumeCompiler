@@ -14,19 +14,18 @@ from backend.model.enums.font import Font
 from backend.model.utils.markdown_file_reader import MarkdownFileReader
 
 
-class Contact:
-    def __init__(self, display: str, link: Optional[str] = None):
-        """
-        Creates a contact with display text and an optional hyperlink.
-        :param display: The contact display text.
-        :param link: The contact hyperlink, or None.
-        """
-        self.display: str = display
-        self.link: Optional[str] = link
-
-
 class Resume(Transpilable):
     TEMPLATE_TEX_FILE_PATH: str = "../resources/template.tex"
+
+    class Contact:
+        def __init__(self, display: str, link: Optional[str] = None):
+            """
+            Creates a contact with display text and an optional hyperlink.
+            :param display: The contact display text.
+            :param link: The contact hyperlink, or None.
+            """
+            self.display: str = display
+            self.link: Optional[str] = link
 
     def __init__(self, markdown_file_contents: str):
         """
@@ -43,7 +42,7 @@ class Resume(Transpilable):
         self.summary: str = markdown_file_reader.get_string_argument_from_frontmatter("summary")
         self.summary_bold: bool = markdown_file_reader.get_boolean_argument_from_frontmatter("summary_bold")
 
-        self.contacts: list[Contact] = Resume._validate_and_parse_contacts(
+        self.contacts: list[Resume.Contact] = Resume._validate_and_parse_contacts(
             markdown_file_reader.get_list_argument_from_frontmatter("contacts")
         )
         self.contacts_bold: bool = markdown_file_reader.get_boolean_argument_from_frontmatter("contacts_bold")
@@ -81,7 +80,7 @@ class Resume(Transpilable):
         :raises TypeError: If an element is not a dict, or if a 'display' or 'link' value is not a str.
         :raises KeyError: If a dict lacks the required 'display' key.
         """
-        result: list[Contact] = []
+        result: list[Resume.Contact] = []
 
         for frontmatter_contact in frontmatter_contacts:
             if not isinstance(frontmatter_contact, dict):
@@ -91,7 +90,7 @@ class Resume(Transpilable):
             if not isinstance(frontmatter_contact["display"], str):
                 raise TypeError(f"The 'display' value in the contact {frontmatter_contact} is not a string.")
 
-            contact: Contact = Contact(display=frontmatter_contact["display"])
+            contact: Resume.Contact = Resume.Contact(display=frontmatter_contact["display"])
 
             if "link" in frontmatter_contact:
                 if not isinstance(frontmatter_contact["link"], str):
