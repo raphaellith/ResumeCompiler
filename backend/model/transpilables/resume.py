@@ -326,7 +326,7 @@ class Resume(Transpilable):
         """
         # Locate the LaTeX template file.
         if getattr(sys, "frozen", False):
-            return Path(sys._MEIPASS) / cls.PATH_TO_TEMPLATE_TEX_FILE
+            return Path(getattr(sys, "_MEIPASS")) / cls.PATH_TO_TEMPLATE_TEX_FILE
         else:
             return Path.cwd() / cls.PATH_TO_TEMPLATE_TEX_FILE
 
