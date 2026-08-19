@@ -25,7 +25,7 @@ export function MarkdownEditorPane({
 
   const handleMount: OnMount = useCallback(
     (editor, monaco) => {
-      monaco.editor.defineTheme('résumé-compiler', {
+      monaco.editor.defineTheme('resume-compiler', {
         base: 'vs',
         inherit: true,
         rules: [],
@@ -34,7 +34,7 @@ export function MarkdownEditorPane({
         },
       });
 
-      monaco.editor.setTheme('résumé-compiler');
+      monaco.editor.setTheme('resume-compiler');
 
       editor.addCommand(
         monaco.KeyMod.CtrlCmd | monaco.KeyCode.Equal,
