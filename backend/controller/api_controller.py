@@ -28,10 +28,8 @@ app.add_middleware(
 # ------------------------------ API ENDPOINTS ------------------------------
 
 @app.post("/pdf/", response_class=Response)
-def compile_markdown_to_pdf(
-    payload: MarkdownInput,
-    font: Optional[str] = Query(default=None, alias="font"),
-):
+def compile_markdown_to_pdf(payload: MarkdownInput,
+                            font: Optional[str] = Query(default=None, alias="font")) -> Response:
     markdown = payload.markdown
 
     try:
