@@ -18,6 +18,10 @@ class Resume(Transpilable):
     TEMPLATE_TEX_FILE_PATH: str = "../resources/template.tex"
 
     class Contact:
+        """
+        An auxiliary class representing a single contact entry (e.g. email, phone, or link) from the resume frontmatter.
+        It holds the display text and an optional hyperlink.
+        """
         def __init__(self, display: str, link: Optional[str] = None):
             """
             Creates a contact with display text and an optional hyperlink.
