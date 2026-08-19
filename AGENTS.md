@@ -13,7 +13,7 @@ python backend/run.py                                  # default :8001 (used by 
 - **Must run from repo root** (`backend.*` absolute imports). `venv/` exists at root.
 - Requires `pdflatex` on `$PATH` (system LaTeX distribution).
 - `POST /pdf/?font=kebab-case-name` → `application/pdf`; `POST /xml/` → `application/xml` (debug component tree). Both accept `{"markdown": "..."}`. Default font: `times-new-roman`.
-- Pipeline: Markdown → BeautifulSoup → `Resume` component tree → `to_latex_lines()` → `preamble.tex` (font placeholder `% FONT CHOICE GOES HERE`) → `pdflatex` in temp dir → PDF bytes. Entrypoint: `backend.service.markdown_to_pdf_bytes_compilation_service.get_pdf_bytes_from_markdown`.
+- Pipeline: Markdown → BeautifulSoup → `Resume` component tree → `to_latex_lines()` → `template.tex` (font placeholder `%[[FONT_CHOICE]]%`) → `pdflatex` in temp dir → PDF bytes. Entrypoint: `backend.service.markdown_to_pdf_bytes_compilation_service.get_pdf_bytes_from_markdown`.
 - CORS restricted to known frontend origins: `http://localhost:1420` (Vite dev), `tauri://localhost` and `https://tauri.localhost` (Tauri webview).
 
 ## Frontend
@@ -39,7 +39,7 @@ npm run tauri build # Tauri desktop (release)
 ## CI / Release
 
 - `.github/workflows/release.yml`: triggered by `v*` tag push.
-- Builds Python sidecar with `pyinstaller --onefile --hidden-import uvicorn...` using `backend/run.py` as entrypoint, then `npm run tauri build`.
+- Builds Python sidecar with `pyinstaller --onefile --collect-submodules uvicorn` using `backend/run.py` as entrypoint, then `npm run tauri build`.
 - `backend/build.spec` is the local PyInstaller spec for reference.
 
 ## Markdown quirks
