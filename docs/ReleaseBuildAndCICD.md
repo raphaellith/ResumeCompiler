@@ -65,8 +65,9 @@ Port is dynamically allocated to avoid conflicts:
 - `src-tauri/tauri.conf.json`: `bundle.externalBin` lists `["binaries/backend"]`.
 - Sidecar binaries are placed at `src-tauri/binaries/backend-{target-triple}` by
   CI, matching Tauri's naming convention.
-- `macOS.signing.skip: true` — builds are unsigned (no Apple Developer account
-  required for distribution; users Ctrl+Open to bypass Gatekeeper).
+- `macOS.signingIdentity: "-"` — builds are ad-hoc signed (no Apple Developer
+  account required for distribution; users bypass Gatekeeper via
+  right-click → Open or `xattr -c`).
 
 ## CI/CD Pipeline
 
@@ -79,8 +80,8 @@ File: `.github/workflows/release.yml`
 | Runner | Target triple | Bundle |
 |---|---|---|
 | `macos-latest` (ARM) | `aarch64-apple-darwin` | `.dmg` |
-| `macos-13` (Intel) | `x86_64-apple-darwin` | `.dmg` |
-| `windows-latest` | `x86_64-pc-windows-msvc` | `.msi` |
+| `macos-15-intel` | `x86_64-apple-darwin` | `.dmg` |
+| `windows-latest` | `x86_64-pc-windows-msvc` | `.msi` + `.exe` (NSIS) |
 
 **Per-platform steps**:
 1. Setup Python, install deps + PyInstaller
@@ -99,8 +100,9 @@ downloads all artifacts and creates a GitHub Release with generated release note
 - Entrypoint: `backend/run.py`
 - Hidden imports: `uvicorn.*` submodules (discovered via
   `PyInstaller.utils.hooks.collect_submodules`)
-- Data files: `backend/model/resources/preamble.tex` → bundled at
-  `backend/model/resources/preamble.tex` relative to bundle root
+- Data files: `backend/model/resources/template.tex` → bundled at
+  `backend/model/resources/template.tex` relative to bundle root
+- Hidden imports: all `uvicorn.*` submodules via `--collect-submodules uvicorn`
 - One-file executable mode (`--onefile`)
 
 ## Key Files
