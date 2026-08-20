@@ -17,7 +17,7 @@ class Achievement(Transpilable, ABC):
         self.parts = parts
 
     @staticmethod
-    def get_from_tags(tags: list[Tag]) -> Any:
+    def from_tags(tags: list[Tag]) -> Any:
         """
         Builds a ThreePartAchievement or FourPartAchievement from h2 and pre tags.
         :param tags: The tags representing the achievement, including one h2 and one pre tag.
