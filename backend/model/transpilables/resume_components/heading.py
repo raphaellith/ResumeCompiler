@@ -3,6 +3,7 @@ from xml.etree import ElementTree
 from bs4 import Tag
 
 from backend.model.transpilables.resume_components.resume_component import ResumeComponent
+from backend.model.transpilables.transpilable import Transpilable
 
 
 class Heading(ResumeComponent):
@@ -19,7 +20,7 @@ class Heading(ResumeComponent):
         Converts the heading to a LaTeX \\section command.
         :return: The LaTeX code representation of this heading.
         """
-        return r"\section{" + self.text + r"}"
+        return r"\section{%s}" % Transpilable.escape_for_latex(self.text)
 
     def to_xml_element(self) -> ElementTree.Element:
         """

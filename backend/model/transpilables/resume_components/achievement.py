@@ -72,7 +72,7 @@ class ThreePartAchievement(Achievement):
         Converts the achievement to a \\threePartAchievement command.
         :return: The LaTeX code representation of this achievement.
         """
-        return r"\threePartAchievement" + "".join(map(lambda s: "{" + s + "}", self.parts))
+        return r"\threePartAchievement" + "".join(map(lambda s: "{%s}" % Transpilable.escape_for_latex(s), self.parts))
 
     def to_xml_element(self) -> ElementTree.Element:
         """
@@ -95,7 +95,7 @@ class FourPartAchievement(Achievement):
         Converts the achievement to a \\fourPartAchievement command.
         :return: The LaTeX code representation of this achievement.
         """
-        return r"\fourPartAchievement" + "".join(map(lambda s: "{" + s + "}", self.parts))
+        return r"\fourPartAchievement" + "".join(map(lambda s: "{%s}" % Transpilable.escape_for_latex(s), self.parts))
 
     def to_xml_element(self) -> ElementTree.Element:
         """

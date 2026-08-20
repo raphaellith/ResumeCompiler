@@ -1,13 +1,37 @@
+import re
 from xml.etree import ElementTree
 from abc import ABC, abstractmethod
 
 
 class Transpilable(ABC):
+    LATEX_ESCAPE_SEQUENCES: dict[str, str] = {
+        "\\": r"\textbackslash",
+        r"{": r"\{",
+        r"}": r"\}",
+        r"$": r"\$",
+        r"&": r"\&",
+        r"#": r"\#",
+        r"_": r"\_",
+        r"^": r"\^{}",
+        r"~": r"\~{}",
+        r"%": r"\%"
+    }
+
+    LATEX_SPECIAL_CHARACTERS: re.Pattern = re.compile("[%s]" % re.escape("".join(LATEX_ESCAPE_SEQUENCES.keys())))
+
     def __init__(self):
         """
         Initializes a Transpilable, the abstract base class for resume parts that are compilable to LaTeX and XML.
         """
         pass
+
+    @classmethod
+    def escape_for_latex(cls, string: str) -> str:
+        return re.sub(
+            pattern=Transpilable.LATEX_SPECIAL_CHARACTERS,
+            repl=lambda match: Transpilable.LATEX_ESCAPE_SEQUENCES[match.group(0)],
+            string=string
+        )
 
     @abstractmethod
     def to_latex(self) -> str:
