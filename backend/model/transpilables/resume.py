@@ -269,9 +269,13 @@ class Resume(Transpilable):
         num_of_contacts = len(self.contacts)
 
         for i, contact in enumerate(self.contacts):
-            contact_as_latex = Transpilable.escape_for_latex(contact.display)
+            displayed_text_as_latex = Transpilable.escape_for_latex(contact.display)
+
             if contact.link:
-                contact_as_latex = r"\href{" + contact_as_latex + r"}{\underline{" + Transpilable.escape_for_latex(contact.link) + "}}"
+                link_as_latex = Transpilable.escape_for_latex(contact.link)
+                contact_as_latex = r"\href{" + displayed_text_as_latex + r"}{\underline{" + link_as_latex + "}}"
+            else:
+                contact_as_latex = displayed_text_as_latex
 
             contact_list += contact_as_latex
 
