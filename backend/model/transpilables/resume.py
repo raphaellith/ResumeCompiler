@@ -241,7 +241,7 @@ class Resume(Transpilable):
         Builds the LaTeX representation of the resume title, optionally bold.
         :return: The title as a LaTeX string.
         """
-        title = self.title
+        title = Transpilable.escape_for_latex(self.title)
 
         if self.title_bold:
             title = r"\textbf{" + title + "}"
@@ -253,7 +253,7 @@ class Resume(Transpilable):
         Builds the LaTeX representation of the resume summary, optionally bold.
         :return: The summary as a LaTeX string.
         """
-        summary = self.summary
+        summary = Transpilable.escape_for_latex(self.summary)
 
         if self.summary_bold:
             summary = r"\textbf{" + summary + "}"
@@ -269,9 +269,13 @@ class Resume(Transpilable):
         num_of_contacts = len(self.contacts)
 
         for i, contact in enumerate(self.contacts):
-            contact_as_latex = contact.display
+            displayed_text_as_latex = Transpilable.escape_for_latex(contact.display)
+
             if contact.link:
-                contact_as_latex = r"\href{" + contact_as_latex + r"}{\underline{" + contact.link + "}}"
+                link_as_latex = Transpilable.escape_for_latex(contact.link)
+                contact_as_latex = r"\href{" + displayed_text_as_latex + r"}{\underline{" + link_as_latex + "}}"
+            else:
+                contact_as_latex = displayed_text_as_latex
 
             contact_list += contact_as_latex
 

@@ -3,6 +3,7 @@ from xml.etree import ElementTree
 from bs4.element import Tag, PageElement, NavigableString
 
 from backend.model.transpilables.resume_components.resume_component import ResumeComponent
+from backend.model.transpilables.transpilable import Transpilable
 
 
 class BulletedList(ResumeComponent):
@@ -29,7 +30,7 @@ class BulletedList(ResumeComponent):
             :raises ValueError: If the element is an unsupported tag or a non-text, non-tag element.
             """
             if isinstance(element, NavigableString):
-                return element.string
+                return Transpilable.escape_for_latex(element.string)
 
             if isinstance(element, Tag):
                 if element.name == "b":
