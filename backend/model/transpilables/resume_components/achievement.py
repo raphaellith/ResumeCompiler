@@ -52,7 +52,8 @@ class Achievement(Transpilable, ABC):
 
         return latex
 
-    def get_xml_element_containing_all_parts(self, container_element_name: str, part_element_name: str = "part"):
+    def get_xml_element_containing_all_parts(self, container_element_name: str, part_element_name: str = "part")\
+            -> ElementTree.Element:
         """
         Builds an XML container element with one child element per part.
         :param container_element_name: The tag name of the container element.
