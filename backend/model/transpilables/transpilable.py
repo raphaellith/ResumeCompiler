@@ -27,6 +27,11 @@ class Transpilable(ABC):
 
     @classmethod
     def escape_for_latex(cls, string: str) -> str:
+        """
+        Escapes LaTeX special characters in the given string.
+        :param string: The string to escape.
+        :return: The escaped string.
+        """
         return re.sub(
             pattern=Transpilable.LATEX_SPECIAL_CHARACTERS,
             repl=lambda match: Transpilable.LATEX_ESCAPE_SEQUENCES[match.group(0)],
