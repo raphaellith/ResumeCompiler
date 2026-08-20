@@ -63,7 +63,7 @@ class Resume(Transpilable):
             if leading_tag_name == "h1":
                 self.components.append(Heading(tag_group[0]))
             elif leading_tag_name == "h2":
-                self.components.append(Achievement.get_from_tags(tag_group))
+                self.components.append(Achievement.from_tags(tag_group))
             elif leading_tag_name == "ul":
                 self.components.append(BulletedList(tag_group[0]))
 
