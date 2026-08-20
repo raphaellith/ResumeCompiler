@@ -363,7 +363,7 @@ class Resume(Transpilable):
 
         contacts_element = ElementTree.SubElement(
             frontmatter_element,
-            "summary",
+            "contacts",
             attrib={"bold": str(self.contacts_bold).lower()}
         )
 
