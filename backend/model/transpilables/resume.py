@@ -1,11 +1,12 @@
 import re
 import sys
-from typing import Callable, Optional
+from typing import Callable
 from xml.etree import ElementTree
 
 from bs4.element import Tag, NavigableString
 from pathlib import Path
 
+from backend.model.transpilables.contact import Contact
 from backend.model.transpilables.resume_components.achievement import Achievement
 from backend.model.transpilables.resume_components.bulleted_list import BulletedList
 from backend.model.transpilables.resume_components.resume_component import ResumeComponent
@@ -17,20 +18,6 @@ from backend.model.utils.markdown_file_reader import MarkdownFileReader
 
 class Resume(Transpilable):
     PATH_TO_TEMPLATE_TEX_FILE: str = "backend/model/resources/template.tex"
-
-    class Contact:
-        """
-        An auxiliary class representing a single contact entry (e.g. email, phone, or link) from the resume frontmatter.
-        It holds the display text and an optional hyperlink.
-        """
-        def __init__(self, display: str, link: Optional[str] = None):
-            """
-            Creates a contact with display text and an optional hyperlink.
-            :param display: The contact display text.
-            :param link: The contact hyperlink, or None.
-            """
-            self.display: str = display
-            self.link: Optional[str] = link
 
     def __init__(self, markdown_file_contents: str):
         """
@@ -47,7 +34,7 @@ class Resume(Transpilable):
         self.summary: str = markdown_file_reader.get_string_argument_from_frontmatter("summary")
         self.summary_bold: bool = markdown_file_reader.get_boolean_argument_from_frontmatter("summary_bold")
 
-        self.contacts: list[Resume.Contact] = Resume._validate_and_parse_contacts(
+        self.contacts: list[Contact] = Resume._validate_and_parse_contacts(
             markdown_file_reader.get_list_argument_from_frontmatter("contacts")
         )
         self.contacts_bold: bool = markdown_file_reader.get_boolean_argument_from_frontmatter("contacts_bold")
@@ -85,7 +72,7 @@ class Resume(Transpilable):
         :raises TypeError: If an element is not a dict, or if a 'display' or 'link' value is not a str.
         :raises KeyError: If a dict lacks the required 'display' key.
         """
-        result: list[Resume.Contact] = []
+        result: list[Contact] = []
 
         for frontmatter_contact in frontmatter_contacts:
             if not isinstance(frontmatter_contact, dict):
@@ -95,7 +82,7 @@ class Resume(Transpilable):
             if not isinstance(frontmatter_contact["display"], str):
                 raise TypeError(f"The 'display' value in the contact {frontmatter_contact} is not a string.")
 
-            contact: Resume.Contact = Resume.Contact(display=frontmatter_contact["display"])
+            contact: Contact = Contact(display=frontmatter_contact["display"])
 
             if "link" in frontmatter_contact:
                 if not isinstance(frontmatter_contact["link"], str):
@@ -265,24 +252,12 @@ class Resume(Transpilable):
         Builds the LaTeX representation of the contact list, linking entries that have a link.
         :return: The contact list as a LaTeX string.
         """
-        contact_list = ""
-        num_of_contacts = len(self.contacts)
+        result = r"\resumeContactList{" + " $|$ ".join([c.to_latex() for c in self.contacts]) + "}"
 
-        for i, contact in enumerate(self.contacts):
-            displayed_text_as_latex = Transpilable.escape_for_latex(contact.display)
+        if not self.contacts_bold:
+            return result
 
-            if contact.link:
-                link_as_latex = Transpilable.escape_for_latex(contact.link)
-                contact_as_latex = r"\href{" + displayed_text_as_latex + r"}{\underline{" + link_as_latex + "}}"
-            else:
-                contact_as_latex = displayed_text_as_latex
-
-            contact_list += contact_as_latex
-
-            if i != num_of_contacts - 1:
-                contact_list += " $|$ "
-
-        return r"\resumeContactList{" + contact_list + "}"
+        return r"\textbf{" + result + r"}"
 
     def get_document_contents_as_latex(self) -> str:
         """
@@ -388,15 +363,12 @@ class Resume(Transpilable):
 
         contacts_element = ElementTree.SubElement(
             frontmatter_element,
-            "summary",
+            "contacts",
             attrib={"bold": str(self.contacts_bold).lower()}
         )
 
         for contact in self.contacts:
-            contact_element = ElementTree.SubElement(contacts_element, "contact")
-            contact_element.text = contact.display
-            if contact.link:
-                contact_element.set("link", contact.link)
+            contacts_element.append(contact.to_xml_element())
 
         return frontmatter_element
 
