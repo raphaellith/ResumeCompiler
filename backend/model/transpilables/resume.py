@@ -76,18 +76,23 @@ class Resume(Transpilable):
 
         for frontmatter_contact in frontmatter_contacts:
             if not isinstance(frontmatter_contact, dict):
-                raise TypeError(f"The frontmatter lists the contact {frontmatter_contact}, which is not a dictionary.")
+                raise TypeError(f"Each entry in the 'contacts' field must be a dictionary, "
+                                f"but got {type(frontmatter_contact).__name__}.")
             if "display" not in frontmatter_contact:
-                raise KeyError(f"The contact {frontmatter_contact} does not have the required key 'display'.")
-            if not isinstance(frontmatter_contact["display"], str):
-                raise TypeError(f"The 'display' value in the contact {frontmatter_contact} is not a string.")
+                raise KeyError(f"Each contact must have a 'display' field, but one entry does not: "
+                               f"{frontmatter_contact.__repr__()}.")
 
-            contact: Contact = Contact(display=frontmatter_contact["display"])
+            display = frontmatter_contact["display"]
+            if not isinstance(display, str):
+                raise TypeError(f"The 'display' field of a contact must be a string, but got {type(display).__name__}.")
+
+            contact: Contact = Contact(display=display)
 
             if "link" in frontmatter_contact:
-                if not isinstance(frontmatter_contact["link"], str):
-                    raise TypeError(f"The 'link' value in the contact {frontmatter_contact} is not a string.")
-                contact.link = frontmatter_contact["link"]
+                link = frontmatter_contact["link"]
+                if not isinstance(link, str):
+                    raise TypeError(f"The 'link' field of a contact must be a string, but got {type(link).__name__}.")
+                contact.link = link
 
             result.append(contact)
 
@@ -111,7 +116,8 @@ class Resume(Transpilable):
           which is a text node (NavigableString) whose stripped text spans exactly 2 or 3 lines.
 
         :raises ValueError: If the concatenated top-level tag names do not match the pattern above,
-                            or if any tag found inside a list item is neither <b> nor <i>.
+                            if any tag found inside a list item is neither <b> nor <i>, or
+                            if a code block's text does not span exactly 2 or 3 lines.
         :raises TypeError: If a heading does not contain exactly one text node,
                            if a <ul> has a direct child that is not an <li>, or
                            if a <pre>/<code> block does not match the required structure.
@@ -121,39 +127,45 @@ class Resume(Transpilable):
         required_pattern_for_concatenated_top_level_tag_names: re.Pattern = re.compile(r"(<h1>|<ul>|<h2><pre>|<p>)*")
         if not re.fullmatch(required_pattern_for_concatenated_top_level_tag_names, concatenated_top_level_tag_names):
             raise ValueError(
-                f"Top level tag names do not match the pattern {required_pattern_for_concatenated_top_level_tag_names}."
+                f"The document body is not structured correctly. It may only contain headings (<h1>), bulleted lists "
+                f"(<ul>), paragraphs (<p>), and achievements (<h2> followed by a code block), but found: "
+                f"{concatenated_top_level_tag_names}."
             )
 
         for tag in self.tags:
             if tag.name in ("h1", "h2"):
                 # Must contain only one navigable string
                 if not (len(tag.contents) == 1 and isinstance(tag.contents[0], NavigableString)):
-                    raise TypeError("Headings of type h1 and h2 must contain exactly one string and no tags.")
+                    raise TypeError(f"A heading (<h1>/<h2>) must contain exactly one plain text node and no nested "
+                                    f"tags, but it contains {len(tag.contents)} node(s).")
 
             elif tag.name == "ul":
                 if not all([isinstance(child, Tag) and child.name == "li" for child in tag.find_all(recursive=False)]):
-                    raise TypeError("Unordered lists (<ul>) can only contain list items (<li>) as children.")
+                    raise TypeError("A list (<ul>) may only contain list items (<li>) as direct children.")
 
                 for list_item in tag.find_all("li"):
                     tags_used_in_list_item = list_item.find_all()
                     for tag_used_in_list_item in tags_used_in_list_item:
                         if tag_used_in_list_item.name not in ("b", "i"):
-                            raise ValueError(f"The tag {tags_used_in_list_item} is not allowed inside a list item.")
+                            raise ValueError(f"A list item contains a <{tag_used_in_list_item.name}> tag; only <b> "
+                                             f"and <i> tags are allowed.")
 
             elif tag.name == "pre":
                 if len(tag.contents) != 1:
-                    raise TypeError("Preformatted blocks (<pre>) must contain only one child node.")
+                    raise TypeError("A code block (<pre>) must contain exactly one child node.")
 
                 child_node = tag.contents[0]
                 if not (isinstance(child_node, Tag) and child_node.name == "code"):
-                    raise TypeError("Preformatted blocks (<pre>) must contain a child <code> tag.")
+                    raise TypeError("A code block (<pre>) must contain a single <code> tag.")
 
                 if not (len(child_node.contents) == 1 and isinstance(child_node.contents[0], NavigableString)):
-                    raise TypeError("Preformatted code blocks (<code>) must contain exactly one (possibly multiline) "
-                                    "string and no tags.")
+                    raise TypeError("A code block (<code>) must contain exactly one text node (which may span multiple "
+                                    "lines) and no nested tags.")
 
-                if not 2 <= len(child_node.contents[0].text.strip().splitlines()) <= 3:
-                    raise TypeError("Preformatted code blocks (<code>) must contain a string with 2 or 3 lines.")
+                num_of_lines_in_code_block = len(child_node.contents[0].text.strip().splitlines())
+                if not 2 <= num_of_lines_in_code_block <= 3:
+                    raise ValueError(f"A code block (<code>) must contain 2 or 3 lines of text, "
+                                     f"but it contains {num_of_lines_in_code_block}.")
 
     def _remove_hidden_tags(self):
         """
