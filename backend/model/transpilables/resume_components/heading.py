@@ -20,7 +20,7 @@ class Heading(ResumeComponent):
         Converts the heading to a LaTeX \\section command.
         :return: The LaTeX code representation of this heading.
         """
-        return r"\section{%s}" % Transpilable.escape_for_latex(self.text)
+        return r"\section{" + Transpilable.escape_for_latex(self.text) + "}"
 
     def to_xml_element(self) -> ElementTree.Element:
         """

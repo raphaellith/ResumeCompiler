@@ -17,7 +17,11 @@ class Transpilable(ABC):
         r"%": r"\%"
     }
 
-    LATEX_SPECIAL_CHARACTERS: re.Pattern = re.compile("[%s]" % re.escape("".join(LATEX_ESCAPE_SEQUENCES.keys())))
+    LATEX_SPECIAL_CHARACTERS: re.Pattern = re.compile(
+        "[{chars}]".format(
+            chars=re.escape("".join(LATEX_ESCAPE_SEQUENCES.keys()))
+        )
+    )
 
     def __init__(self):
         """
