@@ -41,7 +41,9 @@ class Achievement(Transpilable, ABC):
                 cast(tuple[str, str, str, str], tuple(parts))
             )
 
-        raise ValueError("Neither three or four part achievement.")
+        raise ValueError(
+            f"An achievement must have exactly 3 or 4 parts (a heading plus 2 or 3 lines), but it has {num_of_parts}."
+        )
 
     def get_latex_command_with_escaped_parts_as_arguments(self, command_name: str) -> str:
         latex = command_name

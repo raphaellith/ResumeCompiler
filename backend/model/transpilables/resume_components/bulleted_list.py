@@ -37,9 +37,9 @@ class BulletedList(ResumeComponent):
                     return r"\textbf{" + "".join(map(get_page_element_as_latex, element.contents)) + "}"
                 if element.name == "i":
                     return r"\textit{" + "".join(map(get_page_element_as_latex, element.contents)) + "}"
-                raise ValueError(f"List item contains {element.name} tag; only <b> and <i> allowed.")
+                raise ValueError(f"A list item contains a <{element.name}> tag. Only <b> and <i> tags are allowed.")
 
-            raise ValueError("List item contains page element that is neither a navigable string nor a tag.")
+            raise ValueError("A list item contains an element that is neither text nor an HTML tag.")
 
         result = r"\begin{itemize}[leftmargin=12pt, itemsep=-2pt]" + "\n"
         for li_tag in self.li_tags:

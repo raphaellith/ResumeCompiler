@@ -24,7 +24,7 @@ class MarkdownFileReader:
         argument: Optional[object] = self.post.get(parameter)
 
         if argument is None:
-            raise KeyError(f"The frontmatter parameter {parameter} does not exist.")
+            raise KeyError(f"Missing required frontmatter field '{parameter}'.")
 
         return argument
 
@@ -38,7 +38,7 @@ class MarkdownFileReader:
         argument: object = self._get_argument_from_frontmatter(parameter)
 
         if not isinstance(argument, str):
-            raise TypeError(f"The value given by the frontmatter parameter {parameter} is not a string.")
+            raise TypeError(f"The '{parameter}' field must be a string, but got {type(argument).__name__}.")
 
         return argument
 
@@ -52,7 +52,7 @@ class MarkdownFileReader:
         argument: object = self._get_argument_from_frontmatter(parameter)
 
         if not isinstance(argument, bool):
-            raise TypeError(f"The value given by the frontmatter parameter {parameter} is not a boolean.")
+            raise TypeError(f"The '{parameter}' field must be a boolean, but got {type(argument).__name__}.")
 
         return argument
 
@@ -66,7 +66,7 @@ class MarkdownFileReader:
         argument: object = self._get_argument_from_frontmatter(parameter)
 
         if not isinstance(argument, list):
-            raise TypeError(f"The value given by the frontmatter parameter {parameter} is not a list.")
+            raise TypeError(f"The '{parameter}' field must be a list, but got {type(argument).__name__}.")
 
         return argument
 
