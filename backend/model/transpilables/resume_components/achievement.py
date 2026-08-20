@@ -43,6 +43,15 @@ class Achievement(Transpilable, ABC):
 
         raise ValueError("Neither three or four part achievement.")
 
+    def get_latex_command_with_escaped_parts_as_arguments(self, command_name: str) -> str:
+        latex = command_name
+
+        for part in self.parts:
+            part = Transpilable.escape_for_latex(part)
+            latex += "{" + part + "}"
+
+        return latex
+
     def get_xml_element_containing_all_parts(self, container_element_name: str, part_element_name: str = "part"):
         """
         Builds an XML container element with one child element per part.
@@ -72,7 +81,7 @@ class ThreePartAchievement(Achievement):
         Converts the achievement to a \\threePartAchievement command.
         :return: The LaTeX code representation of this achievement.
         """
-        return r"\threePartAchievement" + "".join(map(lambda s: "{%s}" % Transpilable.escape_for_latex(s), self.parts))
+        return self.get_latex_command_with_escaped_parts_as_arguments(r"\threePartAchievement")
 
     def to_xml_element(self) -> ElementTree.Element:
         """
@@ -95,7 +104,7 @@ class FourPartAchievement(Achievement):
         Converts the achievement to a \\fourPartAchievement command.
         :return: The LaTeX code representation of this achievement.
         """
-        return r"\fourPartAchievement" + "".join(map(lambda s: "{%s}" % Transpilable.escape_for_latex(s), self.parts))
+        return self.get_latex_command_with_escaped_parts_as_arguments(r"\fourPartAchievement")
 
     def to_xml_element(self) -> ElementTree.Element:
         """
