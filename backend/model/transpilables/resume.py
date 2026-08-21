@@ -222,7 +222,7 @@ class Resume(Transpilable):
 
     def _get_components_grouped_by_section(self) -> list[list[ResumeComponent]]:
         """
-        Groups components into sections, where each starting with a Heading (except possibly for the first section).
+        Groups components into sections, each starting with a Heading (except possibly for the first section).
         :return: A list of sections, each a list of ResumeComponent objects.
         """
         result: list[list[ResumeComponent]] = []
