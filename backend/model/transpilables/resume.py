@@ -398,10 +398,3 @@ class Resume(Transpilable):
             resume_element.append(component.to_xml_element())
 
         return resume_element
-
-
-if __name__ == '__main__':
-    with open("../../../files/test.md") as f:
-        r = Resume(f.read())
-
-        print(r.to_xml_string())
