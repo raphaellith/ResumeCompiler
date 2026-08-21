@@ -222,13 +222,13 @@ class Resume(Transpilable):
 
     def _get_components_grouped_by_section(self) -> list[list[ResumeComponent]]:
         """
-        Groups components into sections, where each Heading starts a new section.
+        Groups components into sections, each starting with a Heading (except possibly for the first section).
         :return: A list of sections, each a list of ResumeComponent objects.
         """
         result: list[list[ResumeComponent]] = []
 
         for component in self.components:
-            if isinstance(component, Heading):
+            if isinstance(component, Heading) or not result:  # When the list is empty, we have to start a new section
                 result.append([component])
             else:
                 result[-1].append(component)
@@ -279,9 +279,10 @@ class Resume(Transpilable):
         result = ""
 
         for component_group in self._get_components_grouped_by_section():
-            heading = component_group.pop(0)
-            result += heading.to_latex()
-            result += "\n\n"
+            if isinstance(component_group[0], Heading):
+                heading = component_group.pop(0)
+                result += heading.to_latex()
+                result += "\n\n"
 
             if component_group:
                 result += r"\begin{itemize}[leftmargin=0in, label={}, itemsep=-2pt]" + "\n"
@@ -397,10 +398,3 @@ class Resume(Transpilable):
             resume_element.append(component.to_xml_element())
 
         return resume_element
-
-
-if __name__ == '__main__':
-    with open("../../../files/base-template.md") as f:
-        r = Resume(f.read())
-
-        ElementTree.dump(r.to_xml_element())
