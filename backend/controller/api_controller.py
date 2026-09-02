@@ -4,7 +4,7 @@ from fastapi import FastAPI, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from backend.controller.data_transfer_objects.data_transfer_objects import MarkdownInput
+from backend.controller.data_transfer_objects.data_transfer_objects import MarkdownInput, HealthResponse
 from backend.model.enums.font import Font
 from backend.service.markdown_to_pdf_bytes_compilation_service import (
     get_pdf_bytes_from_markdown,
@@ -26,6 +26,11 @@ app.add_middleware(
 
 
 # ------------------------------ API ENDPOINTS ------------------------------
+
+@app.get("/health", response_model=HealthResponse)
+def health_check() -> HealthResponse:
+    return HealthResponse()
+
 
 @app.post("/pdf/", response_class=Response)
 def compile_markdown_to_pdf(payload: MarkdownInput,

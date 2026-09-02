@@ -15,6 +15,7 @@ export type ToolbarProps = {
   onSettings: () => void;
   onExport: () => void;
   onExportXml: () => void;
+  backendReady: boolean;
 };
 
 export function Toolbar({
@@ -27,6 +28,7 @@ export function Toolbar({
   onSettings,
   onExport,
   onExportXml,
+  backendReady,
 }: ToolbarProps) {
   const [exportAnchorEl, setExportAnchorEl] = useState<HTMLElement | null>(null);
   const exportOpen = Boolean(exportAnchorEl);
@@ -39,10 +41,12 @@ export function Toolbar({
     setExportAnchorEl(null);
   };
 
+  const disabled = !backendReady;
+
   return (
     <header className={styles.toolbar}>
       <div className={styles.actions}>
-        <Button variant="contained" onClick={onOpenFile}>
+        <Button variant="contained" onClick={onOpenFile} disabled={disabled}>
           Select File
         </Button>
       </div>
@@ -51,11 +55,11 @@ export function Toolbar({
         <ButtonGroup variant="contained">
           <Button
             onClick={onCompile}
-            disabled={!hasFile || isCompiling}
+            disabled={disabled || !hasFile || isCompiling}
           >
-            {isCompiling ? "Compiling..." : "Compile"}
+            {isCompiling ? "Compiling..." : disabled ? "Starting backend..." : "Compile"}
           </Button>
-          <Button onClick={onSettings} aria-label="Settings">
+          <Button onClick={onSettings} aria-label="Settings" disabled={disabled}>
             <span className="material-symbols-outlined">settings</span>
           </Button>
         </ButtonGroup>
@@ -63,7 +67,7 @@ export function Toolbar({
         <Button
           variant="contained"
           onClick={handleExportClick}
-          disabled={!canExport}
+          disabled={disabled || !canExport}
         >
           Export <span className="material-symbols-outlined">arrow_drop_down</span>
         </Button>
@@ -80,7 +84,7 @@ export function Toolbar({
               onExport();
               handleExportClose();
             }}
-            disabled={!canExport}
+            disabled={disabled || !canExport}
             sx={{ fontWeight: 800 }}
           >
             Export PDF
@@ -90,7 +94,7 @@ export function Toolbar({
               onExportXml();
               handleExportClose();
             }}
-            disabled={!canExportXml}
+            disabled={disabled || !canExportXml}
           >
             Export XML
           </MenuItem>
