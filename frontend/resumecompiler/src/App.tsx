@@ -209,6 +209,16 @@ function App() {
 
   const [font, setFont] = useState(DEFAULT_FONT);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [backendReady, setBackendReady] = useState(false);
+
+  useEffect(() => {
+    getCompiledPdfEndpoint()
+      .then(() => setBackendReady(true))
+      .catch((error) => {
+        console.error("Backend failed to start:", error);
+        setBackendReady(false);
+      });
+  }, []);
 
   const handleOpenSettings = useCallback(() => {
     setIsSettingsOpen(true);
@@ -343,6 +353,7 @@ function App() {
           onSettings={handleOpenSettings}
           onExport={handleExport}
           onExportXml={handleExportXml}
+          backendReady={backendReady}
         />
 
         <SettingsModal
