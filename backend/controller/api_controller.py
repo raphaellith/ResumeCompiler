@@ -1,6 +1,6 @@
 from typing import Optional
 
-from fastapi import FastAPI, Query, Response
+from fastapi import FastAPI, Query, Response, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
@@ -26,6 +26,50 @@ app.add_middleware(
 )
 
 
+def _error_response(request: Request, exc: Exception) -> JSONResponse:
+    error_type = type(exc).__name__
+    error_message = str(exc)
+    response = JSONResponse(
+        status_code=500,
+        content={
+            "error": error_type,
+            "message": error_message,
+        },
+    )
+    _add_cors_headers(response, request)
+    return response
+
+
+def _add_cors_headers(response: JSONResponse, request: Request) -> None:
+    origin = request.headers.get("origin")
+    allowed_origins = [
+        "http://localhost:1420",
+        "http://127.0.0.1:1420",
+        "tauri://localhost",
+        "https://tauri.localhost",
+    ]
+    if origin in allowed_origins:
+        response.headers["Access-Control-Allow-Origin"] = origin
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+        response.headers["Access-Control-Allow-Methods"] = "*"
+        response.headers["Access-Control-Allow-Headers"] = "*"
+
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception) -> JSONResponse:
+    if isinstance(exc, PdfLatexNotFoundError):
+        response = JSONResponse(
+            status_code=502,
+            content={
+                "error": "PdfLatexNotFoundError",
+                "message": "Could not find 'pdflatex'. Install a LaTeX distribution (e.g. MacTeX on macOS, MiKTeX on Windows)."
+            },
+        )
+        _add_cors_headers(response, request)
+        return response
+    return _error_response(request, exc)
+
+
 # ------------------------------ API ENDPOINTS ------------------------------
 
 @app.get("/health", response_model=HealthResponse)
@@ -37,18 +81,7 @@ def health_check() -> HealthResponse:
 def compile_markdown_to_pdf(payload: MarkdownInput,
                             font: Optional[str] = Query(default=None, alias="font")) -> Response:
     markdown = payload.markdown
-
-    try:
-        pdf_bytes = get_pdf_bytes_from_markdown(markdown, Font.from_query_parameter(font))
-    except PdfLatexNotFoundError:
-        return JSONResponse(
-            status_code=502,
-            content={
-                "error": "pdflatex_not_found",
-                "message":
-                    "Could not find 'pdflatex'. Install a LaTeX distribution (e.g. MacTeX on macOS, MiKTeX on Windows)."
-            },
-        )
+    pdf_bytes = get_pdf_bytes_from_markdown(markdown, Font.from_query_parameter(font))
 
     return Response(
         content=pdf_bytes,

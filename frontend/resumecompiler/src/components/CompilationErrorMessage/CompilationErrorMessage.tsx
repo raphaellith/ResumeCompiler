@@ -61,7 +61,7 @@ export function CompilationErrorMessage({ message }: CompilationErrorMessageProp
     return null;
   }
 
-  const isLatexNotFound = message === "LATEX_NOT_FOUND";
+  const isLatexNotFound = message.startsWith("PdfLatexNotFoundError:");
 
   if (isLatexNotFound) {
     const instructions = INSTALL_INSTRUCTIONS[os];
