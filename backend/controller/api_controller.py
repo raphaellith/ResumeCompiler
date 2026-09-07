@@ -12,15 +12,17 @@ from backend.service.markdown_to_pdf_bytes_compilation_service import (
 )
 from backend.service.markdown_to_xml_string_compilation_service import get_resume_as_xml_from_markdown
 
+ALLOWED_ORIGINS = [
+    "http://localhost:1420",    # Vite dev server (localhost)
+    "http://127.0.0.1:1420",    # Vite dev server (127.0.0.1)
+    "tauri://localhost",        # Tauri webview
+    "https://tauri.localhost",  # Tauri webview (Linux)
+]
+
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:1420",    # Vite dev server (localhost)
-        "http://127.0.0.1:1420",    # Vite dev server (127.0.0.1)
-        "tauri://localhost",        # Tauri webview
-        "https://tauri.localhost",  # Tauri webview (Linux)
-    ],
+    allow_origins=ALLOWED_ORIGINS,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -42,13 +44,7 @@ def _error_response(request: Request, exc: Exception) -> JSONResponse:
 
 def _add_cors_headers(response: JSONResponse, request: Request) -> None:
     origin = request.headers.get("origin")
-    allowed_origins = [
-        "http://localhost:1420",
-        "http://127.0.0.1:1420",
-        "tauri://localhost",
-        "https://tauri.localhost",
-    ]
-    if origin in allowed_origins:
+    if origin in ALLOWED_ORIGINS:
         response.headers["Access-Control-Allow-Origin"] = origin
         response.headers["Access-Control-Allow-Credentials"] = "true"
         response.headers["Access-Control-Allow-Methods"] = "*"
@@ -57,16 +53,6 @@ def _add_cors_headers(response: JSONResponse, request: Request) -> None:
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception) -> JSONResponse:
-    if isinstance(exc, PdfLatexNotFoundError):
-        response = JSONResponse(
-            status_code=502,
-            content={
-                "error": "PdfLatexNotFoundError",
-                "message": "Could not find 'pdflatex'. Install a LaTeX distribution (e.g. MacTeX on macOS, MiKTeX on Windows)."
-            },
-        )
-        _add_cors_headers(response, request)
-        return response
     return _error_response(request, exc)
 
 
