@@ -6,10 +6,7 @@ from fastapi.responses import JSONResponse
 
 from backend.controller.data_transfer_objects.data_transfer_objects import MarkdownInput, HealthResponse
 from backend.model.enums.font import Font
-from backend.service.markdown_to_pdf_bytes_compilation_service import (
-    get_pdf_bytes_from_markdown,
-    PdfLatexNotFoundError,
-)
+from backend.service.markdown_to_pdf_bytes_compilation_service import get_pdf_bytes_from_markdown
 from backend.service.markdown_to_xml_string_compilation_service import get_resume_as_xml_from_markdown
 
 ALLOWED_ORIGINS = [
