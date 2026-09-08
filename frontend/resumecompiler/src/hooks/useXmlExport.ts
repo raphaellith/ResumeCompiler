@@ -1,4 +1,5 @@
-import { useCallback, useState } from "react";
+import {useCallback, useState} from "react";
+import {makeCompilationRequest} from "./utils/makeCompilationRequest.ts";
 
 export type UseXmlExportResult = {
   isExportingXml: boolean;
@@ -17,29 +18,16 @@ export function useXmlExport(
       setIsExportingXml(true);
       setXmlError(null);
 
-      const xmlEndpoint = await getXmlEndpoint();
-
       try {
-        const response = await fetch(xmlEndpoint, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/xml",
-          },
-          body: JSON.stringify({ markdown }),
+        const xmlEndpoint = await getXmlEndpoint();
+        const response = await makeCompilationRequest({
+          endpoint: xmlEndpoint,
+          body: {markdown},
+          acceptHeader: "application/xml",
         });
-
-        if (!response.ok) {
-          const errorBody = await response.json().catch(() => null);
-          const errorType = errorBody?.error || "UnknownError";
-          const errorMessage = errorBody?.message || `Backend returned ${response.status}.`;
-          throw new Error(`${errorType}: ${errorMessage}`);
-        }
-
-        return await response.text();
+        return response.text();
       } catch (error) {
-        const message =
-          error instanceof Error ? error.message : "Failed to export XML.";
+        const message = error instanceof Error ? error.message : "Failed to export XML.";
         setXmlError(message);
         throw error;
       } finally {

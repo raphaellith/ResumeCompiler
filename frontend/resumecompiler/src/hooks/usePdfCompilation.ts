@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { makeCompilationRequest } from "./utils/makeCompilationRequest.ts";
 
 export type PdfCompilationState = {
   pdfUrl: string | null;
@@ -26,27 +27,14 @@ export function usePdfCompilation(
       setIsCompiling(true);
       setCompileError(null);
 
-      const baseEndpoint = await getCompileEndpoint();
-      const url = font
-        ? `${baseEndpoint}?font=${encodeURIComponent(font)}`
-        : baseEndpoint;
-
       try {
-        const response = await fetch(url, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/pdf",
-          },
-          body: JSON.stringify({ markdown: source }),
+        const baseEndpoint = await getCompileEndpoint();
+        const response = await makeCompilationRequest({
+          endpoint: baseEndpoint,
+          body: { markdown: source },
+          acceptHeader: "application/pdf",
+          queryParams: font ? { font } : undefined,
         });
-
-        if (!response.ok) {
-          const errorBody = await response.json().catch(() => null);
-          const errorType = errorBody?.error || "UnknownError";
-          const errorMessage = errorBody?.message || `Backend returned ${response.status}.`;
-          throw new Error(`${errorType}: ${errorMessage}`);
-        }
 
         const nextBlob = await response.blob();
         const nextUrl = URL.createObjectURL(nextBlob);
