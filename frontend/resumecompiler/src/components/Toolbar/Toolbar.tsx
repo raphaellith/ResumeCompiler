@@ -94,7 +94,6 @@ export function Toolbar({
               handleExportClose();
             }}
             disabled={exportDisabled}
-            sx={{ fontWeight: 800 }}
           >
             Export PDF
           </MenuItem>
