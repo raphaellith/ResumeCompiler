@@ -262,7 +262,7 @@ function App() {
   const handleOpenFile = useCallback(async () => {
     const result = await openFilePicker();
     if (result) {
-      compilePdf(result.markdown, font);
+      await compilePdf(result.markdown, font);
     } else if (!isTauri()) {
       fileInputRef.current?.click();
     }
@@ -273,7 +273,7 @@ function App() {
       const file = e.target.files?.[0];
       if (!file) return;
       const result = await loadFile(file);
-      compilePdf(result.markdown, font);
+      await compilePdf(result.markdown, font);
       e.target.value = "";
     },
     [loadFile, compilePdf, font]
