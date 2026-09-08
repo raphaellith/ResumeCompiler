@@ -58,7 +58,7 @@ export function Toolbar({
       <div className={styles.actions}>
         {!backendReady && (
           <span className={styles.throbber}>
-            <CircularProgress enableTrackSlot size={20} thickness={6} color="primary" />
+            <CircularProgress enableTrackSlot size={20} thickness={5} color="primary" />
           </span>
         )}
         <ButtonGroup variant="contained">
