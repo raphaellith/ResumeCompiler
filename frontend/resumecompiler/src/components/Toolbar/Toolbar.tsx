@@ -1,9 +1,9 @@
-import { useState } from "react";
-import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import CircularProgress from "@mui/material/CircularProgress";
+import { SelectFileButton } from "./SelectFileButton";
+import { BackendStatusThrobber } from "./BackendStatusThrobber";
+import { CompileButton } from "./CompileButton";
+import { SettingsButton } from "./SettingsButton";
+import { ExportDropdown } from "./ExportDropdown";
 import styles from "./Toolbar.module.scss";
 
 export type ToolbarProps = {
@@ -31,81 +31,28 @@ export function Toolbar({
   onExportXml,
   backendReady,
 }: ToolbarProps) {
-  const [exportAnchorEl, setExportAnchorEl] = useState<HTMLElement | null>(null);
-  const exportOpen = Boolean(exportAnchorEl);
-
-  const handleExportClick = (event: React.MouseEvent<HTMLElement>) => {
-    setExportAnchorEl(event.currentTarget);
-  };
-
-  const handleExportClose = () => {
-    setExportAnchorEl(null);
-  };
-
   const compileDisabled = !backendReady || !hasFile || isCompiling;
   const exportDisabled = !backendReady || !canExport;
   const exportXmlDisabled = !backendReady || !canExportXml;
 
   return (
     <header className={styles.toolbar}>
-      <div className={styles.actions}>
-        <Button variant="contained" onClick={onOpenFile}>
-          Select File
-        </Button>
-      </div>
+      <SelectFileButton onClick={onOpenFile} />
 
       <div className={styles.actions}>
-        {!backendReady && (
-          <span className={styles.throbber}>
-            <CircularProgress enableTrackSlot size={20} thickness={5} color="primary" />
-          </span>
-        )}
+        <BackendStatusThrobber backendReady={backendReady} />
+
         <ButtonGroup variant="contained">
-          <Button
-            onClick={onCompile}
-            disabled={compileDisabled}
-          >
-            Compile
-          </Button>
-          <Button onClick={onSettings} aria-label="Settings">
-            <span className="material-symbols-outlined">settings</span>
-          </Button>
+          <CompileButton disabled={compileDisabled} onClick={onCompile} />
+          <SettingsButton onClick={onSettings} />
         </ButtonGroup>
 
-        <Button
-          variant="contained"
-          onClick={handleExportClick}
-          disabled={exportDisabled}
-        >
-          Export <span className="material-symbols-outlined">arrow_drop_down</span>
-        </Button>
-
-        <Menu
-          anchorEl={exportAnchorEl}
-          open={exportOpen}
-          onClose={handleExportClose}
-          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-          transformOrigin={{ vertical: "top", horizontal: "right" }}
-        >
-          <MenuItem
-            onClick={() => {
-              onExport();
-              handleExportClose();
-            }}
-            disabled={exportDisabled}
-          >
-            Export PDF
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              onExportXml();
-              handleExportClose();
-            }}
-            disabled={exportXmlDisabled}
-          >
-            Export XML
-          </MenuItem>
-        </Menu>
+        <ExportDropdown
+          exportDisabled={exportDisabled}
+          exportXmlDisabled={exportXmlDisabled}
+          onExport={onExport}
+          onExportXml={onExportXml}
+        />
       </div>
     </header>
   );
