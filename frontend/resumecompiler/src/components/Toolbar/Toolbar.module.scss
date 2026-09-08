@@ -15,6 +15,12 @@
     gap: 8px;
   }
 
+  .throbber {
+    display: flex;
+    align-items: center;
+    margin-right: 4px;
+  }
+
   :global(.material-symbols-outlined) {
     font-size: 18px;
   }
