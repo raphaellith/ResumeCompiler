@@ -1,12 +1,3 @@
-export function getFileDisplayName(filePath: string | null | undefined): string {
-  if (!filePath) {
-    return "None";
-  }
-
-  const parts = filePath.split(/[\\/]/);
-  return parts[parts.length - 1] || filePath;
-}
-
 export function stripExtension(filename: string): string {
   return filename.replace(/\.[^/.]+$/, "");
 }
