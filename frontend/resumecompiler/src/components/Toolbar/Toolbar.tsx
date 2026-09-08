@@ -4,7 +4,6 @@ import ButtonGroup from "@mui/material/ButtonGroup";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import CircularProgress from "@mui/material/CircularProgress";
-import Tooltip from "@mui/material/Tooltip";
 import styles from "./Toolbar.module.scss";
 
 export type ToolbarProps = {
