@@ -1,48 +1,35 @@
 from typing import Optional
 
-from fastapi import FastAPI, Query, Response
+from fastapi import FastAPI, Query, Response, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from backend.controller.data_transfer_objects.data_transfer_objects import MarkdownInput
+from backend.controller.allowed_origins import ALLOWED_ORIGINS
+from backend.controller.data_transfer_objects.data_transfer_objects import MarkdownInput, HealthResponse
+from backend.controller.utils import _get_error_response
 from backend.model.enums.font import Font
-from backend.service.markdown_to_pdf_bytes_compilation_service import (
-    get_pdf_bytes_from_markdown,
-    PdfLatexNotFoundError,
-)
+from backend.service.markdown_to_pdf_bytes_compilation_service import get_pdf_bytes_from_markdown
 from backend.service.markdown_to_xml_string_compilation_service import get_resume_as_xml_from_markdown
 
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:1420",  # The Vite dev server and Tauri's devUrl, used during development
-        "tauri://localhost",  # Tauri's webview origin when serving production build from bundled frontend
-        "https://tauri.localhost",  # Additional origin on some platforms, e.g. Linux
-    ],
+    allow_origins=ALLOWED_ORIGINS,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 
-# ------------------------------ API ENDPOINTS ------------------------------
+@app.get("/health", response_model=HealthResponse)
+def health_check() -> HealthResponse:
+    return HealthResponse()
 
-@app.post("/pdf/", response_class=Response)
+
+@app.post("/pdf", response_class=Response)
 def compile_markdown_to_pdf(payload: MarkdownInput,
                             font: Optional[str] = Query(default=None, alias="font")) -> Response:
     markdown = payload.markdown
-
-    try:
-        pdf_bytes = get_pdf_bytes_from_markdown(markdown, Font.from_query_parameter(font))
-    except PdfLatexNotFoundError:
-        return JSONResponse(
-            status_code=502,
-            content={
-                "error": "pdflatex_not_found",
-                "message":
-                    "Could not find 'pdflatex'. Install a LaTeX distribution (e.g. MacTeX on macOS, MiKTeX on Windows)."
-            },
-        )
+    pdf_bytes = get_pdf_bytes_from_markdown(markdown, Font.from_query_parameter(font))
 
     return Response(
         content=pdf_bytes,
@@ -50,7 +37,7 @@ def compile_markdown_to_pdf(payload: MarkdownInput,
     )
 
 
-@app.post("/xml/", response_class=Response)
+@app.post("/xml", response_class=Response)
 def compile_markdown_to_xml(payload: MarkdownInput) -> Response:
     markdown = payload.markdown
     xml_string = get_resume_as_xml_from_markdown(markdown)
@@ -59,3 +46,8 @@ def compile_markdown_to_xml(payload: MarkdownInput) -> Response:
         content=xml_string,
         media_type="application/xml",
     )
+
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception) -> JSONResponse:
+    return _get_error_response(request, exc)
