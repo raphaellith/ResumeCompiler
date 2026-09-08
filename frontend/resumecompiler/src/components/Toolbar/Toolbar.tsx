@@ -3,6 +3,8 @@ import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import CircularProgress from "@mui/material/CircularProgress";
+import Tooltip from "@mui/material/Tooltip";
 import styles from "./Toolbar.module.scss";
 
 export type ToolbarProps = {
@@ -41,36 +43,47 @@ export function Toolbar({
     setExportAnchorEl(null);
   };
 
-  const disabled = !backendReady;
+  const compileDisabled = !backendReady || !hasFile || isCompiling;
+  const exportDisabled = !backendReady || !canExport;
+  const exportXmlDisabled = !backendReady || !canExportXml;
 
   return (
     <header className={styles.toolbar}>
       <div className={styles.actions}>
-        <Button variant="contained" onClick={onOpenFile} disabled={disabled}>
+        <Button variant="contained" onClick={onOpenFile}>
           Select File
         </Button>
       </div>
 
       <div className={styles.actions}>
+        {!backendReady && (
+          <span className={styles.throbber}>
+            <CircularProgress enableTrackSlot size={20} thickness={5} color="primary" />
+          </span>
+        )}
         <ButtonGroup variant="contained">
-          <Button
-            onClick={onCompile}
-            disabled={disabled || !hasFile || isCompiling}
-          >
-            {isCompiling ? "Compiling..." : disabled ? "Starting backend..." : "Compile"}
-          </Button>
-          <Button onClick={onSettings} aria-label="Settings" disabled={disabled}>
+          <Tooltip title="Waiting for backend..." disableHoverListener={backendReady}>
+            <Button
+              onClick={onCompile}
+              disabled={compileDisabled}
+            >
+              Compile
+            </Button>
+          </Tooltip>
+          <Button onClick={onSettings} aria-label="Settings">
             <span className="material-symbols-outlined">settings</span>
           </Button>
         </ButtonGroup>
 
-        <Button
-          variant="contained"
-          onClick={handleExportClick}
-          disabled={disabled || !canExport}
-        >
-          Export <span className="material-symbols-outlined">arrow_drop_down</span>
-        </Button>
+        <Tooltip title="Waiting for backend..." disableHoverListener={backendReady}>
+          <Button
+            variant="contained"
+            onClick={handleExportClick}
+            disabled={exportDisabled}
+          >
+            Export <span className="material-symbols-outlined">arrow_drop_down</span>
+          </Button>
+        </Tooltip>
 
         <Menu
           anchorEl={exportAnchorEl}
@@ -84,7 +97,7 @@ export function Toolbar({
               onExport();
               handleExportClose();
             }}
-            disabled={disabled || !canExport}
+            disabled={exportDisabled}
             sx={{ fontWeight: 800 }}
           >
             Export PDF
@@ -94,7 +107,7 @@ export function Toolbar({
               onExportXml();
               handleExportClose();
             }}
-            disabled={disabled || !canExportXml}
+            disabled={exportXmlDisabled}
           >
             Export XML
           </MenuItem>
