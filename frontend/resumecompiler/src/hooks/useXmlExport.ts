@@ -30,8 +30,10 @@ export function useXmlExport(
         });
 
         if (!response.ok) {
-          const errorText = await response.text().catch(() => "");
-          throw new Error(errorText || `Backend returned ${response.status}.`);
+          const errorBody = await response.json().catch(() => null);
+          const errorType = errorBody?.error || "UnknownError";
+          const errorMessage = errorBody?.message || `Backend returned ${response.status}.`;
+          throw new Error(`${errorType}: ${errorMessage}`);
         }
 
         return await response.text();

@@ -43,11 +43,9 @@ export function usePdfCompilation(
 
         if (!response.ok) {
           const errorBody = await response.json().catch(() => null);
-          if (errorBody?.error === "pdflatex_not_found") {
-            throw new Error("LATEX_NOT_FOUND");
-          }
-          const errorText = errorBody?.message || `Backend returned ${response.status}.`;
-          throw new Error(errorText);
+          const errorType = errorBody?.error || "UnknownError";
+          const errorMessage = errorBody?.message || `Backend returned ${response.status}.`;
+          throw new Error(`${errorType}: ${errorMessage}`);
         }
 
         const nextBlob = await response.blob();
