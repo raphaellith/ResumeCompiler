@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { isTauri } from "@tauri-apps/api/core";
