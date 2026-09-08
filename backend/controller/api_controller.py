@@ -25,7 +25,7 @@ def health_check() -> HealthResponse:
     return HealthResponse()
 
 
-@app.post("/pdf/", response_class=Response)
+@app.post("/pdf", response_class=Response)
 def compile_markdown_to_pdf(payload: MarkdownInput,
                             font: Optional[str] = Query(default=None, alias="font")) -> Response:
     markdown = payload.markdown
@@ -37,7 +37,7 @@ def compile_markdown_to_pdf(payload: MarkdownInput,
     )
 
 
-@app.post("/xml/", response_class=Response)
+@app.post("/xml", response_class=Response)
 def compile_markdown_to_xml(payload: MarkdownInput) -> Response:
     markdown = payload.markdown
     xml_string = get_resume_as_xml_from_markdown(markdown)

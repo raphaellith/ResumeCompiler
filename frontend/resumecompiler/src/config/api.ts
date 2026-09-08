@@ -61,10 +61,10 @@ async function resolveApiBaseUrl(): Promise<string> {
 
 export async function getCompiledPdfEndpoint(): Promise<string> {
   const base = await resolveApiBaseUrl();
-  return `${base}/pdf/`;
+  return `${base}/pdf`;
 }
 
 export async function getCompiledXmlEndpoint(): Promise<string> {
   const base = await resolveApiBaseUrl();
-  return `${base}/xml/`;
+  return `${base}/xml`;
 }
