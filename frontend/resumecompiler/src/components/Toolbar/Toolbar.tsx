@@ -4,7 +4,6 @@ import ButtonGroup from "@mui/material/ButtonGroup";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import CircularProgress from "@mui/material/CircularProgress";
-import Tooltip from "@mui/material/Tooltip";
 import styles from "./Toolbar.module.scss";
 
 export type ToolbarProps = {
@@ -62,28 +61,24 @@ export function Toolbar({
           </span>
         )}
         <ButtonGroup variant="contained">
-          <Tooltip title="Waiting for backend..." disableHoverListener={backendReady}>
-            <Button
-              onClick={onCompile}
-              disabled={compileDisabled}
-            >
-              Compile
-            </Button>
-          </Tooltip>
+          <Button
+            onClick={onCompile}
+            disabled={compileDisabled}
+          >
+            Compile
+          </Button>
           <Button onClick={onSettings} aria-label="Settings">
             <span className="material-symbols-outlined">settings</span>
           </Button>
         </ButtonGroup>
 
-        <Tooltip title="Waiting for backend..." disableHoverListener={backendReady}>
-          <Button
-            variant="contained"
-            onClick={handleExportClick}
-            disabled={exportDisabled}
-          >
-            Export <span className="material-symbols-outlined">arrow_drop_down</span>
-          </Button>
-        </Tooltip>
+        <Button
+          variant="contained"
+          onClick={handleExportClick}
+          disabled={exportDisabled}
+        >
+          Export <span className="material-symbols-outlined">arrow_drop_down</span>
+        </Button>
 
         <Menu
           anchorEl={exportAnchorEl}
@@ -98,7 +93,6 @@ export function Toolbar({
               handleExportClose();
             }}
             disabled={exportDisabled}
-            sx={{ fontWeight: 800 }}
           >
             Export PDF
           </MenuItem>
