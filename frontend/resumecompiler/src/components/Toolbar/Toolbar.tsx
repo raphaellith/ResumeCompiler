@@ -62,28 +62,24 @@ export function Toolbar({
           </span>
         )}
         <ButtonGroup variant="contained">
-          <Tooltip title="Waiting for backend..." disableHoverListener={backendReady}>
-            <Button
-              onClick={onCompile}
-              disabled={compileDisabled}
-            >
-              Compile
-            </Button>
-          </Tooltip>
+          <Button
+            onClick={onCompile}
+            disabled={compileDisabled}
+          >
+            Compile
+          </Button>
           <Button onClick={onSettings} aria-label="Settings">
             <span className="material-symbols-outlined">settings</span>
           </Button>
         </ButtonGroup>
 
-        <Tooltip title="Waiting for backend..." disableHoverListener={backendReady}>
-          <Button
-            variant="contained"
-            onClick={handleExportClick}
-            disabled={exportDisabled}
-          >
-            Export <span className="material-symbols-outlined">arrow_drop_down</span>
-          </Button>
-        </Tooltip>
+        <Button
+          variant="contained"
+          onClick={handleExportClick}
+          disabled={exportDisabled}
+        >
+          Export <span className="material-symbols-outlined">arrow_drop_down</span>
+        </Button>
 
         <Menu
           anchorEl={exportAnchorEl}
