@@ -5,9 +5,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from backend.controller.allowed_origins import ALLOWED_ORIGINS
-from backend.controller.data_transfer_objects.data_transfer_objects import MarkdownInput, HealthResponse
+from backend.controller.data_transfer_objects.data_transfer_objects import (
+    MarkdownInput,
+    HealthResponse,
+    FontNamesResponse,
+)
 from backend.controller.utils import _get_error_response
 from backend.model.enums.font import Font
+from backend.service.font_name_list_service import get_valid_font_names
 from backend.service.markdown_to_pdf_bytes_compilation_service import get_pdf_bytes_from_markdown
 from backend.service.markdown_to_xml_string_compilation_service import get_resume_as_xml_from_markdown
 
@@ -23,6 +28,12 @@ app.add_middleware(
 @app.get("/health", response_model=HealthResponse)
 def health_check() -> HealthResponse:
     return HealthResponse()
+
+
+@app.get("/font-names", response_class=Response)
+def list_all_valid_font_names() -> FontNamesResponse:
+    get_valid_font_names()
+    pass
 
 
 @app.post("/pdf", response_class=Response)

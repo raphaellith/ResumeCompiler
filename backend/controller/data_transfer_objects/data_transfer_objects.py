@@ -7,3 +7,7 @@ class MarkdownInput(BaseModel):
 
 class HealthResponse(BaseModel):
     status: str = "ok"
+
+
+class FontNamesResponse(BaseModel):
+    names: list[str]
