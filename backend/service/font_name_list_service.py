@@ -1,2 +1,5 @@
+from backend.model.enums.font import Font
+
+
 def get_valid_font_names():
-    pass
+    return [font.value for font in Font]

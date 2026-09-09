@@ -32,8 +32,9 @@ def health_check() -> HealthResponse:
 
 @app.get("/font-names", response_class=Response)
 def list_all_valid_font_names() -> FontNamesResponse:
-    get_valid_font_names()
-    pass
+    return FontNamesResponse(
+        names=get_valid_font_names()
+    )
 
 
 @app.post("/pdf", response_class=Response)
