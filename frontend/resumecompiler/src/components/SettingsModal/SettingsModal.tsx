@@ -12,28 +12,28 @@ import vars from "../../styles/variables.module.scss";
 
 export type SettingsModalProps = {
   isOpen: boolean;
-  initialFont: string;
-  onSave: (font: string) => void;
+  initialFontQueryParam: string;
+  onSave: (fontQueryParam: string) => void;
   onClose: () => void;
 };
 
 export function SettingsModal({
   isOpen,
-  initialFont,
+  initialFontQueryParam,
   onSave,
   onClose,
 }: SettingsModalProps) {
-  const [selectedFont, setSelectedFont] = useState(initialFont);
+  const [selectedFontQueryParam, setSelectedFontQueryParam] = useState(initialFontQueryParam);
 
   useEffect(() => {
     if (isOpen) {
-      setSelectedFont(initialFont);
+      setSelectedFontQueryParam(initialFontQueryParam);
     }
-  }, [isOpen, initialFont]);
+  }, [isOpen, initialFontQueryParam]);
 
   const handleSave = useCallback(() => {
-    onSave(selectedFont);
-  }, [selectedFont, onSave]);
+    onSave(selectedFontQueryParam);
+  }, [selectedFontQueryParam, onSave]);
 
   return (
     <Dialog open={isOpen} onClose={onClose} aria-label="Settings">
@@ -42,8 +42,8 @@ export function SettingsModal({
         <SettingRow label="Font">
           <Select
             id="font-select"
-            value={selectedFont}
-            onChange={(e) => setSelectedFont(e.target.value)}
+            value={selectedFontQueryParam}
+            onChange={e => setSelectedFontQueryParam(e.target.value)}
             sx={{
               minWidth: 240,
               "& .MuiOutlinedInput-notchedOutline": { borderColor: vars.colorDominantBorder },
@@ -51,18 +51,21 @@ export function SettingsModal({
               "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: vars.colorDominantBorder },
             }}
           >
-            {FONT_OPTIONS.map((option: FontOption) => (
-              <MenuItem
-                key={option.value}
-                value={option.value}
-                sx={{
-                  "&.Mui-selected": { backgroundColor: "action.selected" },
-                  "&.Mui-selected:hover": { backgroundColor: "action.hover" },
-                }}
-              >
-                {option.label}
-              </MenuItem>
-            ))}
+            {FONT_OPTIONS.map(
+              function (option: FontOption) {
+                const queryParam = option.asQueryParam();
+                return <MenuItem
+                  key={queryParam}
+                  value={queryParam}
+                  sx={{
+                    "&.Mui-selected": { backgroundColor: "action.selected" },
+                    "&.Mui-selected:hover": { backgroundColor: "action.hover" },
+                  }}
+                >
+                  {option.name}
+                </MenuItem>
+              }
+            )}
           </Select>
         </SettingRow>
       </DialogContent>

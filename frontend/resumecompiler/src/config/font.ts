@@ -1,17 +1,31 @@
-export interface FontOption {
-  label: string;
-  value: string;
+const FONT_NAMES: string[] = [
+  "Times New Roman",
+  "Computer Modern",
+  "Fira Sans",
+  "Roboto",
+  "Noto Sans",
+  "Source Sans Pro",
+  "Cormorant Garamond",
+  "Charter"
+]
+
+
+export class FontOption {
+  readonly name: string;
+
+  constructor(name: string) {
+    this.name = name;
+  }
+
+  asQueryParam(): string {
+    // Convert name from proper case to kebab case
+    return this.name
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, '-');
+  }
 }
 
-export const FONT_OPTIONS: FontOption[] = [
-  { label: "Times New Roman", value: "times-new-roman" },
-  { label: "Computer Modern", value: "computer-modern" },
-  { label: "Fira Sans", value: "fira-sans" },
-  { label: "Roboto", value: "roboto" },
-  { label: "Noto Sans", value: "noto-sans" },
-  { label: "Source Sans Pro", value: "source-sans-pro" },
-  { label: "Cormorant Garamond", value: "cormorant-garamond" },
-  { label: "Charter", value: "charter" },
-];
 
-export const DEFAULT_FONT = "times-new-roman";
+export const FONT_OPTIONS: FontOption[] = FONT_NAMES.map((name) => new FontOption(name))
+export const DEFAULT_FONT_OPTION: FontOption = FONT_OPTIONS[0];

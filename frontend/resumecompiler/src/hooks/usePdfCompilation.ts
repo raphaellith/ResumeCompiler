@@ -10,7 +10,7 @@ export type PdfCompilationState = {
 };
 
 export type UsePdfCompilationResult = PdfCompilationState & {
-  compilePdf: (source: string, font?: string) => Promise<void>;
+  compilePdf: (source: string, fontQueryParam?: string) => Promise<void>;
 };
 
 export function usePdfCompilation(
@@ -23,7 +23,7 @@ export function usePdfCompilation(
   const [compileError, setCompileError] = useState<string | null>(null);
 
   const compilePdf = useCallback(
-    async (source: string, font?: string) => {
+    async (source: string, fontQueryParam?: string) => {
       setIsCompiling(true);
       setCompileError(null);
 
@@ -33,7 +33,7 @@ export function usePdfCompilation(
           endpoint: baseEndpoint,
           body: { markdown: source },
           acceptHeader: "application/pdf",
-          queryParams: font ? { font } : undefined,
+          queryParams: fontQueryParam ? { font: fontQueryParam } : undefined,
         });
 
         const nextBlob = await response.blob();
