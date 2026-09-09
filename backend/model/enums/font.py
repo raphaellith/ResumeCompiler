@@ -1,34 +1,51 @@
 from __future__ import annotations
 
 from enum import Enum
+import re
 from typing import Optional
 
 
 class Font(Enum):
-    COMPUTER_MODERN = ""
-    TIMES_NEW_ROMAN = r"\usepackage{mathptmx}"
-    FIRA_SANS = r"\usepackage[sfdefault]{FiraSans}"
-    ROBOTO = r"\usepackage[sfdefault]{roboto}"
-    NOTO_SANS = r"\usepackage[sfdefault]{noto-sans}"
-    SOURCE_SANS_PRO = r"\usepackage[default]{sourcesanspro}"
-    CORMORANT_GARAMOND = r"\usepackage{CormorantGaramond}"
-    CHARTER = r"\usepackage{charter}"
+    COMPUTER_MODERN = "Computer Modern"
+    TIMES_NEW_ROMAN = "Times New Roman"
+    FIRA_SANS = "Fira Sans"
+    ROBOTO = "Roboto"
+    NOTO_SANS = "Noto Sans"
+    SOURCE_SANS_PRO = "Source Sans Pro"
+    CORMORANT_GARAMOND = "Cormorant Garamond"
+    CHARTER = "Charter"
+
+    @property
+    def get_latex_import(self) -> str:
+        _map = {
+            "Computer Modern": "",
+            "Times New Roman": r"\usepackage{mathptmx}",
+            "Fira Sans": r"\usepackage[sfdefault]{FiraSans}",
+            "Roboto": r"\usepackage[sfdefault]{roboto}",
+            "Noto Sans": r"\usepackage[sfdefault]{noto-sans}",
+            "Source Sans Pro": r"\usepackage[default]{sourcesanspro}",
+            "Cormorant Garamond": r"\usepackage{CormorantGaramond}",
+            "Charter": r"\usepackage{charter}"
+        }
+        return _map.get(self.value)
+
+    @property
+    def as_query_parameter(self) -> str:
+        return re.sub(r"\s+", "-", self.value.lower())
 
     @classmethod
-    def from_query_parameter(cls, value: Optional[str]) -> Font:
+    def from_query_parameter(cls, query_parameter: Optional[str]) -> Font:
         """
         Resolves a kebab-case font query parameter to a Font enum member.
-        :param value: The kebab-case font name, or None.
+        :param query_parameter: The kebab-case query parameter containing the font name, or None.
         :return: The matching Font member; defaults to TIMES_NEW_ROMAN when unknown or None.
         """
-        mapping = {
-            "times-new-roman": cls.TIMES_NEW_ROMAN,
-            "computer-modern": cls.COMPUTER_MODERN,
-            "fira-sans": cls.FIRA_SANS,
-            "roboto": cls.ROBOTO,
-            "noto-sans": cls.NOTO_SANS,
-            "source-sans-pro": cls.SOURCE_SANS_PRO,
-            "cormorant-garamond": cls.CORMORANT_GARAMOND,
-            "charter": cls.CHARTER,
-        }
-        return mapping.get(value, cls.TIMES_NEW_ROMAN)
+        for font in cls:
+            if font.as_query_parameter == query_parameter:
+                return font
+
+        return cls.TIMES_NEW_ROMAN
+
+    @classmethod
+    def get_default_font(cls) -> Font:
+        return cls.TIMES_NEW_ROMAN

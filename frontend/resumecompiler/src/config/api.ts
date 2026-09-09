@@ -4,7 +4,7 @@ import { isTauri } from "@tauri-apps/api/core";
 const DEFAULT_API_BASE_URL = "http://localhost:8000";
 
 let cachedApiBaseUrl: string | null = null;
-let backendHealthIsChecked = false;
+let backendHealthIsVerified = false;
 
 async function waitForBackendReady(baseUrl: string): Promise<void> {
   const healthUrl = `${baseUrl}/health`;
@@ -18,7 +18,7 @@ async function waitForBackendReady(baseUrl: string): Promise<void> {
     try {
       const response = await fetch(healthUrl, { method: "GET" });
       if (response.ok) {
-        backendHealthIsChecked = true;
+        backendHealthIsVerified = true;
         return;
       }
     } catch {
@@ -41,7 +41,7 @@ async function resolveApiBaseUrl(): Promise<string> {
       const port = await invoke<number>("get_backend_port");
       if (port > 0) {
         const url = `http://127.0.0.1:${port}`;
-        if (!backendHealthIsChecked) {
+        if (!backendHealthIsVerified) {
           await waitForBackendReady(url);
         }
         cachedApiBaseUrl = url;
@@ -67,4 +67,18 @@ export async function getCompiledPdfEndpoint(): Promise<string> {
 export async function getCompiledXmlEndpoint(): Promise<string> {
   const base = await resolveApiBaseUrl();
   return `${base}/xml`;
+}
+
+export interface FontNamesResponse {
+  names: string[];
+  default: string;
+}
+
+export async function getFontNames(): Promise<FontNamesResponse> {
+  const base = await resolveApiBaseUrl();
+  const response = await fetch(`${base}/font-names`);
+  if (!response.ok) {
+    throw new Error("Failed to fetch font names");
+  }
+  return response.json();
 }

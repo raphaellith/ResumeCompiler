@@ -18,7 +18,7 @@ class MarkdownFileReader:
         """
         Retrieves a raw frontmatter argument by parameter name.
         :param parameter: The frontmatter parameter name.
-        :return: The raw argument value.
+        :return: The raw argument query_parameter.
         :raises KeyError: If the parameter does not exist in the frontmatter.
         """
         argument: Optional[object] = self.post.get(parameter)
@@ -32,7 +32,7 @@ class MarkdownFileReader:
         """
         Retrieves a string argument from the frontmatter.
         :param parameter: The frontmatter parameter name.
-        :return: The string argument value.
+        :return: The string argument query_parameter.
         :raises TypeError: If the parameter is not a string.
         """
         argument: object = self._get_argument_from_frontmatter(parameter)
@@ -46,7 +46,7 @@ class MarkdownFileReader:
         """
         Retrieves a boolean argument from the frontmatter.
         :param parameter: The frontmatter parameter name.
-        :return: The boolean argument value.
+        :return: The boolean argument query_parameter.
         :raises TypeError: If the parameter is not a boolean.
         """
         argument: object = self._get_argument_from_frontmatter(parameter)
@@ -60,7 +60,7 @@ class MarkdownFileReader:
         """
         Retrieves a list argument from the frontmatter.
         :param parameter: The frontmatter parameter name.
-        :return: The list argument value.
+        :return: The list argument query_parameter.
         :raises TypeError: If the parameter is not a list.
         """
         argument: object = self._get_argument_from_frontmatter(parameter)

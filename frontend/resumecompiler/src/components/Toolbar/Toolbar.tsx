@@ -17,6 +17,8 @@ export type ToolbarProps = {
   onExport: () => void;
   onExportXml: () => void;
   backendReady: boolean;
+  fontsLoading: boolean;
+  fontError: string | null;
 };
 
 export function Toolbar({
@@ -30,10 +32,13 @@ export function Toolbar({
   onExport,
   onExportXml,
   backendReady,
+  fontsLoading,
+  fontError,
 }: ToolbarProps) {
   const compileDisabled = !backendReady || !hasFile || isCompiling;
   const exportDisabled = !backendReady || !canExport;
   const exportXmlDisabled = !backendReady || !canExportXml;
+  const settingsDisabled = fontsLoading || fontError !== null;
 
   return (
     <header className={styles.toolbar}>
@@ -44,7 +49,7 @@ export function Toolbar({
 
         <ButtonGroup variant="contained">
           <CompileButton disabled={compileDisabled} onClick={onCompile} />
-          <SettingsButton onClick={onSettings} />
+          <SettingsButton onClick={onSettings} disabled={settingsDisabled} />
         </ButtonGroup>
 
         <ExportDropdown

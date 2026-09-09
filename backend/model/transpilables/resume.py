@@ -60,16 +60,16 @@ class Resume(Transpilable):
         Validates and converts the frontmatter contacts list into Contact objects.
 
         The input is valid if it is a list of dicts, where each dict:
-        - contains a required 'display' key whose value is a str; and
-        - optionally contains a 'link' key whose value, if present, is a str.
+        - contains a required 'display' key whose query_parameter is a str; and
+        - optionally contains a 'link' key whose query_parameter, if present, is a str.
 
         Any other keys in the dict are ignored.
-        Each dict yields exactly one Contact whose .display is the 'display' value.
-        Contact.link is set to the 'link' value only when the 'link' key is present.
+        Each dict yields exactly one Contact whose .display is the 'display' query_parameter.
+        Contact.link is set to the 'link' query_parameter only when the 'link' key is present.
 
         :param frontmatter_contacts: The raw list of contacts from the frontmatter.
         :return: One Contact per input dict.
-        :raises TypeError: If an element is not a dict, or if a 'display' or 'link' value is not a str.
+        :raises TypeError: If an element is not a dict, or if a 'display' or 'link' query_parameter is not a str.
         :raises KeyError: If a dict lacks the required 'display' key.
         """
         result: list[Contact] = []
@@ -331,7 +331,7 @@ class Resume(Transpilable):
         :return: The compiled LaTeX string.
         """
         arguments: dict[str, str] = {
-            "FONT_CHOICE": font.value,
+            "FONT_CHOICE": font.get_latex_import,
             "RESUME_TITLE": self.get_title_as_latex(),
             "RESUME_SUMMARY": self.get_summary_as_latex(),
             "RESUME_CONTACT_LIST": self.get_contact_list_as_latex(),

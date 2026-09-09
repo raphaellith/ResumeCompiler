@@ -10,7 +10,7 @@ import { ResizableHandle } from "./components/ResizableHandle/ResizableHandle";
 import { SettingsModal } from "./components/SettingsModal/SettingsModal";
 import { Toolbar } from "./components/Toolbar/Toolbar";
 import { getCompiledPdfEndpoint, getCompiledXmlEndpoint } from "./config/api";
-import { DEFAULT_FONT_OPTION } from "./config/font";
+import { fetchFontOptions, fetchDefaultFontOption, type FontOption } from "./config/font";
 import { useMarkdownDocument } from "./hooks/useMarkdownDocument";
 import { usePdfCompilation } from "./hooks/usePdfCompilation";
 import { useSaveMarkdownOnClose } from "./hooks/useSaveMarkdownOnClose";
@@ -210,17 +210,34 @@ function App() {
     markdown,
   });
 
-  const [fontQueryParam, setFontQueryParam] = useState(DEFAULT_FONT_OPTION.asQueryParam());
+  const [fontQueryParam, setFontQueryParam] = useState("");
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [backendReady, setBackendReady] = useState(false);
+  const [fontOptions, setFontOptions] = useState<FontOption[]>([]);
+  const [fontError, setFontError] = useState<string | null>(null);
+  const [fontsLoading, setFontsLoading] = useState(true);
 
   useEffect(() => {
-    getCompiledPdfEndpoint()
-      .then(() => setBackendReady(true))
-      .catch((error) => {
-        console.error("Backend failed to start:", error);
+    const init = async () => {
+      try {
+        await getCompiledPdfEndpoint();
+        setBackendReady(true);
+
+        const [options, defaultOpt] = await Promise.all([
+          fetchFontOptions(),
+          fetchDefaultFontOption(),
+        ]);
+        setFontOptions(options);
+        setFontQueryParam(defaultOpt.asQueryParam());
+      } catch (error) {
+        console.error("Backend init failed:", error);
         setBackendReady(false);
-      });
+        setFontError("Failed to load font options");
+      } finally {
+        setFontsLoading(false);
+      }
+    };
+    init();
   }, []);
 
   const handleOpenSettings = useCallback(() => {
@@ -357,6 +374,8 @@ function App() {
           onExport={handleExport}
           onExportXml={handleExportXml}
           backendReady={backendReady}
+          fontsLoading={fontsLoading}
+          fontError={fontError}
         />
 
         <SettingsModal
@@ -364,6 +383,9 @@ function App() {
           initialFontQueryParam={fontQueryParam}
           onSave={handleSaveFont}
           onClose={handleCloseSettings}
+          fontOptions={fontOptions}
+          fontsLoading={fontsLoading}
+          fontError={fontError}
         />
 
         <input
