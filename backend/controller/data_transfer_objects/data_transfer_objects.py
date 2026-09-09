@@ -11,3 +11,4 @@ class HealthResponse(BaseModel):
 
 class FontNamesResponse(BaseModel):
     names: list[str]
+    default: str

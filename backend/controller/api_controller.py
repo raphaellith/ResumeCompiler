@@ -12,7 +12,7 @@ from backend.controller.data_transfer_objects.data_transfer_objects import (
 )
 from backend.controller.utils import _get_error_response
 from backend.model.enums.font import Font
-from backend.service.font_name_list_service import get_valid_font_names
+from backend.service.font_name_list_service import get_valid_font_names, get_default_font_name
 from backend.service.markdown_to_pdf_bytes_compilation_service import get_pdf_bytes_from_markdown
 from backend.service.markdown_to_xml_string_compilation_service import get_resume_as_xml_from_markdown
 
@@ -33,7 +33,8 @@ def health_check() -> HealthResponse:
 @app.get("/font-names", response_model=FontNamesResponse)
 def list_all_valid_font_names() -> FontNamesResponse:
     return FontNamesResponse(
-        names=get_valid_font_names()
+        names=get_valid_font_names(),
+        default=get_default_font_name()
     )
 
 

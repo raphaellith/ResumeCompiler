@@ -45,3 +45,7 @@ class Font(Enum):
                 return font
 
         return cls.TIMES_NEW_ROMAN
+
+    @classmethod
+    def get_default_font(cls) -> Font:
+        return cls.TIMES_NEW_ROMAN
