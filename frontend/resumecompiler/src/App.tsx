@@ -15,7 +15,6 @@ import { useMarkdownDocument } from "./hooks/useMarkdownDocument";
 import { usePdfCompilation } from "./hooks/usePdfCompilation";
 import { useSaveMarkdownOnClose } from "./hooks/useSaveMarkdownOnClose";
 import { useXmlExport } from "./hooks/useXmlExport";
-import { stripExtension } from "./utils/path";
 import vars from "./styles/variables.module.scss";
 import styles from "./App.module.scss";
 
@@ -184,6 +183,10 @@ const theme = createTheme({
 const HANDLE_WIDTH = 12;
 const PANE_PADDING = 12;
 const MIN_PANE_WIDTH = 200;
+
+function stripExtension(filename: string): string {
+  return filename.replace(/\.[^/.]+$/, "");
+}
 
 function App() {
   const {
