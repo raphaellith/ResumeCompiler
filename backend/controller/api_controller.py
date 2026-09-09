@@ -30,7 +30,7 @@ def health_check() -> HealthResponse:
     return HealthResponse()
 
 
-@app.get("/font-names", response_class=Response)
+@app.get("/font-names", response_model=FontNamesResponse)
 def list_all_valid_font_names() -> FontNamesResponse:
     return FontNamesResponse(
         names=get_valid_font_names()
