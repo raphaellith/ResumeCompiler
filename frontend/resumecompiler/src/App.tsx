@@ -10,7 +10,7 @@ import { ResizableHandle } from "./components/ResizableHandle/ResizableHandle";
 import { SettingsModal } from "./components/SettingsModal/SettingsModal";
 import { Toolbar } from "./components/Toolbar/Toolbar";
 import { getCompiledPdfEndpoint, getCompiledXmlEndpoint } from "./config/api";
-import { DEFAULT_FONT } from "./config/font";
+import { DEFAULT_FONT_OPTION } from "./config/font";
 import { useMarkdownDocument } from "./hooks/useMarkdownDocument";
 import { usePdfCompilation } from "./hooks/usePdfCompilation";
 import { useSaveMarkdownOnClose } from "./hooks/useSaveMarkdownOnClose";
@@ -210,7 +210,7 @@ function App() {
     markdown,
   });
 
-  const [font, setFont] = useState(DEFAULT_FONT);
+  const [fontQueryParam, setFontQueryParam] = useState(DEFAULT_FONT_OPTION.asQueryParam());
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [backendReady, setBackendReady] = useState(false);
 
@@ -231,8 +231,8 @@ function App() {
     setIsSettingsOpen(false);
   }, []);
 
-  const handleSaveFont = useCallback((nextFont: string) => {
-    setFont(nextFont);
+  const handleSaveFont = useCallback((nextFontQueryParam: string) => {
+    setFontQueryParam(nextFontQueryParam);
     setIsSettingsOpen(false);
   }, []);
 
@@ -265,29 +265,29 @@ function App() {
   const handleOpenFile = useCallback(async () => {
     const result = await openFilePicker();
     if (result) {
-      await compilePdf(result.markdown, font);
+      await compilePdf(result.markdown, fontQueryParam);
     } else if (!isTauri()) {
       fileInputRef.current?.click();
     }
-  }, [openFilePicker, compilePdf, font]);
+  }, [openFilePicker, compilePdf, fontQueryParam]);
 
   const handleFileInputChange = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
       if (!file) return;
       const result = await loadFile(file);
-      await compilePdf(result.markdown, font);
+      await compilePdf(result.markdown, fontQueryParam);
       e.target.value = "";
     },
-    [loadFile, compilePdf, font]
+    [loadFile, compilePdf, fontQueryParam]
   );
 
   const handleCompile = useCallback(() => {
     if (!hasFile) {
       return;
     }
-    void compilePdf(markdown, font);
-  }, [compilePdf, hasFile, markdown, font]);
+    void compilePdf(markdown, fontQueryParam);
+  }, [compilePdf, hasFile, markdown, fontQueryParam]);
 
   const handleExport = useCallback(() => {
     if (!pdfBlob) {
@@ -361,7 +361,7 @@ function App() {
 
         <SettingsModal
           isOpen={isSettingsOpen}
-          initialFont={font}
+          initialFontQueryParam={fontQueryParam}
           onSave={handleSaveFont}
           onClose={handleCloseSettings}
         />
