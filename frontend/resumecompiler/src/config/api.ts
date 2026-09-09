@@ -68,3 +68,17 @@ export async function getCompiledXmlEndpoint(): Promise<string> {
   const base = await resolveApiBaseUrl();
   return `${base}/xml`;
 }
+
+export interface FontNamesResponse {
+  names: string[];
+  default: string;
+}
+
+export async function getFontNames(): Promise<FontNamesResponse> {
+  const base = await resolveApiBaseUrl();
+  const response = await fetch(`${base}/font-names`);
+  if (!response.ok) {
+    throw new Error("Failed to fetch font names");
+  }
+  return response.json();
+}

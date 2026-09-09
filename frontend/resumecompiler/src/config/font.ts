@@ -1,14 +1,6 @@
-const FONT_NAMES: string[] = [
-  "Times New Roman",
-  "Computer Modern",
-  "Fira Sans",
-  "Roboto",
-  "Noto Sans",
-  "Source Sans Pro",
-  "Cormorant Garamond",
-  "Charter"
-]
+import { getFontNames, type FontNamesResponse } from "./api";
 
+let cachedFontNames: FontNamesResponse | null = null;
 
 export class FontOption {
   readonly name: string;
@@ -18,14 +10,30 @@ export class FontOption {
   }
 
   asQueryParam(): string {
-    // Convert name from proper case to kebab case
-    return this.name
-      .trim()
-      .toLowerCase()
-      .replace(/\s+/g, '-');
+    return this.name.trim().toLowerCase().replace(/\s+/g, "-");
   }
 }
 
+async function ensureFontNamesLoaded(): Promise<FontNamesResponse> {
+  if (cachedFontNames) {
+    return cachedFontNames;
+  }
+  cachedFontNames = await getFontNames();
+  return cachedFontNames;
+}
 
-export const FONT_OPTIONS: FontOption[] = FONT_NAMES.map((name) => new FontOption(name))
-export const DEFAULT_FONT_OPTION: FontOption = FONT_OPTIONS[0];
+export async function fetchFontOptions(): Promise<FontOption[]> {
+  const response = await ensureFontNamesLoaded();
+  return response.names.map((name) => new FontOption(name));
+}
+
+export async function fetchDefaultFontOption(): Promise<FontOption> {
+  const response = await ensureFontNamesLoaded();
+  const defaultName = response.default;
+  const options = await fetchFontOptions();
+  const defaultOption = options.find((opt) => opt.name === defaultName);
+  if (!defaultOption) {
+    throw new Error(`Default font "${defaultName}" not found in font options`);
+  }
+  return defaultOption;
+}
