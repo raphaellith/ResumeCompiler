@@ -14,7 +14,7 @@ export class FontOption {
   }
 }
 
-async function ensureFontNamesLoaded(): Promise<FontNamesResponse> {
+async function resolveFontNames(): Promise<FontNamesResponse> {
   if (cachedFontNames) {
     return cachedFontNames;
   }
@@ -23,12 +23,12 @@ async function ensureFontNamesLoaded(): Promise<FontNamesResponse> {
 }
 
 export async function fetchFontOptions(): Promise<FontOption[]> {
-  const response = await ensureFontNamesLoaded();
+  const response = await resolveFontNames();
   return response.names.map((name) => new FontOption(name));
 }
 
 export async function fetchDefaultFontOption(): Promise<FontOption> {
-  const response = await ensureFontNamesLoaded();
+  const response = await resolveFontNames();
   const defaultName = response.default;
   const options = await fetchFontOptions();
   const defaultOption = options.find((opt) => opt.name === defaultName);
