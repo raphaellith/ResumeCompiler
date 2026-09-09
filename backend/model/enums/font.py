@@ -6,7 +6,7 @@ from typing import Optional
 
 
 class Font(Enum):
-    COMPUTER_MODERN = ""
+    COMPUTER_MODERN = "Computer Modern"
     TIMES_NEW_ROMAN = "Times New Roman"
     FIRA_SANS = "Fira Sans"
     ROBOTO = "Roboto"
