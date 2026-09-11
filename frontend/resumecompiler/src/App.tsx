@@ -18,6 +18,10 @@ import { useXmlExport } from "./hooks/useXmlExport";
 import vars from "./styles/variables.module.scss";
 import styles from "./App.module.scss";
 
+const HANDLE_WIDTH = 12;
+const PANE_PADDING = 12;
+const MIN_PANE_WIDTH = 200;
+
 const theme = createTheme({
   typography: {
     fontFamily: vars.fontFamily,
@@ -179,10 +183,6 @@ const theme = createTheme({
     },
   },
 });
-
-const HANDLE_WIDTH = 12;
-const PANE_PADDING = 12;
-const MIN_PANE_WIDTH = 200;
 
 function stripExtension(filename: string): string {
   return filename.replace(/\.[^/.]+$/, "");
