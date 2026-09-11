@@ -1,8 +1,6 @@
 import { invoke } from "@tauri-apps/api/core";
 import { isTauri } from "@tauri-apps/api/core";
 
-const DEFAULT_API_BASE_URL = "http://localhost:8000";
-
 let cachedApiBaseUrl: string | null = null;
 let backendHealthIsVerified = false;
 
@@ -11,10 +9,8 @@ async function waitForBackendReady(baseUrl: string): Promise<void> {
 
   let delay = 50;
   const maxDelay = 500;
-  const timeout = 10000;
-  const startTime = Date.now();
 
-  while (Date.now() - startTime < timeout) {
+  while (true) {
     try {
       const response = await fetch(healthUrl, { method: "GET" });
       if (response.ok) {
@@ -28,7 +24,6 @@ async function waitForBackendReady(baseUrl: string): Promise<void> {
     await new Promise((resolve) => setTimeout(resolve, delay));
     delay = Math.min(delay * 2, maxDelay);
   }
-  throw new Error("Backend failed to start within timeout");
 }
 
 async function resolveApiBaseUrl(): Promise<string> {
@@ -36,27 +31,30 @@ async function resolveApiBaseUrl(): Promise<string> {
     return cachedApiBaseUrl;
   }
 
-  if (isTauri()) {
-    try {
-      const port = await invoke<number>("get_backend_port");
-      if (port > 0) {
-        const url = `http://127.0.0.1:${port}`;
-        if (!backendHealthIsVerified) {
-          await waitForBackendReady(url);
-        }
-        cachedApiBaseUrl = url;
-        return cachedApiBaseUrl;
-      }
-    } catch {
-      // get_backend_port not available, fall through to default
-    }
+  if (!isTauri()) {
+    throw new Error("Backend API is only available in Tauri mode");
   }
 
-  const resolved = (
-    import.meta.env.VITE_RESUME_COMPILER_API_BASE_URL ?? DEFAULT_API_BASE_URL
-  ).replace(/\/+$/, "");
-  cachedApiBaseUrl = resolved;
-  return resolved;
+  let port: number;
+  try {
+    port = await invoke<number>("get_backend_port");
+  } catch (error) {
+    throw new Error(
+      `Failed to retrieve backend port from Tauri: ${error instanceof Error ? error.message : String(error)}`
+    );
+  }
+
+  if (!Number.isInteger(port) || port <= 0) {
+    throw new Error(`Invalid backend port received from Tauri: ${port}`);
+  }
+
+  const url = `http://127.0.0.1:${port}`;
+  if (!backendHealthIsVerified) {
+    await waitForBackendReady(url);
+  }
+
+  cachedApiBaseUrl = url;
+  return cachedApiBaseUrl;
 }
 
 export async function getCompiledPdfEndpoint(): Promise<string> {

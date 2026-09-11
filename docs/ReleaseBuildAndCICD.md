@@ -26,13 +26,11 @@ application package. LaTeX (`pdflatex`) is **not** bundled — detected at runti
 - **Python** (`backend/run.py`): Command-line entrypoint that parses `--port`
   and starts `uvicorn` on that port.
 - **Frontend** (`src/config/api.ts`): Calls `invoke("get_backend_port")` to
-  retrieve the dynamic port in Tauri mode; falls back to
-  `VITE_RESUME_COMPILER_API_BASE_URL` (or `http://localhost:8000`) in dev/browser.
+  retrieve the dynamic port in Tauri mode, then waits for `GET /health` to
+  return `200 OK` before using other backend endpoints.
 - **Dev mode**: The sidecar binary won't exist at `src-tauri/binaries/` during
-  development. The Rust setup gracefully handles this: `sidecar()` returns an
-  error → `backend_port` set to `0` → frontend falls back to the default URL.
-  Developers continue to run `uvicorn backend.controller.api_controller:app`
-  manually as before.
+  development unless built first. The frontend no longer falls back to a fixed
+  backend URL and requires a valid dynamic sidecar port.
 
 ## LaTeX Detection
 
