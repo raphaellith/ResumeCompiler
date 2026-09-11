@@ -8,7 +8,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "tauri": "tauri",
-    "tauri:dev": "bash ../../scripts/build_sidecar.sh && tauri dev"
+    "build-sidecar": "bash ../../scripts/build_sidecar.sh"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

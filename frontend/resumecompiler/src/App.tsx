@@ -232,7 +232,11 @@ function App() {
       } catch (error) {
         console.error("Backend init failed:", error);
         setBackendReady(false);
-        setFontError("Failed to load font options");
+        setFontError(
+          error instanceof Error
+            ? `Backend unavailable: ${error.message}`
+            : "Backend unavailable. Ensure the Tauri sidecar has started."
+        );
       } finally {
         setFontsLoading(false);
       }

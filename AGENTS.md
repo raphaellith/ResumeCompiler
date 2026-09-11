@@ -6,8 +6,8 @@ Tauri 2 desktop shell → React 19 SPA (Vite 7, port 1420 strict) ↔ Python Fas
 
 ```sh
 pip install -r requirements.txt
-uvicorn backend.controller.api_controller:app          # default :8000 (what frontend expects)
-python backend/run.py                                  # default :8001 (used by Tauri sidecar)
+uvicorn backend.controller.api_controller:app          # default :8000
+python backend/run.py                                  # default :8000 (Tauri sidecar passes random --port)
 ```
 
 - **Must run from repo root** (`backend.*` absolute imports). `venv/` exists at root.
@@ -27,7 +27,7 @@ npm run tauri dev   # Tauri desktop (dev, runs Vite + sidecar)
 npm run tauri build # Tauri desktop (release)
 ```
 
-- `VITE_RESUME_COMPILER_API_BASE_URL` overrides default backend URL (`http://localhost:8000`); resolved in `src/config/api.ts`.
+- Frontend backend routing is Tauri-only and dynamic: it retrieves `get_backend_port` and waits for `GET /health` before using other API endpoints (`src/config/api.ts`).
 - Tauri CSP disabled (`"csp": null` in `tauri.conf.json`). Offline PDF preview requires backend; no mock script.
 - Frontend `.gitignore` covers Node/IDE/OS artifacts separately from root. Root `.gitignore` only ignores `.pypirc`.
 
