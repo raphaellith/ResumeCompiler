@@ -221,12 +221,12 @@ function App() {
         await getCompiledPdfEndpoint();
         setBackendReady(true);
 
-        const [options, defaultOpt] = await Promise.all([
+        const [fontOptions, defaultFontOption] = await Promise.all([
           fetchFontOptions(),
           fetchDefaultFontOption(),
         ]);
-        setFontOptions(options);
-        setFontQueryParam(defaultOpt.asQueryParam());
+        setFontOptions(fontOptions);
+        setFontQueryParam(defaultFontOption.asQueryParam());
       } catch (error) {
         console.error("Backend init failed:", error);
         setBackendReady(false);
