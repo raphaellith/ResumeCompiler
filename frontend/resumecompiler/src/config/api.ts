@@ -7,7 +7,7 @@ export interface FontNamesResponse {
 }
 
 export class ApiClient {
-  static cachedApiBaseUrl: string | null = null;
+  static cachedBaseUrl: string | null = null;
   static backendHealthIsVerified = false;
 
   static async waitForBackendReady(baseUrl: string): Promise<void> {
@@ -33,8 +33,8 @@ export class ApiClient {
   }
 
   static async resolveApiBaseUrl(): Promise<string> {
-    if (this.cachedApiBaseUrl) {
-      return this.cachedApiBaseUrl;
+    if (this.cachedBaseUrl) {
+      return this.cachedBaseUrl;
     }
 
     if (!isTauri()) {
@@ -59,8 +59,8 @@ export class ApiClient {
       await this.waitForBackendReady(url);
     }
 
-    this.cachedApiBaseUrl = url;
-    return this.cachedApiBaseUrl;
+    this.cachedBaseUrl = url;
+    return this.cachedBaseUrl;
   }
 
   static async getCompiledPdfEndpoint(): Promise<string> {
