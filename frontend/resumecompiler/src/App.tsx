@@ -199,11 +199,9 @@ function App() {
     openFilePicker,
   } = useMarkdownDocument();
 
-  const { pdfUrl, pdfBlob, isCompiling, compileError, compilePdf } =
-    usePdfCompilation(getCompiledPdfEndpoint);
+  const { pdfUrl, pdfBlob, isCompiling, compileError, compilePdf } = usePdfCompilation(getCompiledPdfEndpoint);
 
-  const { exportXml } =
-    useXmlExport(getCompiledXmlEndpoint);
+  const { exportXml } = useXmlExport(getCompiledXmlEndpoint);
 
   useSaveMarkdownOnClose({
     filePath,
