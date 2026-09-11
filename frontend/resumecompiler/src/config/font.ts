@@ -1,4 +1,4 @@
-import { getFontNames, type FontNamesResponse } from "./api";
+import { ApiClient, type FontNamesResponse } from "./api";
 
 let cachedFontNames: FontNamesResponse | null = null;
 
@@ -18,7 +18,7 @@ async function resolveFontNames(): Promise<FontNamesResponse> {
   if (cachedFontNames) {
     return cachedFontNames;
   }
-  cachedFontNames = await getFontNames();
+  cachedFontNames = await ApiClient.getFontNames();
   return cachedFontNames;
 }
 

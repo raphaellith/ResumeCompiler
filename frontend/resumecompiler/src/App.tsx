@@ -9,7 +9,7 @@ import { PdfPreviewPane } from "./components/PdfPreviewPane/PdfPreviewPane";
 import { ResizableHandle } from "./components/ResizableHandle/ResizableHandle";
 import { SettingsModal } from "./components/SettingsModal/SettingsModal";
 import { Toolbar } from "./components/Toolbar/Toolbar";
-import { getCompiledPdfEndpoint, getCompiledXmlEndpoint } from "./config/api";
+import { ApiClient } from "./config/api";
 import { fetchFontOptions, fetchDefaultFontOption, type FontOption } from "./config/font";
 import { useMarkdownDocument } from "./hooks/useMarkdownDocument";
 import { usePdfCompilation } from "./hooks/usePdfCompilation";
@@ -199,9 +199,9 @@ function App() {
     openFilePicker,
   } = useMarkdownDocument();
 
-  const { pdfUrl, pdfBlob, isCompiling, compileError, compilePdf } = usePdfCompilation(getCompiledPdfEndpoint);
+  const { pdfUrl, pdfBlob, isCompiling, compileError, compilePdf } = usePdfCompilation(ApiClient.getCompiledPdfEndpoint);
 
-  const { exportXml } = useXmlExport(getCompiledXmlEndpoint);
+  const { exportXml } = useXmlExport(ApiClient.getCompiledXmlEndpoint);
 
   useSaveMarkdownOnClose({
     filePath,
@@ -218,7 +218,7 @@ function App() {
   useEffect(() => {
     const init = async () => {
       try {
-        await getCompiledPdfEndpoint();
+        await ApiClient.getCompiledPdfEndpoint();
         setBackendReady(true);
 
         const [fontOptions, defaultFontOption] = await Promise.all([
