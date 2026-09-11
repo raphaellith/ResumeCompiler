@@ -10,28 +10,6 @@ export class ApiClient {
   static cachedBaseUrl: string | null = null;
   static backendHealthIsVerified = false;
 
-  static async waitForBackendReady(baseUrl: string): Promise<void> {
-    const healthUrl = `${baseUrl}/health`;
-
-    let delay = 50;
-    const maxDelay = 500;
-
-    while (true) {
-      try {
-        const response = await fetch(healthUrl, { method: "GET" });
-        if (response.ok) {
-          this.backendHealthIsVerified = true;
-          return;
-        }
-      } catch {
-        // Ignore errors, keep polling
-      }
-
-      await new Promise((resolve) => setTimeout(resolve, delay));
-      delay = Math.min(delay * 2, maxDelay);
-    }
-  }
-
   static async resolveApiBaseUrl(): Promise<string> {
     if (this.cachedBaseUrl) {
       return this.cachedBaseUrl;
@@ -61,6 +39,28 @@ export class ApiClient {
 
     this.cachedBaseUrl = url;
     return this.cachedBaseUrl;
+  }
+
+  static async waitForBackendReady(baseUrl: string): Promise<void> {
+    const healthUrl = `${baseUrl}/health`;
+
+    let delay = 50;
+    const maxDelay = 500;
+
+    while (true) {
+      try {
+        const response = await fetch(healthUrl, { method: "GET" });
+        if (response.ok) {
+          this.backendHealthIsVerified = true;
+          return;
+        }
+      } catch {
+        // Ignore errors, keep polling
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, delay));
+      delay = Math.min(delay * 2, maxDelay);
+    }
   }
 
   static async getCompiledPdfEndpoint(): Promise<string> {
