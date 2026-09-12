@@ -25,7 +25,7 @@ application package. LaTeX (`pdflatex`) is **not** bundled — detected at runti
   handle; on `Drop` the child is killed.
 - **Python** (`backend/run.py`): Command-line entrypoint that parses `--port`
   and starts `uvicorn` on that port.
-- **Frontend** (`src/config/api.ts`): Calls `invoke("get_backend_port")` to
+- **Frontend** (`src/config/apiClient.ts`): Calls `invoke("get_backend_port")` to
   retrieve the dynamic port in Tauri mode, then waits for `GET /health` to
   return `200 OK` before using other backend endpoints.
 - **Dev mode**: The sidecar binary won't exist at `src-tauri/binaries/` during
@@ -112,7 +112,7 @@ downloads all artifacts and creates a GitHub Release with generated release note
 | `src-tauri/src/lib.rs` | Sidecar spawn, state, `get_backend_port` command |
 | `src-tauri/tauri.conf.json` | `externalBin`, macOS signing skip |
 | `src-tauri/capabilities/default.json` | Shell permissions |
-| `src/config/api.ts` | Dynamic endpoint resolution |
+| `src/config/apiClient.ts` | Dynamic endpoint resolution |
 | `src/hooks/usePdfCompilation.ts` | LaTeX error detection from 502 response |
 | `src/components/CompilationErrorMessage/` | LaTeX install instructions UI |
 | `.github/workflows/release.yml` | CI/CD pipeline |

@@ -27,7 +27,7 @@ npm run tauri dev   # Tauri desktop (dev, runs Vite + sidecar)
 npm run tauri build # Tauri desktop (release)
 ```
 
-- Frontend backend routing is Tauri-only and dynamic: it retrieves `get_backend_port` and waits for `GET /health` before using other API endpoints (`src/config/api.ts`).
+- Frontend backend routing is Tauri-only and dynamic: it retrieves `get_backend_port` and waits for `GET /health` before using other API endpoints (`src/config/apiClient.ts`).
 - Tauri CSP disabled (`"csp": null` in `tauri.conf.json`). Offline PDF preview requires backend; no mock script.
 - Frontend `.gitignore` covers Node/IDE/OS artifacts separately from root. Root `.gitignore` only ignores `.pypirc`.
 

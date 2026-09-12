@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { ApiClient } from "../config/api.ts";
+import { ApiClient } from "../config/apiClient.ts";
 
 export type PdfCompilationState = {
   pdfUrl: string | null;
