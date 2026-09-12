@@ -1,4 +1,9 @@
-import { ApiClient, type FontNamesResponse } from "./api";
+import { ApiClient } from "./api";
+
+interface FontNamesResponse {
+  names: string[];
+  default: string;
+}
 
 let cachedFontNames: FontNamesResponse | null = null;
 
@@ -18,7 +23,8 @@ async function resolveFontNames(): Promise<FontNamesResponse> {
   if (cachedFontNames) {
     return cachedFontNames;
   }
-  cachedFontNames = await ApiClient.getFontNames();
+  const response = await ApiClient.getResponseFromGetRequestToFontNamesEndpoint();
+  cachedFontNames = await response.json() as FontNamesResponse;
   return cachedFontNames;
 }
 

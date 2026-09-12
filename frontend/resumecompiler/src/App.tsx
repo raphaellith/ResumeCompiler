@@ -199,9 +199,8 @@ function App() {
     openFilePicker,
   } = useMarkdownDocument();
 
-  const { pdfUrl, pdfBlob, isCompiling, compileError, compilePdf } = usePdfCompilation(ApiClient.getCompiledPdfEndpoint);
-
-  const { exportXml } = useXmlExport(ApiClient.getCompiledXmlEndpoint);
+  const { pdfUrl, pdfBlob, isCompiling, compileError, compilePdf } = usePdfCompilation();
+  const { exportXml } = useXmlExport();
 
   useSaveMarkdownOnClose({
     filePath,
@@ -218,7 +217,7 @@ function App() {
   useEffect(() => {
     const init = async () => {
       try {
-        await ApiClient.getCompiledPdfEndpoint();
+        await ApiClient.ensureBackendIsReady();
         setBackendReady(true);
 
         const [fontOptions, defaultFontOption] = await Promise.all([

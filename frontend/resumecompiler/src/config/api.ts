@@ -1,14 +1,9 @@
 import { invoke } from "@tauri-apps/api/core";
 import { isTauri } from "@tauri-apps/api/core";
 
-export interface FontNamesResponse {
-  names: string[];
-  default: string;
-}
-
 export class ApiClient {
   static cachedBaseUrl: string | null = null;
-  static backendHealthIsVerified = false;
+  static backendIsReady = false;
 
   static async resolveApiBaseUrl(): Promise<string> {
     if (this.cachedBaseUrl) {
@@ -32,17 +27,31 @@ export class ApiClient {
       throw new Error(`Invalid backend port received from Tauri: ${port}`);
     }
 
-    const url = `http://127.0.0.1:${port}`;
-    if (!this.backendHealthIsVerified) {
-      await this.waitForBackendReady(url);
-    }
-
-    this.cachedBaseUrl = url;
+    this.cachedBaseUrl = `http://127.0.0.1:${port}`;
     return this.cachedBaseUrl;
   }
 
-  static async waitForBackendReady(baseUrl: string): Promise<void> {
-    const healthUrl = `${baseUrl}/health`;
+  static async getEndpoint(path: string, params?: Record<string, string>): Promise<string> {
+    const base = await this.resolveApiBaseUrl();
+    const endpoint = `${base}/${path}`;
+    if (!params) {
+      return endpoint;
+    }
+
+    const searchParams = new URLSearchParams(params).toString();
+    if (!searchParams) {
+      return endpoint;
+    }
+
+    return `${endpoint}?${searchParams}`;
+  }
+
+  static async ensureBackendIsReady(): Promise<void> {
+    if (this.backendIsReady) {
+      return;
+    }
+
+    const healthUrl = await this.getEndpoint("health");
 
     let delay = 50;
     const maxDelay = 500;
@@ -51,7 +60,7 @@ export class ApiClient {
       try {
         const response = await fetch(healthUrl, { method: "GET" });
         if (response.ok) {
-          this.backendHealthIsVerified = true;
+          this.backendIsReady = true;
           return;
         }
       } catch {
@@ -63,22 +72,52 @@ export class ApiClient {
     }
   }
 
-  static async getCompiledPdfEndpoint(): Promise<string> {
-    const base = await this.resolveApiBaseUrl();
-    return `${base}/pdf`;
-  }
+  static async getResponseFromEndpoint(endpointPath: string, requestInit?: RequestInit, queryParams?: Record<string, string>): Promise<Response> {
+    await this.ensureBackendIsReady();
+    const endpoint = await this.getEndpoint(endpointPath, queryParams);
+    const response = await fetch(endpoint, requestInit);
 
-  static async getCompiledXmlEndpoint(): Promise<string> {
-    const base = await this.resolveApiBaseUrl();
-    return `${base}/xml`;
-  }
-
-  static async getFontNames(): Promise<FontNamesResponse> {
-    const base = await this.resolveApiBaseUrl();
-    const response = await fetch(`${base}/font-names`);
     if (!response.ok) {
-      throw new Error("Failed to fetch font names");
+      const errorBody = await response.json().catch(() => null);
+      const errorType = errorBody?.error || "UnknownError";
+      const errorMessage = errorBody?.message || `Backend returned ${response.status}.`;
+      throw new Error(`${errorType}: ${errorMessage}`);
     }
-    return response.json();
+
+    return response;
+  }
+
+  static async getResponseFromPostRequestToPdfEndpoint(markdown: string, font?: string): Promise<Response> {
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/pdf",
+      },
+      body: JSON.stringify({ markdown }),
+    };
+
+    return this.getResponseFromEndpoint(
+      "pdf",
+      requestOptions,
+      font ? { font } : undefined
+    );
+  }
+
+  static async getResponseFromPostRequestToXmlEndpoint(markdown: string): Promise<Response> {
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/xml",
+      },
+      body: JSON.stringify({ markdown }),
+    };
+
+    return this.getResponseFromEndpoint("pdf", requestOptions);
+  }
+
+  static async getResponseFromGetRequestToFontNamesEndpoint(): Promise<Response> {
+    return this.getResponseFromEndpoint("font-names")
   }
 }

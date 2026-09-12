@@ -1,5 +1,5 @@
 import {useCallback, useState} from "react";
-import {makeCompilationRequest} from "./utils/makeCompilationRequest.ts";
+import { ApiClient } from "../config/api.ts";
 
 export type UseXmlExportResult = {
   isExportingXml: boolean;
@@ -7,9 +7,7 @@ export type UseXmlExportResult = {
   exportXml: (markdown: string) => Promise<string>;
 };
 
-export function useXmlExport(
-  getXmlEndpoint: () => Promise<string>
-): UseXmlExportResult {
+export function useXmlExport(): UseXmlExportResult {
   const [isExportingXml, setIsExportingXml] = useState(false);
   const [xmlError, setXmlError] = useState<string | null>(null);
 
@@ -19,12 +17,7 @@ export function useXmlExport(
       setXmlError(null);
 
       try {
-        const xmlEndpoint = await getXmlEndpoint();
-        const response = await makeCompilationRequest({
-          endpoint: xmlEndpoint,
-          body: {markdown},
-          acceptHeader: "application/xml",
-        });
+        const response = await ApiClient.getResponseFromPostRequestToXmlEndpoint(markdown);
         return response.text();
       } catch (error) {
         const message = error instanceof Error ? error.message : "Failed to export XML.";
@@ -34,7 +27,7 @@ export function useXmlExport(
         setIsExportingXml(false);
       }
     },
-    [getXmlEndpoint]
+    []
   );
 
   return { isExportingXml, xmlError, exportXml };

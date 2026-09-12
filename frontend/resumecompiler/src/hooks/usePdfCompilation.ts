@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { makeCompilationRequest } from "./utils/makeCompilationRequest.ts";
+import { ApiClient } from "../config/api.ts";
 
 export type PdfCompilationState = {
   pdfUrl: string | null;
@@ -13,9 +13,7 @@ export type UsePdfCompilationResult = PdfCompilationState & {
   compilePdf: (source: string, fontQueryParam?: string) => Promise<void>;
 };
 
-export function usePdfCompilation(
-  getCompileEndpoint: () => Promise<string>
-): UsePdfCompilationResult {
+export function usePdfCompilation(): UsePdfCompilationResult {
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [pdfBlob, setPdfBlob] = useState<Blob | null>(null);
   const [isCompiling, setIsCompiling] = useState(false);
@@ -23,18 +21,12 @@ export function usePdfCompilation(
   const [compileError, setCompileError] = useState<string | null>(null);
 
   const compilePdf = useCallback(
-    async (source: string, fontQueryParam?: string) => {
+    async (markdown: string, fontQueryParam?: string) => {
       setIsCompiling(true);
       setCompileError(null);
 
       try {
-        const baseEndpoint = await getCompileEndpoint();
-        const response = await makeCompilationRequest({
-          endpoint: baseEndpoint,
-          body: { markdown: source },
-          acceptHeader: "application/pdf",
-          queryParams: fontQueryParam ? { font: fontQueryParam } : undefined,
-        });
+        const response = await ApiClient.getResponseFromPostRequestToPdfEndpoint(markdown, fontQueryParam);
 
         const nextBlob = await response.blob();
         const nextUrl = URL.createObjectURL(nextBlob);
@@ -55,7 +47,7 @@ export function usePdfCompilation(
         setIsCompiling(false);
       }
     },
-    [getCompileEndpoint]
+    []
   );
 
   useEffect(() => {
