@@ -2,8 +2,8 @@ import { invoke } from "@tauri-apps/api/core";
 import { isTauri } from "@tauri-apps/api/core";
 
 export class ApiClient {
-  static cachedBaseUrl: string | null = null;
-  static backendIsReady = false;
+  private static cachedBaseUrl: string | null = null;
+  private static backendIsReady = false;
 
   private static async resolveApiBaseUrl(): Promise<string> {
     if (this.cachedBaseUrl) {
