@@ -1,4 +1,4 @@
-import { ApiClient } from "./apiClient.ts";
+import { ApiClient } from "../client/apiClient.ts";
 
 export class FontOption {
   readonly name: string;

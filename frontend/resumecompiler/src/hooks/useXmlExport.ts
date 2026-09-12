@@ -1,5 +1,5 @@
 import {useCallback, useState} from "react";
-import { ApiClient } from "../config/apiClient.ts";
+import { ApiClient } from "../client/apiClient.ts";
 
 export type UseXmlExportResult = {
   isExportingXml: boolean;

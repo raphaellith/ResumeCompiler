@@ -6,7 +6,7 @@ import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import { type FontOption } from "../../config/font";
+import { type FontOption } from "../../services/fontService.ts";
 import { SettingRow } from "../SettingRow/SettingRow";
 import vars from "../../styles/variables.module.scss";
 

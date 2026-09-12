@@ -100,7 +100,7 @@ This document describes the functional behaviour of the Résumé Compiler fronte
 
 2. It contains a single font selector control: a labelled dropdown with one option per supported font.
 
-3. The available font options are defined in `src/config/font.ts` and include the following.
+3. The available font options are defined in `src/config/fontService.ts` and include the following.
    - Times New Roman
    - Computer Modern
    - Fira Sans
