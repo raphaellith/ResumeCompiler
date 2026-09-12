@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { ApiClient } from "../client/apiClient.ts";
 
 export type PdfCompilationState = {
   pdfUrl: string | null;
@@ -9,12 +10,10 @@ export type PdfCompilationState = {
 };
 
 export type UsePdfCompilationResult = PdfCompilationState & {
-  compilePdf: (source: string, font?: string) => Promise<void>;
+  compilePdf: (source: string, fontQueryParam?: string) => Promise<void>;
 };
 
-export function usePdfCompilation(
-  getCompileEndpoint: () => Promise<string>
-): UsePdfCompilationResult {
+export function usePdfCompilation(): UsePdfCompilationResult {
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [pdfBlob, setPdfBlob] = useState<Blob | null>(null);
   const [isCompiling, setIsCompiling] = useState(false);
@@ -22,33 +21,12 @@ export function usePdfCompilation(
   const [compileError, setCompileError] = useState<string | null>(null);
 
   const compilePdf = useCallback(
-    async (source: string, font?: string) => {
+    async (markdown: string, fontQueryParam?: string) => {
       setIsCompiling(true);
       setCompileError(null);
 
-      const baseEndpoint = await getCompileEndpoint();
-      const url = font
-        ? `${baseEndpoint}?font=${encodeURIComponent(font)}`
-        : baseEndpoint;
-
       try {
-        const response = await fetch(url, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/pdf",
-          },
-          body: JSON.stringify({ markdown: source }),
-        });
-
-        if (!response.ok) {
-          const errorBody = await response.json().catch(() => null);
-          if (errorBody?.error === "pdflatex_not_found") {
-            throw new Error("LATEX_NOT_FOUND");
-          }
-          const errorText = errorBody?.message || `Backend returned ${response.status}.`;
-          throw new Error(errorText);
-        }
+        const response = await ApiClient.getResponseFromPostRequestToPdfEndpoint(markdown, fontQueryParam);
 
         const nextBlob = await response.blob();
         const nextUrl = URL.createObjectURL(nextBlob);
@@ -69,7 +47,7 @@ export function usePdfCompilation(
         setIsCompiling(false);
       }
     },
-    [getCompileEndpoint]
+    []
   );
 
   useEffect(() => {

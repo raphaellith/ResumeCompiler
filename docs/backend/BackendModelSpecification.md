@@ -42,7 +42,7 @@ This document describes the model layer of the Résumé Compiler backend (`backe
 
 ### 2B. LaTeX generation
 
-1. The preamble template is read, the `% FONT CHOICE GOES HERE` placeholder is substituted with the chosen font's LaTeX package command, then each component's LaTeX output is appended inside a `document` environment.
+1. The preamble template is read, the `%[[FONT_CHOICE]]%` placeholder is substituted with the chosen font's LaTeX package command, then each component's LaTeX output is appended inside a `document` environment.
 
 
 ### 2C. XML generation
@@ -218,14 +218,14 @@ This document describes the model layer of the Résumé Compiler backend (`backe
 
 ## 16. Resources
 
-### 16A. preamble.tex
+### 16A. template.tex
 
-1. `preamble.tex` is a LaTeX preamble template loaded at compile time.
+1. `template.tex` is a LaTeX preamble template loaded at compile time.
 
-2. It contains a placeholder `% FONT CHOICE GOES HERE` which is replaced with the `font.value` string from the selected `Font` enum member.
+2. It contains a placeholder `%[[FONT_CHOICE]]%` which is replaced with the `font.value` string from the selected `Font` enum member.
 
 3. The template declares:
-   - Document class: `\documentclass[letterpaper, 11pt]{article}`.
+   - Document class: `\documentclass[letterpaper, 10pt]{article}`.
    - Packages: `latexsym`, `fullpage`, `titlesec`, `marvosym`, `color`, `verbatim`, `enumitem`, `hyperref`, `fancyhdr`, `babel`, `tabularx`.
    - ATS compliance: `\pdfgentounicode=1`.
    - Page style: `fancy` with empty headers and footers.

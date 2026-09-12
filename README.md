@@ -86,27 +86,6 @@ cd frontend/resumecompiler
 npm install && npm run tauri dev
 ```
 
-### Web development (browser only)
-
-1. Ensure you have these prerequisites installed:
-   - Python 3.12+
-   - Node.js 20+
-   - npm
-
-2. Start two terminal sessions from the repository root:
-
-```sh
-# Terminal 1: backend API server
-uvicorn backend.controller.api_controller:app
-```
-
-```sh
-# Terminal 2: frontend dev server
-cd frontend/resumecompiler
-npm run dev
-```
-
-
 ## Documentation
 
 Refer to the [`docs/`](docs/) directory for detailed design guides and documentation. The repository also includes [`AGENTS.md`](AGENTS.md) with project conventions for AI-assisted development.

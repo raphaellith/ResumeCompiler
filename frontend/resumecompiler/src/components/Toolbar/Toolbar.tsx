@@ -1,8 +1,9 @@
-import { useState } from "react";
-import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
+import { SelectFileButton } from "./SelectFileButton";
+import { BackendStatusThrobber } from "./BackendStatusThrobber";
+import { CompileButton } from "./CompileButton";
+import { SettingsButton } from "./SettingsButton";
+import { ExportDropdown } from "./ExportDropdown";
 import styles from "./Toolbar.module.scss";
 
 export type ToolbarProps = {
@@ -15,6 +16,9 @@ export type ToolbarProps = {
   onSettings: () => void;
   onExport: () => void;
   onExportXml: () => void;
+  backendReady: boolean;
+  fontsLoading: boolean;
+  fontError: string | null;
 };
 
 export function Toolbar({
@@ -27,74 +31,33 @@ export function Toolbar({
   onSettings,
   onExport,
   onExportXml,
+  backendReady,
+  fontsLoading,
+  fontError,
 }: ToolbarProps) {
-  const [exportAnchorEl, setExportAnchorEl] = useState<HTMLElement | null>(null);
-  const exportOpen = Boolean(exportAnchorEl);
-
-  const handleExportClick = (event: React.MouseEvent<HTMLElement>) => {
-    setExportAnchorEl(event.currentTarget);
-  };
-
-  const handleExportClose = () => {
-    setExportAnchorEl(null);
-  };
+  const compileDisabled = !backendReady || !hasFile || isCompiling;
+  const exportDisabled = !backendReady || !canExport;
+  const exportXmlDisabled = !backendReady || !canExportXml;
+  const settingsDisabled = fontsLoading || fontError !== null;
 
   return (
     <header className={styles.toolbar}>
-      <div className={styles.actions}>
-        <Button variant="contained" onClick={onOpenFile}>
-          Select File
-        </Button>
-      </div>
+      <SelectFileButton onClick={onOpenFile} />
 
       <div className={styles.actions}>
+        <BackendStatusThrobber backendReady={backendReady} />
+
         <ButtonGroup variant="contained">
-          <Button
-            onClick={onCompile}
-            disabled={!hasFile || isCompiling}
-          >
-            {isCompiling ? "Compiling..." : "Compile"}
-          </Button>
-          <Button onClick={onSettings} aria-label="Settings">
-            <span className="material-symbols-outlined">settings</span>
-          </Button>
+          <CompileButton disabled={compileDisabled} onClick={onCompile} />
+          <SettingsButton onClick={onSettings} disabled={settingsDisabled} />
         </ButtonGroup>
 
-        <Button
-          variant="contained"
-          onClick={handleExportClick}
-          disabled={!canExport}
-        >
-          Export <span className="material-symbols-outlined">arrow_drop_down</span>
-        </Button>
-
-        <Menu
-          anchorEl={exportAnchorEl}
-          open={exportOpen}
-          onClose={handleExportClose}
-          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-          transformOrigin={{ vertical: "top", horizontal: "right" }}
-        >
-          <MenuItem
-            onClick={() => {
-              onExport();
-              handleExportClose();
-            }}
-            disabled={!canExport}
-            sx={{ fontWeight: 800 }}
-          >
-            Export PDF
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              onExportXml();
-              handleExportClose();
-            }}
-            disabled={!canExportXml}
-          >
-            Export XML
-          </MenuItem>
-        </Menu>
+        <ExportDropdown
+          exportDisabled={exportDisabled}
+          exportXmlDisabled={exportXmlDisabled}
+          onExport={onExport}
+          onExportXml={onExportXml}
+        />
       </div>
     </header>
   );

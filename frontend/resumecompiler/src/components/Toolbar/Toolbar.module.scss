@@ -12,7 +12,13 @@
   .actions {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
+  }
+
+  .throbber {
+    display: flex;
+    align-items: center;
+    margin-right: 4px;
   }
 
   :global(.material-symbols-outlined) {

@@ -17,15 +17,9 @@ jobs:
           - os: macos-latest
             target: aarch64-apple-darwin
             pyinstaller-sep: ":"
-            tauri-bundle-suffix: dmg
           - os: macos-15-intel
             target: x86_64-apple-darwin
             pyinstaller-sep: ":"
-            tauri-bundle-suffix: dmg
-          - os: windows-latest
-            target: x86_64-pc-windows-msvc
-            pyinstaller-sep: ";"
-            tauri-bundle-suffix: msi
 
     runs-on: ${{ matrix.os }}
 
@@ -49,16 +43,8 @@ jobs:
         run: |
           pyinstaller --onefile \
             --name backend \
-            --add-data "backend/model/resources/preamble.tex${{ matrix.pyinstaller-sep }}backend/model/resources/" \
-            --hidden-import uvicorn \
-            --hidden-import uvicorn.logging \
-            --hidden-import uvicorn.loops \
-            --hidden-import uvicorn.loops.auto \
-            --hidden-import uvicorn.protocols \
-            --hidden-import uvicorn.protocols.http \
-            --hidden-import uvicorn.protocols.http.auto \
-            --hidden-import uvicorn.protocols.websocket \
-            --hidden-import uvicorn.protocols.websocket.auto \
+            --add-data "backend/model/resources/template.tex${{ matrix.pyinstaller-sep }}backend/model/resources/" \
+            --collect-submodules uvicorn \
             backend/run.py
 
       - name: Stage sidecar binary for Tauri
@@ -66,11 +52,7 @@ jobs:
         working-directory: frontend/resumecompiler
         run: |
           mkdir -p src-tauri/binaries
-          if [ "${{ runner.os }}" = "Windows" ]; then
-            cp "$GITHUB_WORKSPACE/dist/backend.exe" "src-tauri/binaries/backend-${{ matrix.target }}.exe"
-          else
-            cp "$GITHUB_WORKSPACE/dist/backend" "src-tauri/binaries/backend-${{ matrix.target }}"
-          fi
+          cp "$GITHUB_WORKSPACE/dist/backend" "src-tauri/binaries/backend-${{ matrix.target }}"
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -92,11 +74,6 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           # webkit2gtk is not needed on macOS; Tauri uses WKWebView natively
-
-      - name: Install system dependencies (Windows)
-        if: runner.os == 'Windows'
-        run: |
-          # WebView2 is preinstalled on Windows 10+ / GitHub Actions runners
 
       - name: Cache Rust build artifacts
         uses: swatinem/rust-cache@v2
@@ -120,8 +97,7 @@ jobs:
           name: Résumé-Compiler-${{ matrix.target }}
           path: |
             frontend/resumecompiler/src-tauri/target/release/bundle/dmg/*.dmg
-            frontend/resumecompiler/src-tauri/target/release/bundle/msi/*.msi
-            frontend/resumecompiler/src-tauri/target/release/bundle/nsi/*.exe
+            frontend/resumecompiler/src-tauri/target/release/bundle/macos/*.app
           if-no-files-found: warn
 
   create-release:

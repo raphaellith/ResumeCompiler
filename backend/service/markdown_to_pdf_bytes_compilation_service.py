@@ -2,7 +2,7 @@ from pathlib import Path
 import subprocess
 import tempfile
 
-from backend.model.resume_components.resume import Resume
+from backend.model.transpilables.resume import Resume
 from backend.model.enums.font import Font
 from backend.service.errors.pdf_latex_not_found_error import PdfLatexNotFoundError
 
@@ -14,21 +14,12 @@ def get_pdf_bytes_from_markdown(markdown: str, font: Font = Font.TIMES_NEW_ROMAN
     :param font: The Font object to be used to convert the Markdown code to PDF.
     """
     resume = Resume(markdown)
-    latex_code = _get_latex_code_from_resume(resume, font)
-    pdf_bytes = _get_pdf_bytes_from_latex_code(latex_code)
+    latex = resume.to_latex(font)
+    pdf_bytes = _get_pdf_bytes_from_latex(latex)
     return pdf_bytes
 
-def _get_latex_code_from_resume(resume: Resume, font: Font = Font.TIMES_NEW_ROMAN) -> str:
-    """
-    Returns the LaTeX representation of the resume.
-    :param resume: The Resume object to be converted to LaTeX.
-    :param font: The Font to be used in the resume.
-    """
-    latex_lines: list[str] = resume.to_latex_lines(font)
-    latex_result: str = "\n".join(latex_lines)
-    return latex_result
 
-def _get_pdf_bytes_from_latex_code(latex_code: str) -> bytes:
+def _get_pdf_bytes_from_latex(latex_code: str) -> bytes:
     """
     Compiles LaTeX source code into PDF bytes.
     Uses an isolated temporary directory so build artifacts are not persisted on disk.
@@ -48,6 +39,7 @@ def _get_pdf_bytes_from_latex_code(latex_code: str) -> bytes:
             raise RuntimeError("LaTeX compilation finished but did not produce a PDF output file.")
 
         return pdf_output_path.read_bytes()
+
 
 def _run_pdflatex(latex_file_name: str, working_directory: Path) -> tuple[str, str, int]:
     """

@@ -25,14 +25,12 @@ application package. LaTeX (`pdflatex`) is **not** bundled — detected at runti
   handle; on `Drop` the child is killed.
 - **Python** (`backend/run.py`): Command-line entrypoint that parses `--port`
   and starts `uvicorn` on that port.
-- **Frontend** (`src/config/api.ts`): Calls `invoke("get_backend_port")` to
-  retrieve the dynamic port in Tauri mode; falls back to
-  `VITE_RESUME_COMPILER_API_BASE_URL` (or `http://localhost:8000`) in dev/browser.
+- **Frontend** (`src/config/apiClient.ts`): Calls `invoke("get_backend_port")` to
+  retrieve the dynamic port in Tauri mode, then waits for `GET /health` to
+  return `200 OK` before using other backend endpoints.
 - **Dev mode**: The sidecar binary won't exist at `src-tauri/binaries/` during
-  development. The Rust setup gracefully handles this: `sidecar()` returns an
-  error → `backend_port` set to `0` → frontend falls back to the default URL.
-  Developers continue to run `uvicorn backend.controller.api_controller:app`
-  manually as before.
+  development unless built first. The frontend no longer falls back to a fixed
+  backend URL and requires a valid dynamic sidecar port.
 
 ## LaTeX Detection
 
@@ -65,8 +63,9 @@ Port is dynamically allocated to avoid conflicts:
 - `src-tauri/tauri.conf.json`: `bundle.externalBin` lists `["binaries/backend"]`.
 - Sidecar binaries are placed at `src-tauri/binaries/backend-{target-triple}` by
   CI, matching Tauri's naming convention.
-- `macOS.signing.skip: true` — builds are unsigned (no Apple Developer account
-  required for distribution; users Ctrl+Open to bypass Gatekeeper).
+- `macOS.signingIdentity: "-"` — builds are ad-hoc signed (no Apple Developer
+  account required for distribution; users bypass Gatekeeper via
+  right-click → Open or `xattr -c`).
 
 ## CI/CD Pipeline
 
@@ -79,8 +78,8 @@ File: `.github/workflows/release.yml`
 | Runner | Target triple | Bundle |
 |---|---|---|
 | `macos-latest` (ARM) | `aarch64-apple-darwin` | `.dmg` |
-| `macos-13` (Intel) | `x86_64-apple-darwin` | `.dmg` |
-| `windows-latest` | `x86_64-pc-windows-msvc` | `.msi` |
+| `macos-15-intel` | `x86_64-apple-darwin` | `.dmg` |
+| `windows-latest` | `x86_64-pc-windows-msvc` | `.msi` + `.exe` (NSIS) |
 
 **Per-platform steps**:
 1. Setup Python, install deps + PyInstaller
@@ -99,8 +98,9 @@ downloads all artifacts and creates a GitHub Release with generated release note
 - Entrypoint: `backend/run.py`
 - Hidden imports: `uvicorn.*` submodules (discovered via
   `PyInstaller.utils.hooks.collect_submodules`)
-- Data files: `backend/model/resources/preamble.tex` → bundled at
-  `backend/model/resources/preamble.tex` relative to bundle root
+- Data files: `backend/model/resources/template.tex` → bundled at
+  `backend/model/resources/template.tex` relative to bundle root
+- Hidden imports: all `uvicorn.*` submodules via `--collect-submodules uvicorn`
 - One-file executable mode (`--onefile`)
 
 ## Key Files
@@ -112,7 +112,7 @@ downloads all artifacts and creates a GitHub Release with generated release note
 | `src-tauri/src/lib.rs` | Sidecar spawn, state, `get_backend_port` command |
 | `src-tauri/tauri.conf.json` | `externalBin`, macOS signing skip |
 | `src-tauri/capabilities/default.json` | Shell permissions |
-| `src/config/api.ts` | Dynamic endpoint resolution |
+| `src/config/apiClient.ts` | Dynamic endpoint resolution |
 | `src/hooks/usePdfCompilation.ts` | LaTeX error detection from 502 response |
 | `src/components/CompilationErrorMessage/` | LaTeX install instructions UI |
 | `.github/workflows/release.yml` | CI/CD pipeline |

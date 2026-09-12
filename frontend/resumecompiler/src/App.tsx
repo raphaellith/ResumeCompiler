@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { isTauri } from "@tauri-apps/api/core";
@@ -9,15 +9,18 @@ import { PdfPreviewPane } from "./components/PdfPreviewPane/PdfPreviewPane";
 import { ResizableHandle } from "./components/ResizableHandle/ResizableHandle";
 import { SettingsModal } from "./components/SettingsModal/SettingsModal";
 import { Toolbar } from "./components/Toolbar/Toolbar";
-import { getCompiledPdfEndpoint, getCompiledXmlEndpoint } from "./config/api";
-import { DEFAULT_FONT } from "./config/font";
+import { ApiClient } from "./client/apiClient.ts";
+import { FontService, type FontOption } from "./services/fontService.ts";
 import { useMarkdownDocument } from "./hooks/useMarkdownDocument";
 import { usePdfCompilation } from "./hooks/usePdfCompilation";
 import { useSaveMarkdownOnClose } from "./hooks/useSaveMarkdownOnClose";
 import { useXmlExport } from "./hooks/useXmlExport";
-import { stripExtension } from "./utils/path";
 import vars from "./styles/variables.module.scss";
 import styles from "./App.module.scss";
+
+const HANDLE_WIDTH = 12;
+const PANE_PADDING = 12;
+const MIN_PANE_WIDTH = 200;
 
 const theme = createTheme({
   typography: {
@@ -181,9 +184,9 @@ const theme = createTheme({
   },
 });
 
-const HANDLE_WIDTH = 12;
-const PANE_PADDING = 12;
-const MIN_PANE_WIDTH = 200;
+function stripExtension(filename: string): string {
+  return filename.replace(/\.[^/.]+$/, "");
+}
 
 function App() {
   const {
@@ -196,19 +199,47 @@ function App() {
     openFilePicker,
   } = useMarkdownDocument();
 
-  const { pdfUrl, pdfBlob, isCompiling, compileError, compilePdf } =
-    usePdfCompilation(getCompiledPdfEndpoint);
-
-  const { exportXml } =
-    useXmlExport(getCompiledXmlEndpoint);
+  const { pdfUrl, pdfBlob, isCompiling, compileError, compilePdf } = usePdfCompilation();
+  const { exportXml } = useXmlExport();
 
   useSaveMarkdownOnClose({
     filePath,
     markdown,
   });
 
-  const [font, setFont] = useState(DEFAULT_FONT);
+  const [fontQueryParam, setFontQueryParam] = useState("");
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [backendReady, setBackendReady] = useState(false);
+  const [fontOptions, setFontOptions] = useState<FontOption[]>([]);
+  const [fontError, setFontError] = useState<string | null>(null);
+  const [fontsLoading, setFontsLoading] = useState(true);
+
+  useEffect(() => {
+    const init = async () => {
+      try {
+        await ApiClient.ensureBackendIsReady();
+        setBackendReady(true);
+
+        const [fontOptions, defaultFontOption] = await Promise.all([
+          FontService.resolveFontOptions(),
+          FontService.resolveDefaultFontOption(),
+        ]);
+        setFontOptions(fontOptions);
+        setFontQueryParam(defaultFontOption.asQueryParam());
+      } catch (error) {
+        console.error("Backend init failed:", error);
+        setBackendReady(false);
+        setFontError(
+          error instanceof Error
+            ? `Backend unavailable: ${error.message}`
+            : "Backend unavailable. Ensure the Tauri sidecar has started."
+        );
+      } finally {
+        setFontsLoading(false);
+      }
+    };
+    init();
+  }, []);
 
   const handleOpenSettings = useCallback(() => {
     setIsSettingsOpen(true);
@@ -218,8 +249,8 @@ function App() {
     setIsSettingsOpen(false);
   }, []);
 
-  const handleSaveFont = useCallback((nextFont: string) => {
-    setFont(nextFont);
+  const handleSaveFont = useCallback((nextFontQueryParam: string) => {
+    setFontQueryParam(nextFontQueryParam);
     setIsSettingsOpen(false);
   }, []);
 
@@ -252,29 +283,29 @@ function App() {
   const handleOpenFile = useCallback(async () => {
     const result = await openFilePicker();
     if (result) {
-      compilePdf(result.markdown, font);
+      await compilePdf(result.markdown, fontQueryParam);
     } else if (!isTauri()) {
       fileInputRef.current?.click();
     }
-  }, [openFilePicker, compilePdf, font]);
+  }, [openFilePicker, compilePdf, fontQueryParam]);
 
   const handleFileInputChange = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
       if (!file) return;
       const result = await loadFile(file);
-      compilePdf(result.markdown, font);
+      await compilePdf(result.markdown, fontQueryParam);
       e.target.value = "";
     },
-    [loadFile, compilePdf, font]
+    [loadFile, compilePdf, fontQueryParam]
   );
 
   const handleCompile = useCallback(() => {
     if (!hasFile) {
       return;
     }
-    void compilePdf(markdown, font);
-  }, [compilePdf, hasFile, markdown, font]);
+    void compilePdf(markdown, fontQueryParam);
+  }, [compilePdf, hasFile, markdown, fontQueryParam]);
 
   const handleExport = useCallback(() => {
     if (!pdfBlob) {
@@ -343,13 +374,19 @@ function App() {
           onSettings={handleOpenSettings}
           onExport={handleExport}
           onExportXml={handleExportXml}
+          backendReady={backendReady}
+          fontsLoading={fontsLoading}
+          fontError={fontError}
         />
 
         <SettingsModal
           isOpen={isSettingsOpen}
-          initialFont={font}
+          initialFontQueryParam={fontQueryParam}
           onSave={handleSaveFont}
           onClose={handleCloseSettings}
+          fontOptions={fontOptions}
+          fontsLoading={fontsLoading}
+          fontError={fontError}
         />
 
         <input
