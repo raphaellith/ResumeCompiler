@@ -1,12 +1,5 @@
 import { ApiClient } from "./apiClient.ts";
 
-interface FontNamesResponse {
-  names: string[];
-  default: string;
-}
-
-let cachedFontNames: FontNamesResponse | null = null;
-
 export class FontOption {
   readonly name: string;
 
@@ -19,27 +12,42 @@ export class FontOption {
   }
 }
 
-async function resolveFontNames(): Promise<FontNamesResponse> {
-  if (cachedFontNames) {
-    return cachedFontNames;
-  }
-  const response = await ApiClient.getResponseFromGetRequestToFontNamesEndpoint();
-  cachedFontNames = await response.json() as FontNamesResponse;
-  return cachedFontNames;
+interface FontNamesEndpointResponse {
+  names: string[];
+  default: string;
 }
 
-export async function fetchFontOptions(): Promise<FontOption[]> {
-  const response = await resolveFontNames();
-  return response.names.map((name) => new FontOption(name));
+interface FontInformation {
+  fontOptions: FontOption[];
+  defaultFontOption: FontOption;
 }
 
-export async function fetchDefaultFontOption(): Promise<FontOption> {
-  const response = await resolveFontNames();
-  const defaultName = response.default;
-  const options = await fetchFontOptions();
-  const defaultOption = options.find((opt) => opt.name === defaultName);
-  if (!defaultOption) {
-    throw new Error(`Default font "${defaultName}" not found in font options`);
+export class FontService {
+  private static cachedFontInformation: FontInformation | null = null;
+
+  public static async resolveFontInformation(): Promise<FontInformation> {
+    if (this.cachedFontInformation) {
+      return this.cachedFontInformation;
+    }
+
+    const response = await ApiClient.getResponseFromGetRequestToFontNamesEndpoint().then(r => r.json()) as FontNamesEndpointResponse;
+
+    const fontOptions = response.names.map((name) => new FontOption(name));
+    const defaultFontOption = fontOptions.find((option) => option.name === response.default);
+
+    if (!defaultFontOption) {
+      throw new Error(`Default font "${response.default}" not found in font options`);
+    }
+
+    this.cachedFontInformation = { fontOptions, defaultFontOption}
+    return this.cachedFontInformation;
   }
-  return defaultOption;
+
+  public static async resolveFontOptions(): Promise<FontOption[]> {
+    return this.resolveFontInformation().then(info => info.fontOptions);
+  }
+
+  public static async resolveDefaultFontOption(): Promise<FontOption> {
+    return this.resolveFontInformation().then(info => info.defaultFontOption);
+  }
 }

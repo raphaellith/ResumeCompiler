@@ -10,7 +10,7 @@ import { ResizableHandle } from "./components/ResizableHandle/ResizableHandle";
 import { SettingsModal } from "./components/SettingsModal/SettingsModal";
 import { Toolbar } from "./components/Toolbar/Toolbar";
 import { ApiClient } from "./config/apiClient.ts";
-import { fetchFontOptions, fetchDefaultFontOption, type FontOption } from "./config/font";
+import { FontService, type FontOption } from "./config/font";
 import { useMarkdownDocument } from "./hooks/useMarkdownDocument";
 import { usePdfCompilation } from "./hooks/usePdfCompilation";
 import { useSaveMarkdownOnClose } from "./hooks/useSaveMarkdownOnClose";
@@ -221,8 +221,8 @@ function App() {
         setBackendReady(true);
 
         const [fontOptions, defaultFontOption] = await Promise.all([
-          fetchFontOptions(),
-          fetchDefaultFontOption(),
+          FontService.resolveFontOptions(),
+          FontService.resolveDefaultFontOption(),
         ]);
         setFontOptions(fontOptions);
         setFontQueryParam(defaultFontOption.asQueryParam());
