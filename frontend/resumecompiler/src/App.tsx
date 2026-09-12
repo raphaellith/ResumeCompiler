@@ -9,14 +9,18 @@ import { PdfPreviewPane } from "./components/PdfPreviewPane/PdfPreviewPane";
 import { ResizableHandle } from "./components/ResizableHandle/ResizableHandle";
 import { SettingsModal } from "./components/SettingsModal/SettingsModal";
 import { Toolbar } from "./components/Toolbar/Toolbar";
-import { getCompiledPdfEndpoint, getCompiledXmlEndpoint } from "./config/api";
-import { fetchFontOptions, fetchDefaultFontOption, type FontOption } from "./config/font";
+import { ApiClient } from "./client/apiClient.ts";
+import { FontService, type FontOption } from "./services/fontService.ts";
 import { useMarkdownDocument } from "./hooks/useMarkdownDocument";
 import { usePdfCompilation } from "./hooks/usePdfCompilation";
 import { useSaveMarkdownOnClose } from "./hooks/useSaveMarkdownOnClose";
 import { useXmlExport } from "./hooks/useXmlExport";
 import vars from "./styles/variables.module.scss";
 import styles from "./App.module.scss";
+
+const HANDLE_WIDTH = 12;
+const PANE_PADDING = 12;
+const MIN_PANE_WIDTH = 200;
 
 const theme = createTheme({
   typography: {
@@ -180,10 +184,6 @@ const theme = createTheme({
   },
 });
 
-const HANDLE_WIDTH = 12;
-const PANE_PADDING = 12;
-const MIN_PANE_WIDTH = 200;
-
 function stripExtension(filename: string): string {
   return filename.replace(/\.[^/.]+$/, "");
 }
@@ -199,11 +199,8 @@ function App() {
     openFilePicker,
   } = useMarkdownDocument();
 
-  const { pdfUrl, pdfBlob, isCompiling, compileError, compilePdf } =
-    usePdfCompilation(getCompiledPdfEndpoint);
-
-  const { exportXml } =
-    useXmlExport(getCompiledXmlEndpoint);
+  const { pdfUrl, pdfBlob, isCompiling, compileError, compilePdf } = usePdfCompilation();
+  const { exportXml } = useXmlExport();
 
   useSaveMarkdownOnClose({
     filePath,
@@ -220,15 +217,15 @@ function App() {
   useEffect(() => {
     const init = async () => {
       try {
-        await getCompiledPdfEndpoint();
+        await ApiClient.ensureBackendIsReady();
         setBackendReady(true);
 
-        const [options, defaultOpt] = await Promise.all([
-          fetchFontOptions(),
-          fetchDefaultFontOption(),
+        const [fontOptions, defaultFontOption] = await Promise.all([
+          FontService.resolveFontOptions(),
+          FontService.resolveDefaultFontOption(),
         ]);
-        setFontOptions(options);
-        setFontQueryParam(defaultOpt.asQueryParam());
+        setFontOptions(fontOptions);
+        setFontQueryParam(defaultFontOption.asQueryParam());
       } catch (error) {
         console.error("Backend init failed:", error);
         setBackendReady(false);
