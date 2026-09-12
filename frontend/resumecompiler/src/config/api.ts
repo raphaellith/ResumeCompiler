@@ -5,7 +5,7 @@ export class ApiClient {
   static cachedBaseUrl: string | null = null;
   static backendIsReady = false;
 
-  static async resolveApiBaseUrl(): Promise<string> {
+  private static async resolveApiBaseUrl(): Promise<string> {
     if (this.cachedBaseUrl) {
       return this.cachedBaseUrl;
     }
@@ -31,7 +31,7 @@ export class ApiClient {
     return this.cachedBaseUrl;
   }
 
-  static async getEndpoint(path: string, params?: Record<string, string>): Promise<string> {
+  private static async getEndpoint(path: string, params?: Record<string, string>): Promise<string> {
     const base = await this.resolveApiBaseUrl();
     const endpoint = `${base}/${path}`;
     if (!params) {
@@ -46,7 +46,7 @@ export class ApiClient {
     return `${endpoint}?${searchParams}`;
   }
 
-  static async ensureBackendIsReady(): Promise<void> {
+  public static async ensureBackendIsReady(): Promise<void> {
     if (this.backendIsReady) {
       return;
     }
@@ -72,7 +72,7 @@ export class ApiClient {
     }
   }
 
-  static async getResponseFromEndpoint(endpointPath: string, requestInit?: RequestInit, queryParams?: Record<string, string>): Promise<Response> {
+  private static async getResponseFromEndpoint(endpointPath: string, requestInit?: RequestInit, queryParams?: Record<string, string>): Promise<Response> {
     await this.ensureBackendIsReady();
     const endpoint = await this.getEndpoint(endpointPath, queryParams);
     const response = await fetch(endpoint, requestInit);
@@ -87,7 +87,7 @@ export class ApiClient {
     return response;
   }
 
-  static async getResponseFromPostRequestToPdfEndpoint(markdown: string, font?: string): Promise<Response> {
+  public static async getResponseFromPostRequestToPdfEndpoint(markdown: string, font?: string): Promise<Response> {
     const requestOptions = {
       method: "POST",
       headers: {
@@ -104,7 +104,7 @@ export class ApiClient {
     );
   }
 
-  static async getResponseFromPostRequestToXmlEndpoint(markdown: string): Promise<Response> {
+  public static async getResponseFromPostRequestToXmlEndpoint(markdown: string): Promise<Response> {
     const requestOptions = {
       method: "POST",
       headers: {
@@ -117,7 +117,7 @@ export class ApiClient {
     return this.getResponseFromEndpoint("pdf", requestOptions);
   }
 
-  static async getResponseFromGetRequestToFontNamesEndpoint(): Promise<Response> {
+  public static async getResponseFromGetRequestToFontNamesEndpoint(): Promise<Response> {
     return this.getResponseFromEndpoint("font-names")
   }
 }
