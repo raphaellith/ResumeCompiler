@@ -47,7 +47,8 @@ npm run tauri build # Tauri desktop (release)
 ## Markdown quirks
 
 - `^` prefix on H1/H2 hides the heading and *everything until the next H1/H2* (section scope); `^` prefix on `<li>` hides that line. Handled in `_remove_hidden_tags()` (`backend/model/transpilables/resume.py`).
-- Every H2 must be immediately followed by an indented code block (`<pre><code>`). Its line count decides the achievement flavor: 2 lines → `threePartAchievement`/"toolset", 3 lines → `fourPartAchievement`/organisational. Body is otherwise only H1 (title), `<ul>` (list items restrict to `<b>`/`<i>` tags) and plain `<p>` (comments, ignored).
+- Every H2 must be immediately followed by an indented code block (`<pre><code>`). Its line count decides the achievement: 2 lines → `threePartAchievement`, 3 lines → `fourPartAchievement`. The body is otherwise only H1 (section headings), standalone `<ul>`s (skill lists, or description bullets under an achievement), and plain `<p>`s (comments, ignored). The title/summary/contacts come from frontmatter, not the body.
+- List-item emphasis must be raw HTML `<b>`/`<i>`: Markdown `**bold**`/`*italic*` render `<strong>`/`<em>` and are rejected by `_validate_tags`. LaTeX special characters are auto-escaped by the pipeline — do not backslash-escape them in source (`\&` renders a literal `\&`).
 - Full syntax details: `docs/ResumeSyntaxGuide.md`.
 
 ## No tooling

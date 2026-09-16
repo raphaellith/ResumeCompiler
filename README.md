@@ -11,7 +11,6 @@
 [![Tauri 2](https://img.shields.io/badge/Tauri-2-FFC131?logo=tauri&logoColor=white)](https://v2.tauri.app/)
 
 [![macOS](https://img.shields.io/badge/macOS-000000?logo=apple&logoColor=white)]()
-[![Windows](https://img.shields.io/badge/Windows-0078D6?logo=windows&logoColor=white)]()
 
 </div>
 
@@ -29,7 +28,7 @@ Résumé Compiler allows you to streamline your CV writing process, leveraging t
 
 - **Markdown Editor:** Write your résumé in readable Markdown. No LaTeX knowledge required.
 - **PDF Compilation:** Create and download publication-quality PDFs via LaTeX.
-- **Varying Section Layouts:** Choose from three different types of résumé sections: organisational, toolset and catalogue.
+- **Varying Section Layouts:** Choose from different types of résumé sections: achievements, bulleted skill lists and description lists.
 - **Hide Elements:** Prefix headings or list items with `^` to omit them from output
 - **Font Selection:** Choose from 8 available LaTeX fonts.
   - Times New Roman
@@ -41,13 +40,13 @@ Résumé Compiler allows you to streamline your CV writing process, leveraging t
   - Cormorant Garamond
   - Charter
 - **XML Exports:** Export your résumé as an XML representation of the parsed component tree.
-- **Full-Stack Desktop App:** Native browser-based macOS/Windows UI powered by Tauri 2, with an embedded Python backend.
+- **Full-Stack Desktop App:** Native macOS UI powered by Tauri 2, with an embedded Python backend.
 
 
 ## Download
 
 1. Install a LaTeX distribution that provides `pdflatex` (e.g. [MacTeX](https://tug.org/mactex/) on macOS, [MiKTeX](https://miktex.org/) on Windows).
-2. Download prebuilt binaries for macOS and Windows from the [latest release](https://github.com/raphaellith/ResumeCompiler/releases/latest).
+2. Download a prebuilt macOS binary from the [latest release](https://github.com/raphaellith/ResumeCompiler/releases/latest).
 
 > [!IMPORTANT]
 > MacOS users may encounter the following error when attempting to open the app for the first time:
