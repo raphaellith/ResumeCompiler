@@ -80,6 +80,11 @@ jobs:
         with:
           workspaces: frontend/resumecompiler/src-tauri
 
+      - name: Clean old bundles from cache
+        shell: bash
+        run: rm -rf src-tauri/target/release/bundle
+        working-directory: frontend/resumecompiler
+
       - name: Build Tauri application
         run: npm run tauri build
         working-directory: frontend/resumecompiler

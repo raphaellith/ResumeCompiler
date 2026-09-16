@@ -1,8 +1,8 @@
 [package]
 name = "resumecompiler"
 version = "2.0.0"
-description = "A Tauri App"
-authors = ["you"]
+description = "A compiler that compiles Markdown files into a resume PDF file, formatted in LaTeX."
+authors = ["raphaellith"]
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
