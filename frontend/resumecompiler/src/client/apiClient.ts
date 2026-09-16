@@ -114,7 +114,7 @@ export class ApiClient {
       body: JSON.stringify({ markdown }),
     };
 
-    return this.getResponseFromEndpoint("pdf", requestOptions);
+    return this.getResponseFromEndpoint("xml", requestOptions);
   }
 
   public static async getResponseFromGetRequestToFontNamesEndpoint(): Promise<Response> {
