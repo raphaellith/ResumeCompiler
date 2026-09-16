@@ -16,10 +16,6 @@ jobs:
         include:
           - os: macos-latest
             target: aarch64-apple-darwin
-            pyinstaller-sep: ":"
-          - os: macos-15-intel
-            target: x86_64-apple-darwin
-            pyinstaller-sep: ":"
 
     runs-on: ${{ matrix.os }}
 
@@ -43,7 +39,7 @@ jobs:
         run: |
           pyinstaller --onefile \
             --name backend \
-            --add-data "backend/model/resources/template.tex${{ matrix.pyinstaller-sep }}backend/model/resources/" \
+            --add-data "backend/model/resources/template.tex:backend/model/resources/" \
             --collect-submodules uvicorn \
             backend/run.py
 
@@ -88,8 +84,6 @@ jobs:
       - name: Build Tauri application
         run: npm run tauri build
         working-directory: frontend/resumecompiler
-        env:
-          TARGET: ${{ matrix.target }}
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4

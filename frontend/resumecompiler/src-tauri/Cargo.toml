@@ -1,6 +1,6 @@
 [package]
 name = "resumecompiler"
-version = "1.0.3"
+version = "2.0.0"
 description = "A compiler that compiles Markdown files into a resume PDF file, formatted in LaTeX."
 authors = ["raphaellith"]
 edition = "2021"

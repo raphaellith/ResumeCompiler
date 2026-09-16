@@ -40,7 +40,7 @@ npm run tauri build # Tauri desktop (release)
 
 ## CI / Release
 
-- `.github/workflows/release.yml`: triggered by `v*` tag push or manual `workflow_dispatch`. macOS-only (matrix: `aarch64-apple-darwin`, `x86_64-apple-darwin`).
+- `.github/workflows/release.yml`: triggered by `v*` tag push or manual `workflow_dispatch`. macOS-only (`macos-latest`, `aarch64-apple-darwin`).
 - Builds the Python sidecar with `pyinstaller --onefile --collect-submodules uvicorn --add-data backend/model/resources/template.tex:<target>/` using `backend/run.py` as entrypoint, stages it at `src-tauri/binaries/backend-<target>`, then `npm run tauri build` (DMG + app).
 - `backend/build.spec` is the local PyInstaller spec for reference (root `backend.spec` also exists; both are gitignored via `*.spec`).
 
