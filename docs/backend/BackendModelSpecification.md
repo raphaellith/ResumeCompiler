@@ -1,240 +1,177 @@
 # Backend Model Specification
 
-This document describes the model layer of the Résumé Compiler backend (`backend/model`). The model represents a résumé as a tree of `ResumeComponent` objects. Each component knows how to emit its LaTeX and XML representations. The top-level `Resume` class parses raw Markdown into this tree.
+This document describes the model layer of the Résumé Compiler backend (`backend/model`). The model represents a résumé as a tree of transpilable objects. A `Resume` parses the YAML frontmatter and body of a Markdown file into components, each of which knows how to emit its own LaTeX and XML representation. All model classes derive from `Transpilable`, which declares the `to_latex()` and `to_xml_element()` contracts and provides shared escaping/serialisation helpers.
 
-## 1. ResumeComponent
+The model lives under `backend/model`:
 
-1. `ResumeComponent` is an abstract base class that declares abstract methods for the following.
-   - Rendering to LaTeX as a list of lines
-   - Rendering to XML as an `Element`
+- `transpilables/transpilable.py` — abstract base class
+- `transpilables/resume.py` — `Resume` root component / parser
+- `transpilables/contact.py` — `Contact`
+- `transpilables/resume_components/` — `ResumeComponent`, `Heading`, `Achievement` (+ `ThreePartAchievement` / `FourPartAchievement`), `BulletedList`
+- `enums/font.py` — `Font`
+- `utils/markdown_file_reader.py` — `MarkdownFileReader`
+- `resources/template.tex` — LaTeX preamble template
 
-3. It also supports serialising the XML element to a string with indentation.
+
+## 1. Transpilable
+
+1. `Transpilable` is the abstract base class for every renderable part of the résumé.
+
+2. It declares two abstract methods:
+   - `to_latex() -> str` — the LaTeX representation of the element, and
+   - `to_xml_element() -> ElementTree.Element` — the XML representation.
+
+3. It provides `to_xml_string() -> str`, which serialises `to_xml_element()` with two-space indentation.
+
+4. It provides the class method `escape_for_latex(string)`, the single source of LaTeX escaping. Every character in `\ { } $ & # _ ^ ~ %` is replaced with a LaTeX-safe sequence (see `docs/ResumeSyntaxGuide.md` for the mapping).
+
 
 ## 2. Resume
 
-1. `Resume` is the root component and the only public entry point for constructing the component tree.
+1. `Resume` is the root component and the only public entry point for constructing the component tree. Its constructor accepts the full Markdown file contents (frontmatter + body) and runs the parsing pipeline.
 
-2. Its constructor accepts a Markdown string and runs the parsing pipeline.
+2. It stores the frontmatter fields `title`, `summary`, `contacts`, and the boolean flags `title_bold`, `summary_bold`, `contacts_bold`.
 
-3. `Resume` contains a `components` list that holds the top-level children: `Title`, `Subtitle`, `ContactList`, and `ResumeSection` instances.
+3. It exposes `components`, the list of top-level body components: `Heading`, `Achievement` subclasses, and `BulletedList`.
+
+4. `to_latex(font)` reads the template file, substitutes placeholders `%[[FONT_CHOICE]]%`, `%[[RESUME_TITLE]]%`, `%[[RESUME_SUMMARY]]%`, `%[[RESUME_CONTACT_LIST]]%` and `%[[RESUME_CONTENTS]]%`, and returns the complete LaTeX document.
+
+5. `to_xml_element()` produces a `<resume>` element containing a `<frontmatter>` element followed by elements for body components. The `<frontmatter>` element contains sub-elements `<title>`, `<summary>` and `<contacts>` with `bold` attributes, where `<contacts>` contains a collection of `<contact>` elements. Body elements include `<heading>`, `<three-part-achievement>`, `<four-part-achievement>` and `<bulleted-list>`.
 
 
 ### 2A. Parsing pipeline
 
-1. The Markdown string is converted to a BeautifulSoup HTML tree using the `markdown` library and `html.parser`.
+1. `MarkdownFileReader` parses the YAML frontmatter via the `frontmatter` library and converts the body to a BeautifulSoup HTML tree via `python-markdown` and the `html.parser` parser.
 
-2. Only `Tag`-typed children of the soup body are retained.
+2. Frontmatter is validated to have `title`, `summary` and `contacts`. Contacts must be a list of dicts, each with a string `display` and an optional string `link`. Contact-related validation is performed in `Resume._validate_and_parse_contacts`.
 
-3. Tags prefixed with `^` are stripped:
-   - H2 and H3 headings prefixed with `^` have their entire tag group removed.
-   - List items (`<li>`) whose text starts with `^` are removed from their parent `<ul>`.
-   
-4. Tags before the first H2 are parsed as pre-section components:
-   - H1 becomes `Title`.
-   - Preformatted block (`<pre>`) becomes `Subtitle`.
-   - Unordered list (`<ul>`) becomes `ContactList`.
-   
-5. Remaining tags are grouped by H2 boundaries. Each group is dispatched by section type:
-   - H2 heading starts with `!` → `ToolsetSection`.
-   - Group contains any H3 → `OrganisationalSection`.
-   - Otherwise → `CatalogueSection`.
+3. `_validate_tags()` checks the body structure. The top-level tags, concatenated in document order, must fully match `(<h1>|<ul>|<h2><pre>|<p>)*`. Also, headings must contain exactly one plain text node; `<ul>` children are `<li>` tags containing only `<b>`/`<i>` tags; a `<pre>` wraps exactly one `<code>` whose single text node spans exactly 2 or 3 lines.
 
+4. `_remove_hidden_tags()` strips hidden elements:
+   - An H1 or H2 heading prefixed with `^` has its entire section scope removed.
+   - List items (`<li>`) whose text starts with `^` are removed from their parent `<ul>`, which itself is dropped if it becomes empty.
 
-### 2B. LaTeX generation
+5. `_get_tags_grouped_by_component()` groups the remaining tags into components: `h1`, `h2`, and `ul` start a new component, while a `pre` extends the immediately preceding one.
 
-1. The preamble template is read, the `% FONT CHOICE GOES HERE` placeholder is substituted with the chosen font's LaTeX package command, then each component's LaTeX output is appended inside a `document` environment.
+6. Each group becomes a component: `h1` → `Heading`; `h2` (with its `pre`) → `Achievement`; `ul` → `BulletedList`. A top-level `<p>` is ignored (treated as a comment).
 
 
-### 2C. XML generation
+### 2B. Template file resolution
 
-1. Each child's XML element is collected into a root element and serialised with indentation.
+1. `Resume.get_latex_template_file_path()` locates `backend/model/resources/template.tex`.
 
+2. The resolution strategy differs between dev and frozen (PyInstaller) runs:
+   - Dev (unfrozen): the backend must be run from the repository root, so the path is resolved against the current working directory.
+   - Frozen (onefile sidecar): modules live inside the bundled PYZ archive and are not extracted to disk, so the path resolves against `sys._MEIPASS` — where the `--add-data` bundle places `backend/model/resources/template.tex`.
 
-## 3. Title
 
-1. `Title` represents the resume's main heading (typically the candidate's name).
+## 3. Contact
 
-2. Its constructor receives an H1 BeautifulSoup `Tag`.
+1. `Contact` represents a single contact entry with `display` (string) and optional `link` (string or `None`).
 
-3. It stores a single `text` attribute containing the inner text of the H1.
+2. `to_latex()` escapes both fields. With a link it emits `\href{display}{\underline{link}}`; without one it emits only the escaped display text.
 
-4. Its LaTeX output is a centred, bold, `\huge` block.
+3. `to_xml_element()` produces a `<contact>` element whose text is the display string, with a `link` attribute when a link is present.
 
 
-## 4. Subtitle
+## 4. ResumeComponent
 
-1. `Subtitle` represents a secondary line displayed below the title.
+1. `ResumeComponent` is an abstract base class for body components, deriving from `Transpilable`.
 
-2. Its constructor receives a `<pre>` BeautifulSoup `Tag`.
+2. It is subclassed by `Heading` and `BulletedList`.
 
-3. It stores a single `text` attribute.
 
-4. Its LaTeX output is a centred, bold block.
+## 5. Heading
 
+1. `Heading` wraps an H1 `BeautifulSoup.Tag` and stores its text.
 
-## 5. ContactList and ContactListItem
+2. `to_latex()` emits `\section{<escaped text>}`.
 
-### 5A. ContactList
+3. `to_xml_element()` produces a `<heading>` element containing the heading text.
 
-1. `ContactList` represents a horizontal list of contact details.
 
-2. Its constructor receives a `<ul>` BeautifulSoup `Tag`.
+## 6. Achievement
 
-3. It contains a `contacts` list of `ContactListItem` objects, one per `<li>` child.
+1. `Achievement` is an abstract base class for the two structured entries, deriving directly from `Transpilable`.
 
-4. Its LaTeX output renders contacts on a single centred line separated by pipe (`$|$`) characters.
+2. It stores `parts`, a tuple of three or four strings: the H2 heading text followed by the stripped lines of the code block.
 
+3. The factory `Achievement.from_tags(tags)` extracts an H2 tag and its `<pre>` tag and returns:
+   - a `ThreePartAchievement` when the code block spans 2 lines; or
+   - a `FourPartAchievement` when it spans 3 lines.
+   It raises `ValueError` for any other part count.
 
-### 5B. ContactListItem
+4. Shared helpers build LaTeX commands (`\threePartAchievement{...}{...}{...}` / `\fourPartAchievement{...}{...}{...}{...}`, each argument escaped) and XML containers (`<three-part-achievement>` / `<four-part-achievement>` with one `<part>` element per part).
 
-1. `ContactListItem` represents a single contact entry.
 
-2. It stores `displayed_text` (the visible label) and `link` (the URL, or `None` if no hyperlink).
+### 6A. ThreePartAchievement
 
-3. If `link` is present, LaTeX output uses `\href{link}{\underline{displayed_text}}`. Otherwise, it outputs `displayed_text`.
+1. Represents a three-part achievement.
 
+2. Rendered as a single-row table. The first part is displayed in bold on its left side. If the second part is non-empty, it is italicised and displayed after the first part with a `|` separator. The third part is displayed on the right side of the table.
 
-## 6. ResumeSection
 
-1. `ResumeSection` is an abstract base class for all section types.
+### 6B. FourPartAchievement
 
-2. It stores a `heading` attribute (the section title).
+1. Represents a four-part achievement.
 
-3. It is subclassed by `CatalogueSection`, `OrganisationalSection`, and `ToolsetSection`.
+2. Rendered as a two-row table. The first part is displayed in bold in the top-left corner. The second line is displayed in the top right. The third and fourth part are italicised on the left and right sides of the bottom row respectively.
 
 
-## 7. CatalogueSection
+## 7. BulletedList
 
-1. `CatalogueSection` represents a section with no resume items, only a list of labelled entries.
+1. `BulletedList` wraps a `<ul>` tag and stores its `<li>` children.
 
-2. It is produced when a section has an H2 but no H3 children.
+2. `to_latex()` renders an `itemize` environment. Each list item is converted recursively: text nodes are LaTeX-escaped, `<b>` becomes `\textbf{...}`, `<i>` becomes `\textit{...}`; any other tag raises `ValueError`.
 
-3. It stores a `catalogue_list` of strings extracted from the `<ul>` children.
+3. `to_xml_element()` produces a `<bulleted-list>` element with one `<list-item>` per item, preserving `<b>`/`<i>` children.
 
-4. Items in the list may use a `Label: value` format. The label portion is rendered in bold.
 
-5. Its LaTeX output uses `\section{heading}` followed by an `itemize` environment.
+## 8. Font
 
+1. `Font` is a `str`-valued enum. Each member's value is its display name:
+   - `COMPUTER_MODERN` = `"Computer Modern"`
+   - `TIMES_NEW_ROMAN` = `"Times New Roman"`
+   - `FIRA_SANS` = `"Fira Sans"`
+   - `ROBOTO` = `"Roboto"`
+   - `NOTO_SANS` = `"Noto Sans"`
+   - `SOURCE_SANS_PRO` = `"Source Sans Pro"`
+   - `CORMORANT_GARAMOND` = `"Cormorant Garamond"`
+   - `CHARTER` = `"Charter"`
 
-## 8. OrganisationalSection
+2. The `get_latex_import` property maps each member to its LaTeX `\usepackage` command, which is substituted into the template's `%[[FONT_CHOICE]]%` slot.
 
-1. `OrganisationalSection` represents a section whose items have an organisational structure (role, organisation, location, dates).
+3. The `as_query_parameter` property lower-cases the value and joins words with hyphens (e.g. `"Times New Roman"` → `"times-new-roman"`).
 
-2. It is produced when a section contains H3 tags.
+4. `from_query_parameter(query_parameter)` resolves a kebab-case query string back to its enum member, defaulting to `TIMES_NEW_ROMAN` for `None` or unrecognised values.
 
-3. It contains a `resume_items` list of `OrganisationalSectionResumeItem` objects.
+5. `get_default_font()` returns `TIMES_NEW_ROMAN`, the canonical default.
 
-4. LaTeX and XML generation delegates to shared utility functions.
 
+## 9. MarkdownFileReader
 
-## 9. ToolsetSection
+1. `MarkdownFileReader` parses raw file contents into YAML frontmatter and a Markdown body.
 
-1. `ToolsetSection` represents a section whose items have a toolset focus (technologies and dates).
+2. Its frontmatter getters, including `get_string_argument_from_frontmatter`, `get_boolean_argument_from_frontmatter` and `get_list_argument_from_frontmatter`, extract typed values and raise `KeyError` (missing) or `TypeError` (wrong type).
 
-2. It is produced when the H2 heading starts with `!`. The `!` is stripped from the heading text.
+3. `get_soup_from_body()` converts the body with `python-markdown` and parses it into a BeautifulSoup tree.
 
-3. It contains a `resume_items` list of `ToolsetSectionResumeItem` objects.
+4. `get_tags_from_body()` returns the tree's top-level `Tag` children.
 
-4. LaTeX and XML generation delegates to the same utility functions as `OrganisationalSection`.
 
+## 10. Resources
 
-## 10. ResumeItem
+### 10A. template.tex
 
-1. `ResumeItem` is an abstract base class for items within organisational and toolset sections.
+1. `template.tex` is the LaTeX preamble and document skeleton loaded at compile time. It declares `\documentclass[letterpaper, 10pt]{article}` and imports `latexsym`, `fullpage`, `titlesec`, `marvosym`, `color`, `verbatim`, `enumitem`, `hyperref`, `fancyhdr`, `babel`, `tabularx`, and `etoolbox`, plus `\input{glyphtounicode}`.
 
-2. It stores `subheading` (the item title) and `description_list` (a list of bullet-point descriptions).
+2. It sets the page style to `fancy`, narrows the margins, forces ragged-right layout, and enables ATS-compliance via `\pdfgentounicode=1`.
 
-3. It provides shared helpers for rendering the description list to LaTeX and XML.
+3. Its five placeholders, `%[[FONT_CHOICE]]%`, `%[[RESUME_TITLE]]%`, `%[[RESUME_SUMMARY]]%`, `%[[RESUME_CONTACT_LIST]]%` and  `%[[RESUME_CONTENTS]]%`, are substituted by `Resume.to_latex`.
 
-
-## 11. OrganisationalSectionResumeItem
-
-1. `OrganisationalSectionResumeItem` represents an item within an organisational section.
-
-2. Its constructor expects a group of tags: H3 (subheading), `<pre>` (auxiliary info), and `<ul>` (description list).
-
-3. The `<pre>` block provides up to 3 lines mapped to `first_row_right`, `second_row_left`, and `second_row_right` (date, organisation, location).
-
-4. If fewer than 3 lines are provided, missing fields are padded with empty strings.
-
-5. Date ranges are normalised via a shared formatting utility.
-
-6. Its LaTeX output uses the `\resumeItemSubheading` custom command.
-
-
-## 12. ToolsetSectionResumeItem
-
-1. `ToolsetSectionResumeItem` represents an item within a toolset section.
-
-2. Its constructor expects a group of tags: H3, `<pre>`, and `<ul>`.
-
-3. The `<pre>` block provides up to 2 lines: `tools` (comma-separated technologies) and `time` (date range).
-
-4. If fewer than 2 lines are provided, missing fields are padded with empty strings.
-
-5. Its LaTeX output uses the `\resumeItemSubheadingWithToolset` custom command.
-
-
-## 13. Shared section utilities
-
-1. `toolset_and_organisational_section_utils.py` contains helper functions used by both `OrganisationalSection` and `ToolsetSection`.
-
-2. It provides tag classification logic for grouping tags into per-item groups.
-
-3. It provides functions for generating LaTeX and XML output for both section types.
-
-
-## 14. Enums
-
-### 14A. Font
-
-1. The `Font` enum maps each member to a LaTeX `\usepackage` command for the corresponding font package.
-
-2. The available members are:
-   - `COMPUTER_MODERN` (empty string, LaTeX default).
-   - `TIMES_NEW_ROMAN` (`\usepackage{mathptmx}`).
-   - `FIRA_SANS` (`\usepackage[sfdefault]{FiraSans}`).
-   - `ROBOTO` (`\usepackage[sfdefault]{roboto}`).
-   - `NOTO_SANS` (`\usepackage[sfdefault]{noto-sans}`).
-   - `SOURCE_SANS_PRO` (`\usepackage[default]{sourcesanspro}`).
-   - `CORMORANT_GARAMOND` (`\usepackage{CormorantGaramond}`).
-   - `CHARTER` (`\usepackage{charter}`).
-   
-3. A helper maps kebab-case strings (e.g. `"times-new-roman"`) to the corresponding member. It defaults to `TIMES_NEW_ROMAN` for `None` or unrecognised values. This helper is used by the controller layer to resolve the `?font=` query parameter.
-
-
-## 15. Utilities
-
-1. The `beautiful_soup_utils` utility provides functions for
-   - Converting a Markdown string to a BeautifulSoup HTML tree.
-   - Filtering a BeautifulSoup element's children to return only `Tag`-typed nodes.
-   
-2. The `input_parsing_utils` utility provides functions for truncating or padding lists to a fixed length, with configurable defaults or empty-string fallback.
-
-3. The `latex_utils` utility provides indentation helpers, date-range normalisation (hyphens to LaTeX ` -- `), command construction (e.g. `\textbf{arg}`), and environment wrapping (`\begin{env}...\end{env}`).
-
-4. The `file_utils` utility provides a function that creates parent directories and writes a string to disk. It is used by the compilation service to write the `.tex` file.
-
-
-## 16. Resources
-
-### 16A. preamble.tex
-
-1. `preamble.tex` is a LaTeX preamble template loaded at compile time.
-
-2. It contains a placeholder `% FONT CHOICE GOES HERE` which is replaced with the `font.value` string from the selected `Font` enum member.
-
-3. The template declares:
-   - Document class: `\documentclass[letterpaper, 11pt]{article}`.
-   - Packages: `latexsym`, `fullpage`, `titlesec`, `marvosym`, `color`, `verbatim`, `enumitem`, `hyperref`, `fancyhdr`, `babel`, `tabularx`.
-   - ATS compliance: `\pdfgentounicode=1`.
-   - Page style: `fancy` with empty headers and footers.
-   - Margin adjustments: narrower margins suited to a resume layout.
-   
-4. It defines the following custom LaTeX commands:
-   - `\resumeDescriptionListItem{text}` — a single bullet-point description.
-   - `\resumeItemSubheading{org}{date}{title}{loc}` — organisational item subheading in a two-column table.
-   - `\resumeSubSubheading{left}{right}` — two-field sub-subheading.
-   - `\resumeItemSubheadingWithToolset{left}{right}` — toolset item subheading.
-   - `\resumeSubheadingListStart` / `\resumeSubheadingListEnd` — list wrapper for subheadings.
-   - `\resumeDescriptionListStart` / `\resumeDescriptionListEnd` — list wrapper for description bullets.
+4. It defines the custom commands used by the components:
+   - `\resumeTitle{text}` — centred `\huge` title.
+   - `\resumeSummary{text}` — centred summary line.
+   - `\resumeContactList{...}` — centred contact row.
+   - `\threePartAchievement{title}{tools}{date}` — single-row item, see `ThreePartAchievement`.
+   - `\fourPartAchievement{title}{org}{role}{date}` — two-row item, see `FourPartAchievement`.

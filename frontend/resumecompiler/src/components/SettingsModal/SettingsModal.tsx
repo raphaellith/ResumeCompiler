@@ -6,34 +6,74 @@ import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import { FONT_OPTIONS, type FontOption } from "../../config/font";
+import { type FontOption } from "../../services/fontService.ts";
 import { SettingRow } from "../SettingRow/SettingRow";
 import vars from "../../styles/variables.module.scss";
 
 export type SettingsModalProps = {
   isOpen: boolean;
-  initialFont: string;
-  onSave: (font: string) => void;
+  initialFontQueryParam: string;
+  onSave: (fontQueryParam: string) => void;
   onClose: () => void;
+  fontOptions: FontOption[];
+  fontsLoading: boolean;
+  fontError: string | null;
 };
 
 export function SettingsModal({
   isOpen,
-  initialFont,
+  initialFontQueryParam,
   onSave,
   onClose,
+  fontOptions,
+  fontsLoading,
+  fontError,
 }: SettingsModalProps) {
-  const [selectedFont, setSelectedFont] = useState(initialFont);
+  const [selectedFontQueryParam, setSelectedFontQueryParam] = useState(initialFontQueryParam);
 
   useEffect(() => {
     if (isOpen) {
-      setSelectedFont(initialFont);
+      setSelectedFontQueryParam(initialFontQueryParam);
     }
-  }, [isOpen, initialFont]);
+  }, [isOpen, initialFontQueryParam]);
 
   const handleSave = useCallback(() => {
-    onSave(selectedFont);
-  }, [selectedFont, onSave]);
+    onSave(selectedFontQueryParam);
+  }, [selectedFontQueryParam, onSave]);
+
+  const isDisabled = fontsLoading || fontError !== null;
+
+  const renderFontOptions = () => {
+    if (fontsLoading) {
+      return (
+        <MenuItem disabled value="">
+          Loading fonts...
+        </MenuItem>
+      );
+    }
+    if (fontError) {
+      return (
+        <MenuItem disabled value="">
+          {fontError}
+        </MenuItem>
+      );
+    }
+    return fontOptions.map((option: FontOption) => {
+      const queryParam = option.asQueryParam();
+      return (
+        <MenuItem
+          key={queryParam}
+          value={queryParam}
+          sx={{
+            "&.Mui-selected": { backgroundColor: "action.selected" },
+            "&.Mui-selected:hover": { backgroundColor: "action.hover" },
+          }}
+        >
+          {option.name}
+        </MenuItem>
+      );
+    });
+  };
 
   return (
     <Dialog open={isOpen} onClose={onClose} aria-label="Settings">
@@ -42,8 +82,9 @@ export function SettingsModal({
         <SettingRow label="Font">
           <Select
             id="font-select"
-            value={selectedFont}
-            onChange={(e) => setSelectedFont(e.target.value)}
+            value={selectedFontQueryParam}
+            onChange={e => setSelectedFontQueryParam(e.target.value)}
+            disabled={isDisabled}
             sx={{
               minWidth: 240,
               "& .MuiOutlinedInput-notchedOutline": { borderColor: vars.colorDominantBorder },
@@ -51,24 +92,13 @@ export function SettingsModal({
               "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: vars.colorDominantBorder },
             }}
           >
-            {FONT_OPTIONS.map((option: FontOption) => (
-              <MenuItem
-                key={option.value}
-                value={option.value}
-                sx={{
-                  "&.Mui-selected": { backgroundColor: "action.selected" },
-                  "&.Mui-selected:hover": { backgroundColor: "action.hover" },
-                }}
-              >
-                {option.label}
-              </MenuItem>
-            ))}
+            {renderFontOptions()}
           </Select>
         </SettingRow>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Cancel</Button>
-        <Button onClick={handleSave} variant="contained">
+        <Button onClick={handleSave} variant="contained" disabled={isDisabled}>
           Save
         </Button>
       </DialogActions>

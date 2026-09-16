@@ -1,4 +1,5 @@
-import { useCallback, useState } from "react";
+import {useCallback, useState} from "react";
+import { ApiClient } from "../client/apiClient.ts";
 
 export type UseXmlExportResult = {
   isExportingXml: boolean;
@@ -6,9 +7,7 @@ export type UseXmlExportResult = {
   exportXml: (markdown: string) => Promise<string>;
 };
 
-export function useXmlExport(
-  getXmlEndpoint: () => Promise<string>
-): UseXmlExportResult {
+export function useXmlExport(): UseXmlExportResult {
   const [isExportingXml, setIsExportingXml] = useState(false);
   const [xmlError, setXmlError] = useState<string | null>(null);
 
@@ -17,34 +16,18 @@ export function useXmlExport(
       setIsExportingXml(true);
       setXmlError(null);
 
-      const xmlEndpoint = await getXmlEndpoint();
-
       try {
-        const response = await fetch(xmlEndpoint, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/xml",
-          },
-          body: JSON.stringify({ markdown }),
-        });
-
-        if (!response.ok) {
-          const errorText = await response.text().catch(() => "");
-          throw new Error(errorText || `Backend returned ${response.status}.`);
-        }
-
-        return await response.text();
+        const response = await ApiClient.getResponseFromPostRequestToXmlEndpoint(markdown);
+        return response.text();
       } catch (error) {
-        const message =
-          error instanceof Error ? error.message : "Failed to export XML.";
+        const message = error instanceof Error ? error.message : "Failed to export XML.";
         setXmlError(message);
         throw error;
       } finally {
         setIsExportingXml(false);
       }
     },
-    [getXmlEndpoint]
+    []
   );
 
   return { isExportingXml, xmlError, exportXml };

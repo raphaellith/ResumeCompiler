@@ -1,4 +1,4 @@
-\documentclass[letterpaper, 11pt]{article}
+\documentclass[letterpaper, 10pt]{article}
 
 \usepackage{latexsym}
 \usepackage[empty]{fullpage}
@@ -11,10 +11,11 @@
 \usepackage{fancyhdr}
 \usepackage[english]{babel}
 \usepackage{tabularx}
+\usepackage{etoolbox}
 
 \input{glyphtounicode}
 
-% FONT CHOICE GOES HERE
+%[[FONT_CHOICE]]%
 % \usepackage{mathptmx}
 % \usepackage[sfdefault]{FiraSans}
 % \usepackage[sfdefault]{roboto}
@@ -54,42 +55,43 @@
 
 %-------------------------
 % Custom commands
-\newcommand{\resumeDescriptionListItem}[1]{
-  \item\small{
-    {#1 \vspace{-2pt}}
-  }
+\newcommand{\resumeTitle}[1]{
+  \begin{center}
+	\huge #1
+  \end{center}
 }
 
-\newcommand{\resumeItemSubheading}[4]{
-  \vspace{-2pt}\item
-    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
-      \textbf{#1} & #2 \\
-      \textit{\small#3} & \textit{\small #4} \\
-    \end{tabular*}\vspace{-7pt}
+\newcommand{\resumeSummary}[1] {
+  \begin{center}#1\end{center}
 }
 
-\newcommand{\resumeSubSubheading}[2]{
-    \item
-    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
-      \textit{\small#1} & \textit{\small #2} \\
-    \end{tabular*}\vspace{-7pt}
+\newcommand{\resumeContactList}[1] {
+  \begin{center} #1\end{center}
 }
 
-\newcommand{\resumeItemSubheadingWithToolset}[2]{
-    \item
-    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
-      \small#1 & #2 \\
-    \end{tabular*}\vspace{-7pt}
-}
+\newcommand{\fourPartAchievement}[4]{\begin{tabular*}{\textwidth}[t]{l@{\extracolsep{\fill}}r}
+    \textbf{#1} & #2 \\
+    \textit{#3} & \textit{#4} \\
+\end{tabular*}}
 
-\newcommand{\resumeSubItem}[1]{\resumeDescriptionListItem{#1}\vspace{-4pt}}
+\newcommand{\threePartAchievement}[3]{
+\begin{tabular*}{\textwidth}[t]{l@{\extracolsep{\fill}}r}
+    \textbf{#1} \ifstrempty{#2}{}{$|$ \textit{#2}} & #3\\
+\end{tabular*}}
 
 \renewcommand\labelitemii{$\vcenter{\hbox{\tiny$\bullet$}}$}
 
-\newcommand{\resumeSubheadingListStart}{\begin{itemize}[leftmargin=0.15in, label={}]}
-\newcommand{\resumeSubheadingListEnd}{\end{itemize}}
-\newcommand{\resumeDescriptionListStart}{\begin{itemize}}
-\newcommand{\resumeDescriptionListEnd}{\end{itemize}\vspace{-5pt}}
-
 \setlength\topsep{0pt}
 \setlength\parskip{0pt}
+
+\begin{document}
+
+%[[RESUME_TITLE]]%
+
+%[[RESUME_SUMMARY]]%
+
+%[[RESUME_CONTACT_LIST]]%
+
+%[[RESUME_CONTENTS]]%
+
+\end{document}

@@ -1,4 +1,4 @@
-from backend.model.resume_components.resume import Resume
+from backend.model.transpilables.resume import Resume
 
 
 def get_resume_as_xml_from_markdown(markdown: str) -> str:
