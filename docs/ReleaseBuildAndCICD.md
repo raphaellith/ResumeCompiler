@@ -91,7 +91,6 @@ File: `.github/workflows/release.yml`
 | Runner | Target triple | Bundle |
 |---|---|---|
 | `macos-latest` | `aarch64-apple-darwin` | `.dmg` + `.app` |
-| `macos-15-intel` | `x86_64-apple-darwin` | `.dmg` + `.app` |
 
 **Per-platform steps**:
 1. Checkout, then setup Python 3.12 (`actions/setup-python@v5`, pip cache)
