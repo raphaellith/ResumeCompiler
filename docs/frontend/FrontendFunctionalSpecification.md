@@ -38,7 +38,7 @@ The frontend is Tauri-only in practice: all backend requests route through `ApiC
 
 ## 3. Backend initialisation
 
-1. On startup the app calls `ApiClient.ensureBackendIsReady()`, which polls `GET /health` until it returns `200 OK`. Polling starts at 50 ms and doubles up to a 500 ms cap.
+1. On startup the app calls `ApiClient.ensureBackendIsReady()`, which polls `GET /health` until it returns `200 OK`. Polling starts at 50 ms and doubles up to a 500 ms cap, giving up after a 45 s deadline: a dead backend (e.g. a bundled sidecar that failed to boot) throws a clear error pointing at the `[backend]`-prefixed sidecar logs instead of hanging.
 
 2. Once ready, the app fetches font information from `GET /font-names` via `FontService`, including both the list of available fonts and the default font ("Times New Roman").
 
@@ -146,7 +146,7 @@ The frontend is Tauri-only in practice: all backend requests route through `ApiC
 
 2. `resolveApiBaseUrl()` throws `"Backend API is only available in Tauri mode"` in a plain browser. In Tauri, it invokes the `get_backend_port` command to obtain the sidecar's dynamic port and validates it is a positive integer, then caches `http://127.0.0.1:{port}`.
 
-3. `ensureBackendIsReady()` polls `GET /health` with exponential backoff (50 ms → 500 ms) until the endpoint responds `OK`.
+3. `ensureBackendIsReady()` polls `GET /health` with exponential backoff (50 ms → 500 ms) until the endpoint responds `OK`, aborting after a 45 s deadline with an error that references the `[backend]`-prefixed sidecar logs.
 
 4. `getResponseFromEndpoint()` awaits backend readiness, builds the endpoint URL with optional query string, `fetch`es it, and — on a non-OK response — parses the JSON body and throws `Error("<error-type>: <message>")`.
 

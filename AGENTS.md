@@ -36,12 +36,13 @@ npm run tauri build # Tauri desktop (release)
 
 - `tauri.conf.json` declares `externalBin: ["binaries/backend"]`. At runtime Tauri spawns the PyInstaller-built binary with `--port <random-free-port>`, reads stderr for logs, and exposes the port to the frontend via `get_backend_port` Tauri command (`src-tauri/src/lib.rs`).
 - Sidecar binary placed at `src-tauri/binaries/backend-<target-triple>` (built by CI, not committed — gitignored in `src-tauri/.gitignore`).
+- **macOS signature gotcha (v2 regression):** the PyInstaller onefile sidecar embeds its own `Python.framework`, which is ad-hoc signed. Tauri's bundler re-signs the sidecar with hardened runtime (`adhoc,runtime`); current macOS then refuses to `dlopen` the ad-hoc framework (`PYI-2790 ... different Team IDs`) unless the sidecar carries `com.apple.security.cs.disable-library-validation`. That entitlement lives in `src-tauri/entitlements.plist`, wired via `bundle.macOS.entitlements` in `tauri.conf.json`, and Tauri applies it to the nested sidecar during bundling. Keep `signingIdentity: "-"`. To validate from scratch: build, extract `Contents/MacOS/backend`, run it with `--port`, curl `/health` (expect `{"status":"ok"}`), and `codesign -d --entitlements -` it.
 - **Dev-mode gotcha:** `npm run tauri dev` silently logs "Sidecar binary not found (dev mode)" and spawns no backend if no sidecar is staged. Build one locally via `npm run build-sidecar` (→ `scripts/build_sidecar.sh`, uses `venv/bin/pyinstaller`, multiline `--add-data` separators work on macOS) or copy a CI-built `dist/backend`.
 
 ## CI / Release
 
 - `.github/workflows/release.yml`: triggered by `v*` tag push or manual `workflow_dispatch`. macOS-only (`macos-latest`, `aarch64-apple-darwin`).
-- Builds the Python sidecar with `pyinstaller --onefile --collect-submodules uvicorn --add-data backend/model/resources/template.tex:<target>/` using `backend/run.py` as entrypoint, stages it at `src-tauri/binaries/backend-<target>`, then `npm run tauri build` (DMG + app).
+- Builds the Python sidecar with `pyinstaller --onefile --collect-submodules uvicorn --add-data backend/model/resources/template.tex:<target>/` using `backend/run.py` as entrypoint, **smoke-tests `dist/backend --port <n>` against `GET /health`**, stages it at `src-tauri/binaries/backend-<target>`, then `npm run tauri build` (DMG + app) and **re-validates the re-signed `Contents/MacOS/backend` inside the bundle: checks `codesign -d --entitlements` carries `disable-library-validation`, then boots it with `--port` against `GET /health`**.
 - `backend/build.spec` is the local PyInstaller spec for reference (root `backend.spec` also exists; both are gitignored via `*.spec`).
 
 ## Markdown quirks

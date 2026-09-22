@@ -55,6 +55,7 @@ export class ApiClient {
 
     let delay = 50;
     const maxDelay = 500;
+    const deadline = Date.now() + 45_000;
 
     while (true) {
       try {
@@ -65,6 +66,12 @@ export class ApiClient {
         }
       } catch {
         // Ignore errors, keep polling
+      }
+
+      if (Date.now() >= deadline) {
+        throw new Error(
+          `Backend did not become ready within 45s. Check the backend logs from your terminal (sidecar output is prefixed with [backend]).`
+        );
       }
 
       await new Promise((resolve) => setTimeout(resolve, delay));
