@@ -1,4 +1,7 @@
+import glob
+import os
 from pathlib import Path
+import shutil
 import subprocess
 import tempfile
 
@@ -41,6 +44,65 @@ def _get_pdf_bytes_from_latex(latex_code: str) -> bytes:
         return pdf_output_path.read_bytes()
 
 
+def _locate_pdflatex() -> str:
+    """
+    Resolves the path to a usable `pdflatex` executable or raises PdfLatexNotFoundError.
+
+    When launching the desktop app via LaunchServices (e.g. through Finder or Dock), its environment does not apply the
+    macOS `path_helper` entries (`/etc/paths` and `/etc/paths.d/*`). Therefore, unlike in interactive shells, the
+    sidecar's inherited `$PATH` does not contain LaTeX install locations.
+
+    We therefore adopt this resolution order.
+
+    1. `$PATH` lookup: This covers dev mode and terminal-spawned backends.
+    2. `/etc/paths` and `/etc/paths.d/*` directories: This matches how a system LaTeX distribution registers itself.
+    3. Known install roots on Darwin (e.g. MacTeX, TeX Live and MacPorts).
+    """
+    path_found = shutil.which("pdflatex")
+    if path_found:
+        return path_found
+
+    path_helper_entries = _macos_path_helper_entries()
+    if path_helper_entries:
+        augmented_path = os.pathsep.join([*path_helper_entries, os.environ.get("PATH", "")])
+        path_found = shutil.which("pdflatex", path=augmented_path)
+        if path_found:
+            return path_found
+
+    if os.name == "posix" and os.uname().sysname == "Darwin":
+        candidates = [
+            "/Library/TeX/texbin/pdflatex",
+            "/Library/TeX/Distributions/Programs/texbin/pdflatex",
+            "/opt/local/bin/pdflatex",
+            *glob.glob("/usr/local/texlive/*/bin/*/pdflatex"),
+        ]
+        for candidate in candidates:
+            if os.path.isfile(candidate) and os.access(candidate, os.X_OK):
+                return candidate
+
+    raise PdfLatexNotFoundError()
+
+
+def _macos_path_helper_entries() -> list[str]:
+    """
+    Returns the directories referenced by /etc/paths and /etc/paths.d/*, the files which
+    `/usr/libexec/path_helper` merges into `$PATH` for login shells. Only present on macOS.
+    """
+    entries: list[str] = []
+
+    for path in glob.glob("/etc/paths") + glob.glob("/etc/paths.d/*"):
+        if not os.path.isfile(path):
+            continue
+
+        try:
+            with open(path, encoding="utf-8") as file:
+                entries.extend(line.strip() for line in file if line.strip() and not line.startswith("#"))
+        except OSError:
+            continue
+
+    return entries
+
+
 def _run_pdflatex(latex_file_name: str, working_directory: Path) -> tuple[str, str, int]:
     """
     Runs pdflatex on the specified LaTeX file in the given working directory, and returns the stdout, stderr and return
@@ -48,10 +110,11 @@ def _run_pdflatex(latex_file_name: str, working_directory: Path) -> tuple[str, s
     :param latex_file_name: The name of the LaTeX file.
     :param working_directory: The path to the working directory where the LaTeX file is located.
     """
+    pdflatex_path = _locate_pdflatex()
     try:
         process = subprocess.run(
             [
-                'pdflatex',
+                pdflatex_path,
                 '-interaction=nonstopmode',  # Do not pause for user input when errors occur
                 '-halt-on-error',
                 latex_file_name

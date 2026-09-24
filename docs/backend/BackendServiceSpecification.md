@@ -18,7 +18,7 @@ All parsing and compilation logic must be handled by the model.
 
 3. Write the LaTeX string to `resume.tex` inside a `tempfile.TemporaryDirectory(prefix="resume_compiler_")`.
 
-4. Run `pdflatex` via `subprocess.run` with the flags `-interaction=nonstopmode` (no interactive prompts) and `-halt-on-error` (abort immediately on error). Standard input is set to `DEVNULL` and stdout/stderr are captured, with the working directory set to the temporary directory.
+4. Resolve the `pdflatex` executable via `_locate_pdflatex()` (see 1B) and run it via `subprocess.run` with the flags `-interaction=nonstopmode` (no interactive prompts) and `-halt-on-error` (abort immediately on error). Standard input is set to `DEVNULL` and stdout/stderr are captured, with the working directory set to the temporary directory.
 
 5. If the exit code is non-zero, raise a `RuntimeError` containing the captured stdout and stderr.
 
@@ -29,7 +29,7 @@ All parsing and compilation logic must be handled by the model.
 
 ### 1B. Error handling
 
-1. If `pdflatex` is not found on `$PATH` (or spawn fails with a "not found"/"no such file" `OSError`), a `PdfLatexNotFoundError` is raised (`backend/service/errors/pdf_latex_not_found_error.py`, a `RuntimeError` subclass whose message is `"Could not find 'pdflatex'. Install a LaTeX distribution on the backend host."`). The controller surfaces it as an HTTP 500 with `error: "PdfLatexNotFoundError"`.
+1. `pdflatex` is resolved by `_locate_pdflatex()`, which checks, in order: the inherited `$PATH` (`shutil.which`); macOS `/etc/paths` + `/etc/paths.d/*` directories (GUI-launched desktop apps do not apply these `path_helper` entries to `$PATH`); and well-known Darwin install roots (`/Library/TeX/texbin/pdflatex`, `/Library/TeX/Distributions/Programs/texbin/pdflatex`, `/opt/local/bin/pdflatex`, `/usr/local/texlive/*/bin/*/pdflatex`). If none yield an executable, or the spawn fails with a "not found"/"no such file" `OSError`, a `PdfLatexNotFoundError` is raised (`backend/service/errors/pdf_latex_not_found_error.py`, a `RuntimeError` subclass whose message is `"Could not find 'pdflatex'. Install a LaTeX distribution on the backend host."`). The controller surfaces it as an HTTP 500 with `error: "PdfLatexNotFoundError"`.
 
 2. A non-zero `pdflatex` exit code raises `RuntimeError` with the captured stdout and stderr.
 

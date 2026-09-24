@@ -45,10 +45,21 @@ application package. LaTeX (`pdflatex`) is **not** bundled — detected at runti
 
 LaTeX is not bundled (hundreds of MB, platform-specific). Detection:
 
-1. `backend/service/markdown_to_pdf_bytes_compilation_service.py` — the
-   `_run_pdflatex()` function catches `FileNotFoundError` (and `OSError` messages
-   containing "not found" / "no such file") and raises `PdfLatexNotFoundError`
+1. `backend/service/markdown_to_pdf_bytes_compilation_service.py` — the `_locate_pdflatex()`
+   function resolves `pdflatex`, and `_run_pdflatex()` catches `FileNotFoundError` (and
+   `OSError` messages containing "not found" / "no such file") and raises
+   `PdfLatexNotFoundError`
    (`backend/service/errors/pdf_latex_not_found_error.py`).
+   Resolution order and rationale:
+   - `$PATH` lookup first (`shutil.which`). This covers dev mode and any backend spawned
+     from a terminal.
+   - macOS `/etc/paths` + `/etc/paths.d/*` directories (the files `/usr/libexec/path_helper`
+     merges into `$PATH` for login shells). GUI-launched apps never run `path_helper`, so
+     the bundled desktop app's environment omits entries such as MacTeX's `/Library/TeX/texbin`
+     even though interactive shells see them; these directories are probed explicitly.
+   - Known Darwin install roots as a final fallback: `/Library/TeX/texbin/pdflatex`,
+     `/Library/TeX/Distributions/Programs/texbin/pdflatex`, `/opt/local/bin/pdflatex`
+     (MacPorts), and `/usr/local/texlive/*/bin/*/pdflatex` (TeX Live).
 2. `backend/controller/api_controller.py` — the global exception handler returns
    `HTTP 500` with JSON body `{"error": "PdfLatexNotFoundError", "message": "Could not find 'pdflatex'..."}`.
 3. `src/client/apiClient.ts` — turns a non-OK response into
