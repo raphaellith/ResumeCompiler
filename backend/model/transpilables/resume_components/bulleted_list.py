@@ -19,12 +19,12 @@ class BulletedList(ResumeComponent):
         """
         Converts the bulleted list to a LaTeX itemize environment.
         :return: The LaTeX code representation of this list.
-        :raises ValueError: If a list item contains a tag other than <b> or <i>.
+        :raises ValueError: If a list item contains a tag other than <b>, <strong>, <i> and <em>.
         """
 
         def get_page_element_as_latex(element: PageElement) -> str:
             """
-            Recursively converts a single page element to LaTeX, applying <b> and <i> formatting.
+            Recursively converts a single page element to LaTeX, applying <b>, <strong>, <i> and <em> formatting.
             :param element: The page element (text or tag) to convert.
             :return: The LaTeX code representation of the element.
             :raises ValueError: If the element is an unsupported tag or a non-text, non-tag element.
@@ -33,11 +33,13 @@ class BulletedList(ResumeComponent):
                 return Transpilable.escape_for_latex(element.string)
 
             if isinstance(element, Tag):
-                if element.name == "b":
+                if element.name in ("b", "strong"):
                     return r"\textbf{" + "".join(map(get_page_element_as_latex, element.contents)) + "}"
-                if element.name == "i":
+                if element.name in ("i", "em"):
                     return r"\textit{" + "".join(map(get_page_element_as_latex, element.contents)) + "}"
-                raise ValueError(f"A list item contains a <{element.name}> tag. Only <b> and <i> tags are allowed.")
+                raise ValueError(
+                    f"A list item contains a <{element.name}> tag. Only <b>, <strong>, <i> and <em> tags are allowed."
+                )
 
             raise ValueError("A list item contains an element that is neither text nor an HTML tag.")
 
@@ -60,7 +62,7 @@ class BulletedList(ResumeComponent):
 
         for li_tag in self.li_tags:
             list_item_element: ElementTree.Element = ElementTree.fromstring(li_tag.prettify(formatter="minimal"))
-            list_item_element.tag = "list-item"  # Other <b> and <i> tags stay as is
+            list_item_element.tag = "list-item"  # Other <b>, <strong>, <i> and <em> tags stay as is
             container_element.append(list_item_element)
 
         return container_element

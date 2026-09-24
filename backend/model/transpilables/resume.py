@@ -111,7 +111,7 @@ class Resume(Transpilable):
 
         Each top-level tag must additionally satisfy the following requirements.
         - h1/h2: Contains exactly one child, and that child must be a tagless text node (NavigableString).
-        - ul: Every direct child must be an <li> tag and must only contain <b> and <i> tags.
+        - ul: Every direct child must be an <li> tag and must only contain <b>, <strong>, <i> and <em> tags.
         - pre: Contains exactly one child, which must be a <code> tag. That <code> must contain exactly one child,
           which is a text node (NavigableString) whose stripped text spans exactly 2 or 3 lines.
 
@@ -146,9 +146,9 @@ class Resume(Transpilable):
                 for list_item in tag.find_all("li"):
                     tags_used_in_list_item = list_item.find_all()
                     for tag_used_in_list_item in tags_used_in_list_item:
-                        if tag_used_in_list_item.name not in ("b", "i"):
-                            raise ValueError(f"A list item contains a <{tag_used_in_list_item.name}> tag; only <b> "
-                                             f"and <i> tags are allowed.")
+                        if tag_used_in_list_item.name not in ("b", "strong", "i", "em"):
+                            raise ValueError(f"A list item contains a <{tag_used_in_list_item.name}> tag; only <b>, "
+                                             f"<strong>, <i> and <em> tags are allowed.")
 
             elif tag.name == "pre":
                 if len(tag.contents) != 1:
