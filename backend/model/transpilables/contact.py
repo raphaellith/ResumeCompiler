@@ -26,7 +26,7 @@ class Contact(Transpilable):
             return display_as_latex
 
         link_as_latex = Transpilable.escape_for_latex(self.link)
-        return r"\href{" + display_as_latex + r"}{\underline{" + link_as_latex + "}}"
+        return r"\href{" + link_as_latex + r"}{\underline{" + display_as_latex + "}}"
 
     def to_xml_element(self) -> ElementTree.Element:
         """
