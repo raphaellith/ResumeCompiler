@@ -11,7 +11,7 @@ python backend/run.py                                  # default :8000 (Tauri si
 ```
 
 - **Must run from repo root** (`backend.*` absolute imports). `venv/` exists at root.
-- Requires `pdflatex` on `$PATH` (system LaTeX distribution).
+- Requires `pdflatex` (system LaTeX distribution). Detected via `$PATH`, macOS `/etc/paths`+`/etc/paths.d` entries, or known install roots (`/Library/TeX/texbin`, `/usr/local/texlive/*/bin/*`, `/opt/local/bin`) — see `_locate_pdflatex()`.
 - Endpoints: `GET /health` (frontend readiness poll), `GET /font-names` (valid font names + default), `POST /pdf?font=kebab-case-name` → `application/pdf`, `POST /xml` → `application/xml` (debug component tree). Both POSTs accept `{"markdown": "..."}`. Default font: `times-new-roman`.
 - Pipeline: Markdown (YAML frontmatter + body) → BeautifulSoup → `Resume` component tree → `to_latex()` → `template.tex` (`%[[PLACEHOLDER]]%` slots) → `pdflatex` in temp dir → PDF bytes. Entrypoint: `backend.service.markdown_to_pdf_bytes_compilation_service.get_pdf_bytes_from_markdown`.
 - Frontmatter fields: `title`, `summary`, `contacts` (list of `{display, link}`), each with an optional `*_bold` boolean. Read via `backend.model.utils.markdown_file_reader`. Template resolution differs frozen (PyInstaller) vs dev — see `Resume.get_latex_template_file_path()`.
