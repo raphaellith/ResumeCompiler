@@ -12,7 +12,7 @@ The parser is strict: the document body must match a fixed structure, and any de
 | `- item` (top-level `<ul>`)                                | `BulletedList`                                          |
 | Plain paragraph (`<p>`)                                    | Comment, ignored                                        |
 
-Nothing else is allowed at the top level: H3/H4 headings, horizontal rules, blockquotes, tables, images, and non-`<b>`/`<i>` inline tags are rejected.
+Nothing else is allowed at the top level: H3/H4 headings, horizontal rules, blockquotes, tables, images, and non-`<b>`/`<strong>`/`<i>`/`<em>` inline tags are rejected.
 
 
 ## 1. Frontmatter
@@ -85,19 +85,12 @@ Every H2 must be immediately followed by its code block; an H2 with 2 or 3 code 
 
 ## 4. Bulleted lists
 
-A top-level unordered list (`-` items) is rendered as a bullet list. This is how you add:
-
-- description bullets under an achievement;
-- list sections such as `# Technical Skills`, where each item is a `Label: value` pair (e.g. `- Languages: Java, Python`). The label is not automatically bolded — use `<b>` (section 4A) to emphasise it.
+A top-level unordered list (`-` items) is rendered as a bullet list. Markdown formatting, including bold and italic text, is supported.
 
 ```markdown
 - Languages: Java, Python
 - Web & Networking: HTML, CSS, React
 ```
-
-### 4A. Inline emphasis
-
-Inline emphasis inside list items must use **raw HTML**: `<b>…</b>` for bold and `<i>…</i>` for italics. Markdown's `**bold**` and `*italic*` produce `<strong>` and `<em>` respectively, which the parser explicitly rejects — only `<b>` and `<i>` are allowed inside `<li>` elements. Nested emphasis (e.g. `<b><i>…</i></b>`) is supported.
 
 
 ## 5. Hiding elements

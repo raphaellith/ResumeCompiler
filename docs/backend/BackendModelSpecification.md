@@ -45,7 +45,7 @@ The model lives under `backend/model`:
 
 2. Frontmatter is validated to have `title`, `summary` and `contacts`. Contacts must be a list of dicts, each with a string `display` and an optional string `link`. Contact-related validation is performed in `Resume._validate_and_parse_contacts`.
 
-3. `_validate_tags()` checks the body structure. The top-level tags, concatenated in document order, must fully match `(<h1>|<ul>|<h2><pre>|<p>)*`. Also, headings must contain exactly one plain text node; `<ul>` children are `<li>` tags containing only `<b>`/`<i>` tags; a `<pre>` wraps exactly one `<code>` whose single text node spans exactly 2 or 3 lines.
+3. `_validate_tags()` checks the body structure. The top-level tags, concatenated in document order, must fully match `(<h1>|<ul>|<h2><pre>|<p>)*`. Also, headings must contain exactly one plain text node; `<ul>` children are `<li>` tags containing only `<b>`/`<strong>`/`<i>`/`<em>` tags; a `<pre>` wraps exactly one `<code>` whose single text node spans exactly 2 or 3 lines.
 
 4. `_remove_hidden_tags()` strips hidden elements:
    - An H1 or H2 heading prefixed with `^` has its entire section scope removed.
@@ -122,9 +122,9 @@ The model lives under `backend/model`:
 
 1. `BulletedList` wraps a `<ul>` tag and stores its `<li>` children.
 
-2. `to_latex()` renders an `itemize` environment. Each list item is converted recursively: text nodes are LaTeX-escaped, `<b>` becomes `\textbf{...}`, `<i>` becomes `\textit{...}`; any other tag raises `ValueError`.
+2. `to_latex()` renders an `itemize` environment. Each list item is converted recursively: text nodes are LaTeX-escaped, `<b>` and `<strong>` become `\textbf{...}`, `<i>` and `<em>` become `\textit{...}`; any other tag raises `ValueError`.
 
-3. `to_xml_element()` produces a `<bulleted-list>` element with one `<list-item>` per item, preserving `<b>`/`<i>` children.
+3. `to_xml_element()` produces a `<bulleted-list>` element with one `<list-item>` per item, preserving `<b>`/`<strong>`/`<i>`/`<em>` children.
 
 
 ## 8. Font
