@@ -33,7 +33,9 @@ application package. LaTeX (`pdflatex`) is **not** bundled — detected at runti
 - **Frontend** (`src/client/apiClient.ts`): Calls `invoke("get_backend_port")` to
   retrieve the dynamic port in Tauri mode, then polls `GET /health` (exponential
   backoff 50 ms → 500 ms) until it returns `200 OK` before using other backend
-  endpoints.
+  endpoints. Polling gives up after a 45 s deadline and throws an error pointing
+  at the `[backend]`-prefixed sidecar logs on stderr instead of hanging
+  indefinitely.
 - **Dev mode**: The sidecar binary won't exist at `src-tauri/binaries/` during
   development unless built first. `lib.rs` logs "Sidecar binary not found (dev mode)"
   and the frontend requires a valid dynamic sidecar port — there is no fixed-URL
@@ -76,6 +78,15 @@ Port is dynamically allocated to avoid conflicts:
 - `macOS.signingIdentity: "-"` — builds are ad-hoc signed (no Apple Developer
   account required for distribution; users bypass Gatekeeper via
   right-click → Open or `xattr -c`).
+- `macOS.entitlements: "entitlements.plist"` —
+  `com.apple.security.cs.disable-library-validation`. Required because the
+  PyInstaller onefile sidecar embeds an ad-hoc-signed `Python.framework`, which
+  the Tauri bundler re-signs with hardened runtime (`adhoc,runtime`) during
+  bundling; macOS's library validation would otherwise refuse to `dlopen` the
+  embedded framework (PyInstaller `PYI-2790`, "different Team IDs") and the
+  sidecar would die at startup. Tauri applies the entitlement to the nested
+  sidecar as well as the app binary. Keep `signingIdentity: "-"` — the
+  entitlement works with ad-hoc signing.
 - CSP is disabled (`"csp": null`) — offline PDF preview requires the backend at a
   localhost port.
 
@@ -94,14 +105,20 @@ File: `.github/workflows/release.yml`
 
 **Per-platform steps**:
 1. Checkout, then setup Python 3.12 (`actions/setup-python@v5`, pip cache)
-2. `pip install -r requirements.txt pyinstaller`
+2. `pip install -r requirements.txt "pyinstaller==6.22.2"`
 3. Build the sidecar with
    `pyinstaller --onefile --name backend --add-data "backend/model/resources/template.tex:backend/model/resources/" --collect-submodules uvicorn backend/run.py`
-4. Copy the binary to `src-tauri/binaries/backend-{target}` (`dist/backend`)
-5. Setup Node 22 (`actions/setup-node@v4`, npm cache) and run `npm ci`
-6. Setup the Rust toolchain and the target via `dtolnay/rust-toolchain@stable`; cache with `swatinem/rust-cache@v2`
-7. `npm run tauri build` with `TARGET={target}` env
-8. Upload the `.dmg` and `.app` from `src-tauri/target/release/bundle/` as a build artifact
+4. Smoke-test `dist/backend --port <random>` against `GET /health` (expect
+   `{"status":"ok"}`) before staging
+5. Copy the binary to `src-tauri/binaries/backend-{target}` (`dist/backend`)
+6. Setup Node 22 (`actions/setup-node@v4`, npm cache) and run `npm ci`
+7. Setup the Rust toolchain and the target via `dtolnay/rust-toolchain@stable`; cache with `swatinem/rust-cache@v2`
+8. `npm run tauri build`
+9. Validate the bundled sidecar: find `Contents/MacOS/backend` inside the `.app`,
+   assert `codesign -d --entitlements -` exposes
+   `com.apple.security.cs.disable-library-validation`, then copy it out, boot it
+   with `--port <random>`, and hit `GET /health` (expect `{"status":"ok"}`)
+10. Upload the `.dmg` and `.app` from `src-tauri/target/release/bundle/` as a build artifact
 
 **Post-matrix**: A `create-release` job (on `ubuntu-latest`, `needs: build`,
 `github.ref_type == 'tag'`) downloads all artifacts and creates a GitHub Release
@@ -132,11 +149,12 @@ with generated release notes (`softprops/action-gh-release@v2`).
 | `backend/run.py` | PyInstaller entrypoint, parses `--port` |
 | `backend/build.spec` | PyInstaller spec file reference (local builds) |
 | `scripts/build_sidecar.sh` | Local sidecar build + staging script |
+| `src-tauri/entitlements.plist` | macOS signing entitlements (`disable-library-validation`) |
 | `backend/service/errors/pdf_latex_not_found_error.py` | `pdflatex`-missing error type |
 | `src-tauri/src/lib.rs` | Sidecar spawn, state, `get_backend_port` command |
-| `src-tauri/tauri.conf.json` | `externalBin`, bundle targets, macOS signing skip |
+| `src-tauri/tauri.conf.json` | `externalBin`, bundle targets, ad-hoc macOS signing + entitlements |
 | `src-tauri/capabilities/default.json` | Shell/dialog/fs permissions |
-| `src/client/apiClient.ts` | Dynamic endpoint resolution, `/health` readiness poll |
+| `src/client/apiClient.ts` | Dynamic endpoint resolution, `/health` readiness poll (45 s deadline) |
 | `src/services/fontService.ts` | Font list consumed from `GET /font-names` |
 | `src/hooks/usePdfCompilation.ts` | PDF compilation + error propagation |
 | `src/components/CompilationErrorMessage/` | Compilation error display UI |

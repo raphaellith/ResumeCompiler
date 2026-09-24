@@ -1,0 +1,8 @@
+.pypirc
+
+# PyInstaller build artifacts
+*.spec
+dist/
+build/
+
+files/*

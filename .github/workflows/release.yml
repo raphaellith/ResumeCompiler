@@ -32,7 +32,7 @@ jobs:
 
       - name: Install Python dependencies
         run: |
-          pip install -r requirements.txt pyinstaller
+          pip install -r requirements.txt "pyinstaller==6.22.2"
 
       - name: Build Python sidecar with PyInstaller
         shell: bash
@@ -42,6 +42,27 @@ jobs:
             --add-data "backend/model/resources/template.tex:backend/model/resources/" \
             --collect-submodules uvicorn \
             backend/run.py
+
+      - name: Smoke-test Python sidecar
+        shell: bash
+        run: |
+          PORT=$(( 20000 + RANDOM % 20000 ))
+          ./dist/backend --port "$PORT" >sidecar_smoke.log 2>&1 &
+          SIDECAR_PID=$!
+          HEALTH=""
+          for _ in $(seq 1 30); do
+            if HEALTH=$(curl -fsS -m 2 "http://127.0.0.1:$PORT/health" 2>/dev/null); then
+              break
+            fi
+            sleep 2
+          done
+          kill "$SIDECAR_PID" 2>/dev/null || true
+          if [ "$HEALTH" != '{"status":"ok"}' ]; then
+            echo "Sidecar failed to boot:" >&2
+            tail -n 40 sidecar_smoke.log >&2
+            exit 1
+          fi
+          echo "Sidecar smoke test passed: $HEALTH"
 
       - name: Stage sidecar binary for Tauri
         shell: bash
@@ -84,6 +105,40 @@ jobs:
       - name: Build Tauri application
         run: npm run tauri build
         working-directory: frontend/resumecompiler
+
+      - name: Validate bundled sidecar boots and carries disable-library-validation
+        shell: bash
+        working-directory: frontend/resumecompiler
+        run: |
+          SIDECAR=$(find src-tauri/target/release/bundle/macos -type f -path "*/Contents/MacOS/backend" | head -n 1)
+          if [ -z "$SIDECAR" ]; then
+            echo "Bundled sidecar not found under src-tauri/target/release/bundle/macos" >&2
+            exit 1
+          fi
+          if ! codesign -d --entitlements - "$SIDECAR" 2>&1 | grep -q "com.apple.security.cs.disable-library-validation"; then
+            echo "Bundled sidecar is missing the disable-library-validation entitlement:" >&2
+            codesign -d --entitlements - "$SIDECAR" >&2 2>&1 || true
+            exit 1
+          fi
+          cp "$SIDECAR" ./bundled_backend
+          chmod +x ./bundled_backend
+          PORT=$(( 20000 + RANDOM % 20000 ))
+          ./bundled_backend --port "$PORT" >bundled_smoke.log 2>&1 &
+          BUNDLED_PID=$!
+          HEALTH=""
+          for _ in $(seq 1 30); do
+            if HEALTH=$(curl -fsS -m 2 "http://127.0.0.1:$PORT/health" 2>/dev/null); then
+              break
+            fi
+            sleep 2
+          done
+          kill "$BUNDLED_PID" 2>/dev/null || true
+          if [ "$HEALTH" != '{"status":"ok"}' ]; then
+            echo "Bundled (re-signed) sidecar failed to boot:" >&2
+            tail -n 40 bundled_smoke.log >&2
+            exit 1
+          fi
+          echo "Bundled sidecar validation passed: $HEALTH"
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
