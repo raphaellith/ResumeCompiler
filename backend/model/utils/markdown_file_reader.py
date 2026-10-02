@@ -14,56 +14,64 @@ class MarkdownFileReader:
         """
         self.post: frontmatter.Post = frontmatter.loads(file_contents)
 
-    def _get_argument_from_frontmatter(self, parameter: str) -> object:
+    def _get_argument_from_frontmatter(self, parameter: str, default: object = None) -> object:
         """
         Retrieves a raw frontmatter argument by parameter name.
         :param parameter: The frontmatter parameter name.
+        :param default: The default value to return if the field is undefined. Defaults to None, in which case an error
+        is raised for undefined fields.
         :return: The raw argument query_parameter.
         :raises KeyError: If the parameter does not exist in the frontmatter.
         """
-        argument: Optional[object] = self.post.get(parameter)
+        argument: Optional[object] = self.post.get(parameter, default)
 
         if argument is None:
             raise KeyError(f"Missing required frontmatter field '{parameter}'.")
 
         return argument
 
-    def get_string_argument_from_frontmatter(self, parameter: str) -> str:
+    def get_string_argument_from_frontmatter(self, parameter: str, default: str = None) -> str:
         """
         Retrieves a string argument from the frontmatter.
         :param parameter: The frontmatter parameter name.
+        :param default: The default string to return if the field is undefined. Defaults to None, in which case an error
+        is raised for undefined fields.
         :return: The string argument query_parameter.
         :raises TypeError: If the parameter is not a string.
         """
-        argument: object = self._get_argument_from_frontmatter(parameter)
+        argument: object = self._get_argument_from_frontmatter(parameter, default)
 
         if not isinstance(argument, str):
             raise TypeError(f"The '{parameter}' field must be a string, but got {type(argument).__name__}.")
 
         return argument
 
-    def get_boolean_argument_from_frontmatter(self, parameter: str) -> bool:
+    def get_boolean_argument_from_frontmatter(self, parameter: str, default: bool = None) -> bool:
         """
         Retrieves a boolean argument from the frontmatter.
         :param parameter: The frontmatter parameter name.
+        :param default: The default boolean to return if the field is undefined. Defaults to None, in which case an
+        error is raised for undefined fields.
         :return: The boolean argument query_parameter.
         :raises TypeError: If the parameter is not a boolean.
         """
-        argument: object = self._get_argument_from_frontmatter(parameter)
+        argument: object = self._get_argument_from_frontmatter(parameter, default)
 
         if not isinstance(argument, bool):
             raise TypeError(f"The '{parameter}' field must be a boolean, but got {type(argument).__name__}.")
 
         return argument
 
-    def get_list_argument_from_frontmatter(self, parameter: str) -> list:
+    def get_list_argument_from_frontmatter(self, parameter: str, default: list = None) -> list:
         """
         Retrieves a list argument from the frontmatter.
         :param parameter: The frontmatter parameter name.
+        :param default: The default list to return if the field is undefined. Defaults to None, in which case an error
+        is raised for undefined fields.
         :return: The list argument query_parameter.
         :raises TypeError: If the parameter is not a list.
         """
-        argument: object = self._get_argument_from_frontmatter(parameter)
+        argument: object = self._get_argument_from_frontmatter(parameter, default.copy())
 
         if not isinstance(argument, list):
             raise TypeError(f"The '{parameter}' field must be a list, but got {type(argument).__name__}.")
