@@ -28,16 +28,30 @@ class Resume(Transpilable):
 
         markdown_file_reader = MarkdownFileReader(markdown_file_contents)
 
-        self.title: str = markdown_file_reader.get_string_argument_from_frontmatter("title")
-        self.title_bold: bool = markdown_file_reader.get_boolean_argument_from_frontmatter("title_bold")
+        self.title: str = markdown_file_reader.get_string_argument_from_frontmatter(parameter="title", default="")
 
-        self.summary: str = markdown_file_reader.get_string_argument_from_frontmatter("summary")
-        self.summary_bold: bool = markdown_file_reader.get_boolean_argument_from_frontmatter("summary_bold")
-
-        self.contacts: list[Contact] = Resume._validate_and_parse_contacts(
-            markdown_file_reader.get_list_argument_from_frontmatter("contacts")
+        self.title_bold: bool = markdown_file_reader.get_boolean_argument_from_frontmatter(
+            parameter="title_bold",
+            default=True
         )
-        self.contacts_bold: bool = markdown_file_reader.get_boolean_argument_from_frontmatter("contacts_bold")
+
+        self.summary: str = markdown_file_reader.get_string_argument_from_frontmatter(parameter="summary", default="")
+
+        self.summary_bold: bool = markdown_file_reader.get_boolean_argument_from_frontmatter(
+            "summary_bold",
+            default=True
+        )
+
+        contact_list_argument = markdown_file_reader.get_list_argument_from_frontmatter(
+            parameter="contacts",
+            default=[]
+        )
+        self.contacts: list[Contact] = Resume._validate_and_parse_contacts(contact_list_argument)
+
+        self.contacts_bold: bool = markdown_file_reader.get_boolean_argument_from_frontmatter(
+            parameter="contacts_bold",
+            default=False
+        )
 
         self.tags: list[Tag] = markdown_file_reader.get_tags_from_body()
 
